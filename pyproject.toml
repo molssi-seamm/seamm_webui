@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "seamm-webui"
+version = "0.0.1"
+description = "SPA-based web dashboard for SEAMM"
+readme = "README.md"
+license = { text = "BSD-3-Clause" }
+requires-python = ">=3.10"
+authors = [{ name = "Paul Saxe" }]
+classifiers = [
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: BSD License",
+    "Programming Language :: Python :: 3 :: Only",
+]
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "seamm-datastore",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "httpx",
+]
+
+[project.scripts]
+seamm-webui = "seamm_webui.main:run"
+
+[tool.setuptools.packages.find]
+include = ["seamm_webui*"]
