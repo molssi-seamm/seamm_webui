@@ -20,6 +20,7 @@ dependencies = [
     "fastapi",
     "uvicorn[standard]",
     "seamm-datastore",
+    "fasteners",
 ]
 
 [project.optional-dependencies]

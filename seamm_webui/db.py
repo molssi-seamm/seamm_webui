@@ -18,6 +18,7 @@ from typing import Optional
 import seamm_datastore
 
 _datastore: Optional["seamm_datastore.connect"] = None
+_datastore_dir: Optional[str] = None
 
 
 def init_datastore(datastore_dir: str, default_project: str = "default"):
@@ -50,7 +51,7 @@ def init_datastore(datastore_dir: str, default_project: str = "default"):
     caller. Real per-user auth replaces this fixed login in a later phase --
     see `seamm_webui/auth.py` and dashboard-rewrite-plan.md, Phase 3.
     """
-    global _datastore
+    global _datastore, _datastore_dir
 
     root = Path(datastore_dir).expanduser().resolve()
     root.mkdir(parents=True, exist_ok=True)
@@ -80,6 +81,8 @@ def init_datastore(datastore_dir: str, default_project: str = "default"):
 
     fake_app.config["AUTHORIZE_ALLOW_ANONYMOUS_ACTIONS"] = True
 
+    _datastore_dir = str(root)
+
     return _datastore
 
 
@@ -89,3 +92,11 @@ def get_datastore():
             "Datastore not initialized; call init_datastore() at app startup."
         )
     return _datastore
+
+
+def get_datastore_dir() -> str:
+    if _datastore_dir is None:
+        raise RuntimeError(
+            "Datastore not initialized; call init_datastore() at app startup."
+        )
+    return _datastore_dir

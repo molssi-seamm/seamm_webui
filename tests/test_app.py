@@ -77,3 +77,54 @@ def test_job_files_listing_and_download(tmp_path):
 
     response = client.get("/api/jobs/999/files")
     assert response.status_code == 404
+
+
+def test_submit_job(tmp_path):
+    app = create_app(str(tmp_path / "datastore"))
+    client = TestClient(app)
+
+    import seamm_datastore
+
+    sample = Path(seamm_datastore.__file__).parent / "data" / "sample_flowchart_v2.flow"
+    flowchart_text = sample.read_text()
+
+    response = client.post(
+        "/api/jobs",
+        json={
+            "flowchart": flowchart_text,
+            "project": "default",
+            "title": "my first job",
+            "description": "a test submission",
+        },
+    )
+    assert response.status_code == 200
+    job = response.json()
+    assert job["title"] == "my first job"
+    assert job["status"] == "submitted"
+    job_id = job["id"]
+
+    # Files were actually written to disk.
+    job_dir = tmp_path / "datastore" / "projects" / "default" / f"Job_{job_id:06d}"
+    assert (job_dir / "flowchart.flow").read_text() == flowchart_text
+    assert (job_dir / "job_data.json").exists()
+
+    # The job.id counter file was created and is now at this job's id.
+    job_id_file = tmp_path / "datastore" / "job.id"
+    assert job_id_file.exists()
+
+    # It shows up in the listing.
+    response = client.get("/api/jobs")
+    assert response.status_code == 200
+    ids = [j["id"] for j in response.json()]
+    assert job_id in ids
+
+    # Submitting to a nonexistent project is a clean 400, not a 500.
+    response = client.post(
+        "/api/jobs",
+        json={
+            "flowchart": flowchart_text,
+            "project": "no-such-project",
+            "title": "should fail",
+        },
+    )
+    assert response.status_code == 400

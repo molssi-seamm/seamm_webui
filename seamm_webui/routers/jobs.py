@@ -1,9 +1,8 @@
 """Job endpoints.
 
-Real, paginated listing + single-job lookup + file listing/download, reusing
-seamm_datastore's existing Job.get()/get_by_id() as-is. Job submission is
-still tracked in dashboard-rewrite-plan.md's Phase 1 checklist and lands in a
-follow-up pass, not this one.
+Real, paginated listing + single-job lookup + file listing/download +
+submission, reusing seamm_datastore's existing Job.get()/get_by_id()/create()
+as-is.
 """
 
 from pathlib import Path
@@ -11,10 +10,19 @@ from typing import Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
+from pydantic import BaseModel, Field
 
 from seamm_webui.auth import require_permission
 
 router = APIRouter(prefix="/api/jobs", tags=["jobs"])
+
+
+class JobSubmission(BaseModel):
+    flowchart: str
+    project: str = "default"
+    title: str
+    description: str = ""
+    parameters: dict = Field(default_factory=dict)
 
 
 def _get_job_or_404(job_id: int):
@@ -45,6 +53,60 @@ def list_jobs(
         order=order,
     )
     return JobSchema(many=True).dump(jobs)
+
+
+@router.post("")
+def submit_job(
+    submission: JobSubmission, _: None = Depends(require_permission("create"))
+):
+    """Submit a new job.
+
+    Writes flowchart.flow + job_data.json to the project directory (mirroring
+    seamm_dashboard's add_job / setup_job) and registers it via Job.create().
+    No separate "enqueue" step -- the seamm_jobserver daemon picks up jobs
+    with status "submitted" on its own, independent of which dashboard wrote
+    them.
+    """
+    from seamm_datastore.database.models import Job
+    from seamm_datastore.database.schema import JobSchema
+    from seamm_webui.db import get_datastore, get_datastore_dir
+    from seamm_webui.util import get_job_id, write_job_files
+
+    datastore_dir = get_datastore_dir()
+    job_id_file = str(Path(datastore_dir).expanduser() / "job.id")
+    job_id = get_job_id(job_id_file)
+
+    project_names = [submission.project]
+    parameters = submission.parameters or {"cmdline": []}
+
+    directory = write_job_files(
+        datastore_dir,
+        submission.project,
+        job_id,
+        submission.flowchart,
+        submission.title,
+        project_names,
+        parameters,
+    )
+
+    try:
+        job = Job.create(
+            job_id,
+            path=directory,
+            flowchart_filename=str(Path(directory) / "flowchart.flow"),
+            project_names=project_names,
+            title=submission.title,
+            description=submission.description,
+            parameters=parameters,
+        )
+    except NameError as exc:
+        raise HTTPException(status_code=400, detail=str(exc))
+
+    ds = get_datastore()
+    ds.Session.add(job)
+    ds.Session.commit()
+
+    return JobSchema(many=False).dump(job)
 
 
 @router.get("/{job_id}")

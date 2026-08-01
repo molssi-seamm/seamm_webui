@@ -64,3 +64,23 @@ export async function fetchProjects(): Promise<Project[]> {
   if (!res.ok) throw new Error(`fetching projects failed: ${res.status}`)
   return res.json()
 }
+
+export interface JobSubmission {
+  flowchart: string
+  project: string
+  title: string
+  description?: string
+}
+
+export async function submitJob(payload: JobSubmission): Promise<JobDetail> {
+  const res = await fetch(`${API_BASE}/api/jobs`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  if (!res.ok) {
+    const detail = await res.text()
+    throw new Error(`submitting job failed: ${res.status} ${detail}`)
+  }
+  return res.json()
+}
