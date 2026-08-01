@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { fetchJob, fetchJobFiles, fetchJobFileContent, jobFileDownloadUrl } from '../api'
 import { buildTree, TreeView } from '../FileTree'
+import { ResizableSplit } from '../ResizableSplit'
 
 function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`
@@ -37,55 +38,57 @@ function FileViewer({ jobId }: { jobId: string }) {
   const selectedFile = files.data.find((f) => f.path === selected)
 
   return (
-    <div style={{ display: 'flex', gap: '1em', alignItems: 'flex-start' }}>
-      <div
-        style={{
-          width: '260px',
-          flexShrink: 0,
-          maxHeight: '32em',
-          overflow: 'auto',
-          border: '1px solid var(--border-color, #ccc)',
-          padding: '0.5em',
-        }}
-      >
-        <TreeView nodes={tree} selected={selected} onSelect={setSelected} />
-      </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        {!selected && <p>Select a file to view its contents.</p>}
-        {selected && (
-          <>
-            <p>
-              <strong>{selected}</strong>
-              {selectedFile && <> ({formatSize(selectedFile.size)})</>} —{' '}
-              <a href={jobFileDownloadUrl(jobId, selected)}>Download</a>
-            </p>
-            {content.isLoading && <p>Loading…</p>}
-            {content.error && <p>Error: {(content.error as Error).message}</p>}
-            {content.data && content.data.reason === 'binary' && (
-              <p>Binary file — cannot preview. Use the download link above.</p>
-            )}
-            {content.data && content.data.reason === 'too_large' && (
+    <ResizableSplit
+      left={
+        <div
+          style={{
+            maxHeight: '75vh',
+            overflow: 'auto',
+            border: '1px solid var(--border)',
+            padding: '0.5em',
+          }}
+        >
+          <TreeView nodes={tree} selected={selected} onSelect={setSelected} />
+        </div>
+      }
+      right={
+        <>
+          {!selected && <p>Select a file to view its contents.</p>}
+          {selected && (
+            <>
               <p>
-                File too large to preview ({formatSize(content.data.size)}). Use the
-                download link above.
+                <strong>{selected}</strong>
+                {selectedFile && <> ({formatSize(selectedFile.size)})</>} —{' '}
+                <a href={jobFileDownloadUrl(jobId, selected)}>Download</a>
               </p>
-            )}
-            {content.data && content.data.content !== null && (
-              <pre
-                style={{
-                  maxHeight: '32em',
-                  overflow: 'auto',
-                  border: '1px solid var(--border-color, #ccc)',
-                  padding: '0.5em',
-                }}
-              >
-                {content.data.content}
-              </pre>
-            )}
-          </>
-        )}
-      </div>
-    </div>
+              {content.isLoading && <p>Loading…</p>}
+              {content.error && <p>Error: {(content.error as Error).message}</p>}
+              {content.data && content.data.reason === 'binary' && (
+                <p>Binary file — cannot preview. Use the download link above.</p>
+              )}
+              {content.data && content.data.reason === 'too_large' && (
+                <p>
+                  File too large to preview ({formatSize(content.data.size)}). Use the
+                  download link above.
+                </p>
+              )}
+              {content.data && content.data.content !== null && (
+                <pre
+                  style={{
+                    maxHeight: '75vh',
+                    overflow: 'auto',
+                    border: '1px solid var(--border)',
+                    padding: '0.5em',
+                  }}
+                >
+                  {content.data.content}
+                </pre>
+              )}
+            </>
+          )}
+        </>
+      }
+    />
   )
 }
 
