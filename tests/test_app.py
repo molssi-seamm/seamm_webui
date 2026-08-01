@@ -1,3 +1,6 @@
+import shutil
+from pathlib import Path
+
 from fastapi.testclient import TestClient
 
 from seamm_webui.main import create_app
@@ -19,3 +22,58 @@ def test_health_and_listing(tmp_path):
     assert response.status_code == 200
     names = [p["name"] for p in response.json()]
     assert "default" in names
+
+
+def test_job_files_listing_and_download(tmp_path):
+    app = create_app(str(tmp_path / "datastore"))
+    client = TestClient(app)
+
+    # Create a real job with real files on disk, the same way the old
+    # dashboard's add_job route does.
+    import seamm_datastore
+    from seamm_datastore.database.models import Job
+    from seamm_webui.db import get_datastore
+
+    job_dir = tmp_path / "datastore" / "projects" / "default" / "Job_000001"
+    job_dir.mkdir(parents=True)
+    sample = Path(seamm_datastore.__file__).parent / "data" / "sample_flowchart_v2.flow"
+    shutil.copy(sample, job_dir / "flowchart.flow")
+    (job_dir / "output.txt").write_text("some output\n")
+    (job_dir / "subdir").mkdir()
+    (job_dir / "subdir" / "nested.txt").write_text("nested output\n")
+
+    job = Job.create(
+        1,
+        flowchart_filename=str(job_dir / "flowchart.flow"),
+        project_names=["default"],
+        path=str(job_dir),
+        title="test job",
+    )
+    ds = get_datastore()
+    ds.Session.add(job)
+    ds.Session.commit()
+
+    response = client.get("/api/jobs/1/files")
+    assert response.status_code == 200
+    paths = {f["path"] for f in response.json()}
+    assert paths == {"flowchart.flow", "output.txt", "subdir/nested.txt"}
+
+    response = client.get("/api/jobs/1/files/download", params={"filename": "output.txt"})
+    assert response.status_code == 200
+    assert response.text == "some output\n"
+
+    response = client.get(
+        "/api/jobs/1/files/download", params={"filename": "subdir/nested.txt"}
+    )
+    assert response.status_code == 200
+    assert response.text == "nested output\n"
+
+    # Path traversal must be rejected, not just blocked by a substring check.
+    response = client.get(
+        "/api/jobs/1/files/download",
+        params={"filename": "../../../../etc/passwd"},
+    )
+    assert response.status_code == 403
+
+    response = client.get("/api/jobs/999/files")
+    assert response.status_code == 404

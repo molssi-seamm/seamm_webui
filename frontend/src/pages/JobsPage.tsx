@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import {
   getCoreRowModel,
@@ -13,7 +14,10 @@ const PAGE_SIZE = 10
 const columnHelper = createColumnHelper<Job>()
 const columns = [
   columnHelper.accessor('id', { header: 'ID' }),
-  columnHelper.accessor('title', { header: 'Title' }),
+  columnHelper.accessor('title', {
+    header: 'Title',
+    cell: (info) => <Link to={`/jobs/${info.row.original.id}`}>{info.getValue()}</Link>,
+  }),
   columnHelper.accessor('status', { header: 'Status' }),
   columnHelper.accessor('submitted', { header: 'Submitted' }),
   columnHelper.accessor('finished', { header: 'Finished' }),
