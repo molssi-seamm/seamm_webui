@@ -79,6 +79,72 @@ def test_job_files_listing_and_download(tmp_path):
     assert response.status_code == 404
 
 
+def test_job_file_content(tmp_path, monkeypatch):
+    app = create_app(str(tmp_path / "datastore"))
+    client = TestClient(app)
+
+    import seamm_datastore
+    from seamm_datastore.database.models import Job
+    from seamm_webui.db import get_datastore
+
+    job_dir = tmp_path / "datastore" / "projects" / "default" / "Job_000001"
+    job_dir.mkdir(parents=True)
+    sample = Path(seamm_datastore.__file__).parent / "data" / "sample_flowchart_v2.flow"
+    shutil.copy(sample, job_dir / "flowchart.flow")
+    (job_dir / "output.txt").write_text("line one\nline two\n")
+    (job_dir / "binary.dat").write_bytes(b"\xff\xfe\x00\x01\x02")
+
+    job = Job.create(
+        1,
+        flowchart_filename=str(job_dir / "flowchart.flow"),
+        project_names=["default"],
+        path=str(job_dir),
+        title="test job",
+    )
+    ds = get_datastore()
+    ds.Session.add(job)
+    ds.Session.commit()
+
+    # Plain text: content comes back inline.
+    response = client.get(
+        "/api/jobs/1/files/content", params={"filename": "output.txt"}
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["content"] == "line one\nline two\n"
+    assert body["reason"] is None
+
+    # Binary: no content, a reason instead -- not a decoding crash.
+    response = client.get(
+        "/api/jobs/1/files/content", params={"filename": "binary.dat"}
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["content"] is None
+    assert body["reason"] == "binary"
+
+    # Too large: also no content, a different reason, without reading the
+    # whole file into memory (MAX_PREVIEW_BYTES lowered for this test).
+    import seamm_webui.routers.jobs as jobs_module
+
+    monkeypatch.setattr(jobs_module, "MAX_PREVIEW_BYTES", 5)
+    response = client.get(
+        "/api/jobs/1/files/content", params={"filename": "output.txt"}
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert body["content"] is None
+    assert body["reason"] == "too_large"
+    assert body["size"] == len("line one\nline two\n")
+
+    # Traversal must be rejected here too.
+    response = client.get(
+        "/api/jobs/1/files/content",
+        params={"filename": "../../../../etc/passwd"},
+    )
+    assert response.status_code == 403
+
+
 def test_submit_job(tmp_path):
     app = create_app(str(tmp_path / "datastore"))
     client = TestClient(app)

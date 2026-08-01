@@ -25,6 +25,9 @@ class JobSubmission(BaseModel):
     parameters: dict = Field(default_factory=dict)
 
 
+MAX_PREVIEW_BYTES = 2_000_000
+
+
 def _get_job_or_404(job_id: int):
     from seamm_datastore.database.models import Job
 
@@ -32,6 +35,22 @@ def _get_job_or_404(job_id: int):
     if job is None:
         raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
     return job
+
+
+def _resolve_job_file(job, filename: str) -> Path:
+    """Resolve ``filename`` under the job's directory, guarding against
+    traversal outside it via ``Path.is_relative_to`` (not a substring check
+    like the old dashboard's ``"../" in filename``, which can't be bypassed
+    by how the traversal is encoded).
+    """
+    base = Path(job.path).resolve()
+    target = (base / filename).resolve()
+
+    if not target.is_relative_to(base):
+        raise HTTPException(status_code=403, detail="Invalid filename")
+    if not target.is_file():
+        raise HTTPException(status_code=404, detail="File not found")
+    return target
 
 
 @router.get("")
@@ -142,21 +161,34 @@ def list_job_files(job_id: int, _: None = Depends(require_permission("read"))):
 def download_job_file(
     job_id: int, filename: str, _: None = Depends(require_permission("read"))
 ):
-    """Download a single file from the job's directory.
+    """Download a single file from the job's directory as an attachment."""
+    job = _get_job_or_404(job_id)
+    target = _resolve_job_file(job, filename)
+    return FileResponse(target, filename=target.name)
 
-    ``filename`` is resolved and checked against ``job.path`` with
-    ``is_relative_to`` (not a substring check like the old dashboard's
-    ``"../" in filename``) so it can't escape the job directory regardless of
-    how the traversal is encoded.
+
+@router.get("/{job_id}/files/content")
+def get_job_file_content(
+    job_id: int, filename: str, _: None = Depends(require_permission("read"))
+):
+    """Return a file's text content for in-browser viewing (not a download).
+
+    Guards against two things a naive "just read_text() it" would choke on:
+    binary files (decoding fails) and files too large to reasonably render in
+    a browser tab. Both come back as a normal 200 with ``content: null`` and
+    a ``reason``, not an error -- the frontend falls back to offering the
+    download link instead of showing an error page.
     """
     job = _get_job_or_404(job_id)
+    target = _resolve_job_file(job, filename)
 
-    base = Path(job.path).resolve()
-    target = (base / filename).resolve()
+    size = target.stat().st_size
+    if size > MAX_PREVIEW_BYTES:
+        return {"content": None, "reason": "too_large", "size": size}
 
-    if not target.is_relative_to(base):
-        raise HTTPException(status_code=403, detail="Invalid filename")
-    if not target.is_file():
-        raise HTTPException(status_code=404, detail="File not found")
+    try:
+        content = target.read_text()
+    except (UnicodeDecodeError, ValueError):
+        return {"content": None, "reason": "binary", "size": size}
 
-    return FileResponse(target, filename=target.name)
+    return {"content": content, "reason": None, "size": size}

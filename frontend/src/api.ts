@@ -59,6 +59,22 @@ export function jobFileDownloadUrl(id: number | string, filename: string): strin
   return `${API_BASE}/api/jobs/${id}/files/download?${params}`
 }
 
+export interface JobFileContent {
+  content: string | null
+  reason: 'binary' | 'too_large' | null
+  size: number
+}
+
+export async function fetchJobFileContent(
+  id: number | string,
+  filename: string,
+): Promise<JobFileContent> {
+  const params = new URLSearchParams({ filename })
+  const res = await fetch(`${API_BASE}/api/jobs/${id}/files/content?${params}`)
+  if (!res.ok) throw new Error(`fetching content of ${filename} failed: ${res.status}`)
+  return res.json()
+}
+
 export async function fetchProjects(): Promise<Project[]> {
   const res = await fetch(`${API_BASE}/api/projects`)
   if (!res.ok) throw new Error(`fetching projects failed: ${res.status}`)

@@ -1,6 +1,8 @@
+import { useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
-import { fetchJob, fetchJobFiles, jobFileDownloadUrl } from '../api'
+import { fetchJob, fetchJobFiles, fetchJobFileContent, jobFileDownloadUrl } from '../api'
+import { buildTree, TreeView } from '../FileTree'
 
 function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`
@@ -8,21 +10,91 @@ function formatSize(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`
 }
 
-// Phase 1: status/parameters/files. No flowchart preview yet -- that's a
-// separate follow-up (porting the old dashboard's read-only Cytoscape
-// rendering), tracked in dashboard-rewrite-plan.md.
+// File-content viewer: tree on the left, plain-text content on the right,
+// matching the old dashboard's two-pane layout (its job_report.js). This
+// covers plain text/logs -- the old dashboard's per-file-type renderers
+// (CSV -> table, .graph -> Plotly, structures -> NGL, .flow -> flowchart
+// diagram) are a deliberate, separate follow-up, not done here.
+function FileViewer({ jobId }: { jobId: string }) {
+  const [selected, setSelected] = useState<string | null>(null)
+
+  const files = useQuery({
+    queryKey: ['job-files', jobId],
+    queryFn: () => fetchJobFiles(jobId),
+  })
+
+  const content = useQuery({
+    queryKey: ['job-file-content', jobId, selected],
+    queryFn: () => fetchJobFileContent(jobId, selected!),
+    enabled: !!selected,
+  })
+
+  if (files.isLoading) return <p>Loading files…</p>
+  if (files.error) return <p>Error loading files: {(files.error as Error).message}</p>
+  if (!files.data) return null
+
+  const tree = buildTree(files.data)
+  const selectedFile = files.data.find((f) => f.path === selected)
+
+  return (
+    <div style={{ display: 'flex', gap: '1em', alignItems: 'flex-start' }}>
+      <div
+        style={{
+          width: '260px',
+          flexShrink: 0,
+          maxHeight: '32em',
+          overflow: 'auto',
+          border: '1px solid var(--border-color, #ccc)',
+          padding: '0.5em',
+        }}
+      >
+        <TreeView nodes={tree} selected={selected} onSelect={setSelected} />
+      </div>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        {!selected && <p>Select a file to view its contents.</p>}
+        {selected && (
+          <>
+            <p>
+              <strong>{selected}</strong>
+              {selectedFile && <> ({formatSize(selectedFile.size)})</>} —{' '}
+              <a href={jobFileDownloadUrl(jobId, selected)}>Download</a>
+            </p>
+            {content.isLoading && <p>Loading…</p>}
+            {content.error && <p>Error: {(content.error as Error).message}</p>}
+            {content.data && content.data.reason === 'binary' && (
+              <p>Binary file — cannot preview. Use the download link above.</p>
+            )}
+            {content.data && content.data.reason === 'too_large' && (
+              <p>
+                File too large to preview ({formatSize(content.data.size)}). Use the
+                download link above.
+              </p>
+            )}
+            {content.data && content.data.content !== null && (
+              <pre
+                style={{
+                  maxHeight: '32em',
+                  overflow: 'auto',
+                  border: '1px solid var(--border-color, #ccc)',
+                  padding: '0.5em',
+                }}
+              >
+                {content.data.content}
+              </pre>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export function JobDetailPage() {
   const { id } = useParams<{ id: string }>()
 
   const job = useQuery({
     queryKey: ['job', id],
     queryFn: () => fetchJob(id!),
-    enabled: !!id,
-  })
-
-  const files = useQuery({
-    queryKey: ['job-files', id],
-    queryFn: () => fetchJobFiles(id!),
     enabled: !!id,
   })
 
@@ -79,30 +151,7 @@ export function JobDetailPage() {
       <pre>{JSON.stringify(j.parameters, null, 2)}</pre>
 
       <h3>Files</h3>
-      {files.isLoading && <p>Loading files…</p>}
-      {files.error && <p>Error loading files: {(files.error as Error).message}</p>}
-      {files.data && (
-        <table>
-          <thead>
-            <tr>
-              <th>Path</th>
-              <th>Size</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {files.data.map((f) => (
-              <tr key={f.path}>
-                <td>{f.path}</td>
-                <td>{formatSize(f.size)}</td>
-                <td>
-                  <a href={jobFileDownloadUrl(id!, f.path)}>Download</a>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+      {id && <FileViewer jobId={id} />}
     </div>
   )
 }
