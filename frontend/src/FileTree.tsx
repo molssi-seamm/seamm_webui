@@ -37,8 +37,14 @@ export function buildTree(files: JobFile[]): TreeNode[] {
 }
 
 function sortTree(nodes: TreeNode[]) {
+  // Files before directories: a SEAMM job's important top-level files
+  // (job.out, job_data.json, flowchart.flow) live right in the job root,
+  // while numbered directories (1/, 2/, 3/, ...) are per-step working
+  // directories that matter less at a glance. Numeric names also sort
+  // before letters alphabetically, so files-first is what keeps this from
+  // looking backwards.
   nodes.sort((a, b) => {
-    if (a.isFile !== b.isFile) return a.isFile ? 1 : -1
+    if (a.isFile !== b.isFile) return a.isFile ? -1 : 1
     return a.name.localeCompare(b.name)
   })
   for (const node of nodes) sortTree(node.children)
@@ -52,7 +58,16 @@ interface TreeViewProps {
 
 export function TreeView({ nodes, selected, onSelect }: TreeViewProps) {
   return (
-    <ul style={{ listStyle: 'none', paddingLeft: '1em', margin: 0 }}>
+    <ul
+      style={{
+        listStyle: 'none',
+        paddingLeft: '1.25em',
+        margin: 0,
+        fontFamily: 'var(--mono)',
+        fontSize: '14px',
+        textAlign: 'left',
+      }}
+    >
       {nodes.map((node) =>
         node.isFile ? (
           <li key={node.path}>
@@ -62,9 +77,13 @@ export function TreeView({ nodes, selected, onSelect }: TreeViewProps) {
                 background: 'none',
                 border: 'none',
                 cursor: 'pointer',
-                padding: 0,
+                padding: '2px 0',
+                textAlign: 'left',
+                width: '100%',
+                fontFamily: 'inherit',
+                fontSize: 'inherit',
+                color: selected === node.path ? 'var(--accent)' : 'inherit',
                 fontWeight: selected === node.path ? 'bold' : 'normal',
-                textDecoration: selected === node.path ? 'underline' : 'none',
               }}
             >
               {node.name}
@@ -73,7 +92,7 @@ export function TreeView({ nodes, selected, onSelect }: TreeViewProps) {
         ) : (
           <li key={node.path}>
             <details open>
-              <summary style={{ cursor: 'pointer' }}>{node.name}</summary>
+              <summary style={{ cursor: 'pointer', padding: '2px 0' }}>{node.name}</summary>
               <TreeView nodes={node.children} selected={selected} onSelect={onSelect} />
             </details>
           </li>
