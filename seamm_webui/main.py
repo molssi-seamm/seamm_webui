@@ -8,10 +8,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from seamm_webui.db import init_datastore
 
 
-def create_app(datastore_root: str) -> FastAPI:
+def create_app(datastore_dir: str) -> FastAPI:
     # Must happen before importing routers -- see the ordering note in
     # seamm_webui/db.py.
-    init_datastore(datastore_root)
+    init_datastore(datastore_dir)
 
     from seamm_webui.routers import jobs, projects
 
@@ -42,7 +42,19 @@ def run():
     parser.add_argument(
         "--root",
         default="~/SEAMM",
-        help="The SEAMM datastore root directory (default: ~/SEAMM)",
+        help=(
+            "The general SEAMM config root (holds the per-code .ini files); "
+            "NOT the datastore itself (default: ~/SEAMM)"
+        ),
+    )
+    parser.add_argument(
+        "--datastore",
+        default=None,
+        help=(
+            "The datastore directory (holds seamm.db + projects/); matches "
+            "seamm_util's convention of defaulting to '<root>/Jobs' if not "
+            "given explicitly"
+        ),
     )
     parser.add_argument(
         "--port", type=int, default=8010, help="Port to listen on (default: 8010)"
@@ -52,9 +64,15 @@ def run():
     )
     args = parser.parse_args()
 
+    datastore_dir = args.datastore
+    if datastore_dir is None:
+        from pathlib import Path
+
+        datastore_dir = str(Path(args.root).expanduser() / "Jobs")
+
     import uvicorn
 
-    app = create_app(args.root)
+    app = create_app(datastore_dir)
     uvicorn.run(app, host=args.host, port=args.port)
 
 

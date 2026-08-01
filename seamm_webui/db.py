@@ -20,8 +20,19 @@ import seamm_datastore
 _datastore: Optional["seamm_datastore.connect"] = None
 
 
-def init_datastore(datastore_root: str, default_project: str = "default"):
-    """Connect to the SEAMM datastore rooted at ``datastore_root``.
+def init_datastore(datastore_dir: str, default_project: str = "default"):
+    """Connect to the SEAMM datastore at ``datastore_dir``.
+
+    NOTE: this must be the *datastore* directory (what the rest of SEAMM
+    calls ``--datastore``, default ``${root}/Jobs``), not the general
+    ``--root`` SEAMM config directory (default ``~/SEAMM``, holding the
+    per-code ``.ini`` files) -- those are two different, separately
+    configurable directories. Conflating them was a real bug here during
+    scaffolding: pointing this at ``~/SEAMM`` directly found no
+    ``seamm.db``, silently created a fresh empty one there, and connected
+    to that instead of the real datastore at ``~/SEAMM/Jobs/seamm.db``. See
+    ``main.py``'s ``--root``/``--datastore`` handling, which mirrors
+    ``seamm_util.argument_parser``'s ``${root}/Jobs`` default.
 
     Only initializes (creates tables/default project/roles) if there is no
     existing ``seamm.db`` at that location yet -- an existing datastore
@@ -41,7 +52,7 @@ def init_datastore(datastore_root: str, default_project: str = "default"):
     """
     global _datastore
 
-    root = Path(datastore_root).expanduser().resolve()
+    root = Path(datastore_dir).expanduser().resolve()
     root.mkdir(parents=True, exist_ok=True)
     db_path = root / "seamm.db"
     initialize = not db_path.exists()
