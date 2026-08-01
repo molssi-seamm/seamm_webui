@@ -24,6 +24,65 @@ def test_health_and_listing(tmp_path):
     assert "default" in names
 
 
+def test_job_project_filter(tmp_path):
+    app = create_app(str(tmp_path / "datastore"))
+    client = TestClient(app)
+
+    import seamm_datastore
+    from seamm_datastore.database.models import Job, Project
+    from seamm_webui.db import get_datastore
+
+    ds = get_datastore()
+    other = Project.create(name="other", path=str(tmp_path / "datastore" / "projects" / "other"))
+    ds.Session.add(other)
+    ds.Session.commit()
+
+    sample = Path(seamm_datastore.__file__).parent / "data" / "sample_flowchart_v2.flow"
+
+    def make_job(job_id, project_name):
+        job_dir = (
+            tmp_path / "datastore" / "projects" / project_name / f"Job_{job_id:06d}"
+        )
+        job_dir.mkdir(parents=True)
+        shutil.copy(sample, job_dir / "flowchart.flow")
+        job = Job.create(
+            job_id,
+            flowchart_filename=str(job_dir / "flowchart.flow"),
+            project_names=[project_name],
+            path=str(job_dir),
+            title=f"job {job_id} in {project_name}",
+        )
+        ds.Session.add(job)
+        ds.Session.commit()
+
+    make_job(1, "default")
+    make_job(2, "default")
+    make_job(3, "other")
+
+    # No filter: all three jobs.
+    response = client.get("/api/jobs")
+    assert {j["id"] for j in response.json()} == {1, 2, 3}
+
+    # Filtered to "other": only job 3.
+    response = client.get("/api/jobs", params={"project": "other"})
+    assert [j["id"] for j in response.json()] == [3]
+
+    # Filtered to "default": jobs 1 and 2, and pagination applies within
+    # the filtered set, not the unfiltered one.
+    response = client.get("/api/jobs", params={"project": "default", "limit": 1})
+    assert [j["id"] for j in response.json()] == [1]
+
+    response = client.get(
+        "/api/jobs", params={"project": "default", "limit": 1, "offset": 1}
+    )
+    assert [j["id"] for j in response.json()] == [2]
+
+    # A nonexistent project just yields an empty list, not an error.
+    response = client.get("/api/jobs", params={"project": "no-such-project"})
+    assert response.status_code == 200
+    assert response.json() == []
+
+
 def test_job_files_listing_and_download(tmp_path):
     app = create_app(str(tmp_path / "datastore"))
     client = TestClient(app)

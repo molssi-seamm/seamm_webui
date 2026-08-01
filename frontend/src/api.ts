@@ -32,11 +32,16 @@ export async function fetchHealth(): Promise<{ status: string }> {
   return res.json()
 }
 
-export async function fetchJobs(offset: number, limit: number): Promise<Job[]> {
+export async function fetchJobs(
+  offset: number,
+  limit: number,
+  project?: string,
+): Promise<Job[]> {
   const params = new URLSearchParams({
     offset: String(offset),
     limit: String(limit),
   })
+  if (project) params.set('project', project)
   const res = await fetch(`${API_BASE}/api/jobs?${params}`)
   if (!res.ok) throw new Error(`fetching jobs failed: ${res.status}`)
   return res.json()

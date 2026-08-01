@@ -59,19 +59,34 @@ def list_jobs(
     limit: Optional[int] = None,
     sort_by: str = "id",
     order: str = "asc",
+    project: Optional[str] = None,
     _: None = Depends(require_permission("read")),
 ):
-    from seamm_datastore.database.models import Job
+    """List jobs, optionally filtered to a single project by name.
+
+    seamm_datastore's Job.get() has no project filter, so this builds the
+    same permission-filtered query it uses internally (Job.permissions_query)
+    directly, adding the project filter before pagination -- filtering
+    Job.get()'s already-paginated results after the fact would make "page 2
+    of Electrolytes" not actually be the second page of Electrolytes jobs.
+    """
+    from seamm_datastore.database.models import Job, Project
     from seamm_datastore.database.schema import JobSchema
 
-    jobs = Job.get(
-        permission="read",
-        offset=offset,
-        limit=limit,
-        sort_by=sort_by,
-        order=order,
-    )
-    return JobSchema(many=True).dump(jobs)
+    query = Job.permissions_query("read")
+
+    if project is not None:
+        query = query.filter(Job.projects.any(Project.name == project))
+
+    column = getattr(Job, sort_by)
+    query = query.order_by(column.desc() if order.lower() == "desc" else column)
+
+    if offset is not None:
+        query = query.offset(offset)
+    if limit is not None:
+        query = query.limit(limit)
+
+    return JobSchema(many=True).dump(query.all())
 
 
 @router.post("")
