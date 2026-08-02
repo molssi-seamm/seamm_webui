@@ -5,12 +5,19 @@ import { fetchJob, fetchJobFiles, fetchJobFileContent, jobFileDownloadUrl } from
 import { buildTree, TreeView } from '../FileTree'
 import { ResizableSplit } from '../ResizableSplit'
 
-// Lazy-loaded: NGL pulls in three.js and adds well over 1MB to the bundle.
-// Loading it eagerly would undercut the entire point of this rewrite
-// (performance) for every user, even those who never open a structure file.
+// Lazy-loaded: NGL pulls in three.js and adds well over 1MB to the bundle,
+// and Plotly is similarly heavy. Loading either eagerly would undercut the
+// entire point of this rewrite (performance) for every user, even those who
+// never open a structure file or a graph. CsvTable (PapaParse) is small but
+// lazy-loaded too for consistency -- keeps the main bundle to just what
+// every user actually needs.
 const StructureViewer = lazy(() =>
   import('../StructureViewer').then((m) => ({ default: m.StructureViewer })),
 )
+const GraphViewer = lazy(() =>
+  import('../GraphViewer').then((m) => ({ default: m.GraphViewer })),
+)
+const CsvTable = lazy(() => import('../CsvTable').then((m) => ({ default: m.CsvTable })))
 
 function formatSize(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`
@@ -30,10 +37,10 @@ function getExtension(path: string): string {
 }
 
 // File-content viewer: tree on the left, content on the right, matching the
-// old dashboard's two-pane layout (its job_report.js). Plain text/logs and
-// 3D structures (cif/mmcif/pdb/sdf, via NGL) are covered -- the old
-// dashboard's other per-file-type renderers (CSV -> table, .graph -> Plotly,
-// .flow -> flowchart diagram) are a deliberate, separate follow-up.
+// old dashboard's two-pane layout (its job_report.js). Plain text/logs, 3D
+// structures (cif/mmcif/pdb/sdf, via NGL), CSV (-> table), and .graph
+// (-> Plotly) are covered -- only .flow -> flowchart-diagram rendering
+// remains a deliberate, separate follow-up.
 function FileViewer({ jobId }: { jobId: string }) {
   const [selected, setSelected] = useState<string | null>(null)
 
@@ -44,6 +51,8 @@ function FileViewer({ jobId }: { jobId: string }) {
 
   const selectedExt = selected ? getExtension(selected) : null
   const isStructure = !!selectedExt && STRUCTURE_EXTENSIONS.has(selectedExt)
+  const isCsv = selectedExt === 'csv'
+  const isGraph = selectedExt === 'graph'
 
   const content = useQuery({
     queryKey: ['job-file-content', jobId, selected],
@@ -104,18 +113,31 @@ function FileViewer({ jobId }: { jobId: string }) {
                       the download link above.
                     </p>
                   )}
-                  {content.data && content.data.content !== null && (
-                    <pre
-                      style={{
-                        maxHeight: '75vh',
-                        overflow: 'auto',
-                        border: '1px solid var(--border)',
-                        padding: '0.5em',
-                      }}
-                    >
-                      {content.data.content}
-                    </pre>
+                  {content.data && content.data.content !== null && isCsv && (
+                    <Suspense fallback={<p>Loading table…</p>}>
+                      <CsvTable content={content.data.content} />
+                    </Suspense>
                   )}
+                  {content.data && content.data.content !== null && isGraph && (
+                    <Suspense fallback={<p>Loading graph…</p>}>
+                      <GraphViewer content={content.data.content} />
+                    </Suspense>
+                  )}
+                  {content.data &&
+                    content.data.content !== null &&
+                    !isCsv &&
+                    !isGraph && (
+                      <pre
+                        style={{
+                          maxHeight: '75vh',
+                          overflow: 'auto',
+                          border: '1px solid var(--border)',
+                          padding: '0.5em',
+                        }}
+                      >
+                        {content.data.content}
+                      </pre>
+                    )}
                 </>
               )}
             </>
