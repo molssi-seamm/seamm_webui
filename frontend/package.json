@@ -12,7 +12,7 @@
   "dependencies": {
     "@tanstack/react-query": "^5.101.4",
     "@tanstack/react-table": "^8.21.3",
-    "ngl": "^2.4.0",
+    "ngl": "^0.10.4",
     "papaparse": "^5.5.4",
     "plotly.js-dist-min": "^3.7.0",
     "react": "^19.2.8",
@@ -29,6 +29,7 @@
     "@types/react-plotly.js": "^2.6.4",
     "@vitejs/plugin-react": "^6.0.4",
     "oxlint": "^1.75.0",
+    "playwright": "^1.62.1",
     "typescript": "~6.0.2",
     "vite": "^8.2.0"
   }

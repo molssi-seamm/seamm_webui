@@ -69,11 +69,11 @@ table {
 
 th {
   text-align: left;
-  padding-right: 1em;
+  padding: 2px 1em 2px 0;
 }
 
 td {
-  padding: 2px 0;
+  padding: 2px 1em 2px 0;
 }
 
 h1,
