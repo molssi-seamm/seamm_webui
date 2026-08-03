@@ -24,7 +24,7 @@ export function CsvTable({ content }: CsvTableProps) {
   if (!header) return <p>Empty CSV file.</p>
 
   return (
-    <div style={{ maxHeight: '75vh', maxWidth: '100%', overflow: 'auto' }}>
+    <div style={{ height: '100%', maxWidth: '100%', overflow: 'auto', boxSizing: 'border-box' }}>
       <table>
         <thead>
           <tr>

@@ -27,7 +27,7 @@ export function GraphViewer({ content }: GraphViewerProps) {
       data={figure.data}
       layout={{ autosize: true, ...figure.layout }}
       useResizeHandler
-      style={{ width: '100%', height: '75vh' }}
+      style={{ width: '100%', height: '100%' }}
       config={{ editable: true }}
     />
   )

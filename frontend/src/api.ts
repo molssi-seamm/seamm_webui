@@ -40,6 +40,9 @@ export async function fetchJobs(
   const params = new URLSearchParams({
     offset: String(offset),
     limit: String(limit),
+    // Newest jobs first -- that's what users want to see by default.
+    sort_by: 'id',
+    order: 'desc',
   })
   if (project) params.set('project', project)
   const res = await fetch(`${API_BASE}/api/jobs?${params}`)

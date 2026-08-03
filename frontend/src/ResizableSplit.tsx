@@ -42,7 +42,7 @@ export function ResizableSplit({
   )
 
   return (
-    <div ref={containerRef} style={{ display: 'flex', alignItems: 'stretch' }}>
+    <div ref={containerRef} style={{ display: 'flex', alignItems: 'stretch', height: '100%' }}>
       <div style={{ width: leftWidth, flexShrink: 0, minWidth: 0 }}>{left}</div>
       <div
         onMouseDown={startResize}

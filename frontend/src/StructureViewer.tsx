@@ -101,9 +101,9 @@ export function StructureViewer({ url, ext }: StructureViewerProps) {
   }
 
   return (
-    <div>
+    <div style={{ height: '100%', display: 'flex', flexDirection: 'column', minHeight: 0 }}>
       {numModels > 1 && (
-        <p>
+        <p style={{ flexShrink: 0 }}>
           Structure{' '}
           <button
             onClick={() => selectModel(Math.max(1, modelIndex - 1))}
@@ -135,8 +135,10 @@ export function StructureViewer({ url, ext }: StructureViewerProps) {
         ref={containerRef}
         style={{
           width: '100%',
-          height: '75vh',
+          flex: 1,
+          minHeight: 0,
           border: '1px solid var(--border)',
+          boxSizing: 'border-box',
         }}
       />
     </div>
