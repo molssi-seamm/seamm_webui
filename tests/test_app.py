@@ -33,7 +33,9 @@ def test_job_project_filter(tmp_path):
     from seamm_webui.db import get_datastore
 
     ds = get_datastore()
-    other = Project.create(name="other", path=str(tmp_path / "datastore" / "projects" / "other"))
+    other = Project.create(
+        name="other", path=str(tmp_path / "datastore" / "projects" / "other")
+    )
     ds.Session.add(other)
     ds.Session.commit()
 
@@ -117,7 +119,9 @@ def test_job_files_listing_and_download(tmp_path):
     paths = {f["path"] for f in response.json()}
     assert paths == {"flowchart.flow", "output.txt", "subdir/nested.txt"}
 
-    response = client.get("/api/jobs/1/files/download", params={"filename": "output.txt"})
+    response = client.get(
+        "/api/jobs/1/files/download", params={"filename": "output.txt"}
+    )
     assert response.status_code == 200
     assert response.text == "some output\n"
 
@@ -253,3 +257,251 @@ def test_submit_job(tmp_path):
         },
     )
     assert response.status_code == 400
+
+
+def test_project_crud(tmp_path):
+    app = create_app(str(tmp_path / "datastore"))
+    client = TestClient(app)
+
+    # Create.
+    response = client.post(
+        "/api/projects", json={"name": "widgets", "description": "Widget jobs"}
+    )
+    assert response.status_code == 200
+    project = response.json()
+    project_id = project["id"]
+    assert project["name"] == "widgets"
+    assert project["description"] == "Widget jobs"
+    project_dir = tmp_path / "datastore" / "projects" / "widgets"
+    assert project_dir.is_dir()
+
+    # Duplicate name -> clean 400, not a 500.
+    response = client.post("/api/projects", json={"name": "widgets"})
+    assert response.status_code == 400
+
+    # Get.
+    response = client.get(f"/api/projects/{project_id}")
+    assert response.status_code == 200
+    assert response.json()["description"] == "Widget jobs"
+
+    # Update.
+    response = client.patch(
+        f"/api/projects/{project_id}", json={"description": "Updated description"}
+    )
+    assert response.status_code == 200
+    assert response.json()["description"] == "Updated description"
+    assert response.json()["name"] == "widgets"
+
+    # Renaming to an already-existing name -> clean 400, not a 500.
+    other = client.post("/api/projects", json={"name": "gadgets"}).json()
+    response = client.patch(f"/api/projects/{project_id}", json={"name": "gadgets"})
+    assert response.status_code == 400
+    # And the original project is untouched (still named "widgets").
+    assert client.get(f"/api/projects/{project_id}").json()["name"] == "widgets"
+
+    # 404s for a nonexistent project.
+    response = client.get("/api/projects/999")
+    assert response.status_code == 404
+    response = client.patch("/api/projects/999", json={"description": "x"})
+    assert response.status_code == 404
+    response = client.delete("/api/projects/999")
+    assert response.status_code == 404
+
+    # Put a real, still-"submitted" job in "widgets" before deleting it.
+    import seamm_datastore
+    from seamm_datastore.database.models import Job
+    from seamm_webui.db import get_datastore
+
+    job_dir = project_dir / "Job_000001"
+    job_dir.mkdir(parents=True)
+    sample = Path(seamm_datastore.__file__).parent / "data" / "sample_flowchart_v2.flow"
+    shutil.copy(sample, job_dir / "flowchart.flow")
+    job = Job.create(
+        1,
+        flowchart_filename=str(job_dir / "flowchart.flow"),
+        project_names=["widgets"],
+        path=str(job_dir),
+        title="still running",
+    )
+    assert job.status == "submitted"
+    ds = get_datastore()
+    ds.Session.add(job)
+    ds.Session.commit()
+
+    # Delete: removes the DB row and the directory (all job files), and
+    # reports the job that was still active when it happened.
+    response = client.delete(f"/api/projects/{project_id}")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["deleted"] is True
+    assert body["active_jobs"] == [
+        {"id": 1, "title": "still running", "status": "submitted"}
+    ]
+    assert not project_dir.exists()
+
+    response = client.get(f"/api/projects/{project_id}")
+    assert response.status_code == 404
+
+    # The job's own row is untouched by deleting its project -- deleting a
+    # Project only clears the job_project association, so it's the
+    # explicit status="kill" below (not the row vanishing) that actually
+    # gets seamm_jobserver to stop it.
+    killed_job = Job.query.filter(Job.id == 1).one_or_none()
+    assert killed_job is not None
+    assert killed_job.status == "kill"
+
+    # "gadgets" (created above, no jobs) deletes cleanly with no active jobs.
+    response = client.delete(f"/api/projects/{other['id']}")
+    assert response.status_code == 200
+    assert response.json()["active_jobs"] == []
+
+
+def test_kill_job(tmp_path):
+    app = create_app(str(tmp_path / "datastore"))
+    client = TestClient(app)
+
+    import seamm_datastore
+    from seamm_datastore.database.models import Job
+    from seamm_webui.db import get_datastore
+
+    job_dir = tmp_path / "datastore" / "projects" / "default" / "Job_000001"
+    job_dir.mkdir(parents=True)
+    sample = Path(seamm_datastore.__file__).parent / "data" / "sample_flowchart_v2.flow"
+    shutil.copy(sample, job_dir / "flowchart.flow")
+    job = Job.create(
+        1,
+        flowchart_filename=str(job_dir / "flowchart.flow"),
+        project_names=["default"],
+        path=str(job_dir),
+        title="a job",
+    )
+    ds = get_datastore()
+    ds.Session.add(job)
+    ds.Session.commit()
+    assert job.status == "submitted"
+
+    # Killing a submitted job asks for it (status -> "kill"); files are
+    # untouched -- this is only a request, seamm_jobserver does the actual
+    # stopping and flips status to "killed" itself, out of band.
+    response = client.post("/api/jobs/1/kill")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "kill"
+    assert (job_dir / "flowchart.flow").exists()
+
+    # Already-"kill" is not itself killable again.
+    response = client.post("/api/jobs/1/kill")
+    assert response.status_code == 400
+
+    # A finished job can't be killed either.
+    Job.update(1, status="finished")
+    ds.Session.commit()
+    response = client.post("/api/jobs/1/kill")
+    assert response.status_code == 400
+
+    # A nonexistent job is a clean 404.
+    response = client.post("/api/jobs/999/kill")
+    assert response.status_code == 404
+
+
+def test_delete_job(tmp_path):
+    app = create_app(str(tmp_path / "datastore"))
+    client = TestClient(app)
+
+    import seamm_datastore
+    from seamm_datastore.database.models import Job
+    from seamm_webui.db import get_datastore
+
+    job_dir = tmp_path / "datastore" / "projects" / "default" / "Job_000001"
+    job_dir.mkdir(parents=True)
+    sample = Path(seamm_datastore.__file__).parent / "data" / "sample_flowchart_v2.flow"
+    shutil.copy(sample, job_dir / "flowchart.flow")
+    job = Job.create(
+        1,
+        flowchart_filename=str(job_dir / "flowchart.flow"),
+        project_names=["default"],
+        path=str(job_dir),
+        title="a job",
+        status="running",
+    )
+    ds = get_datastore()
+    ds.Session.add(job)
+    ds.Session.commit()
+
+    # Deleting a job (even a running one -- no status restriction, same as
+    # the old dashboard) removes both the row and its files.
+    response = client.delete("/api/jobs/1")
+    assert response.status_code == 200
+    assert response.json() == {"deleted": True}
+    assert not job_dir.exists()
+
+    response = client.get("/api/jobs/1")
+    assert response.status_code == 404
+    assert Job.query.filter(Job.id == 1).one_or_none() is None
+
+    # A nonexistent job is a clean 404, not a 500.
+    response = client.delete("/api/jobs/999")
+    assert response.status_code == 404
+
+
+def test_bulk_kill_and_delete_jobs(tmp_path):
+    app = create_app(str(tmp_path / "datastore"))
+    client = TestClient(app)
+
+    import seamm_datastore
+    from seamm_datastore.database.models import Job
+    from seamm_webui.db import get_datastore
+
+    sample = Path(seamm_datastore.__file__).parent / "data" / "sample_flowchart_v2.flow"
+    ds = get_datastore()
+
+    def make_job(job_id, status):
+        job_dir = tmp_path / "datastore" / "projects" / "default" / f"Job_{job_id:06d}"
+        job_dir.mkdir(parents=True)
+        shutil.copy(sample, job_dir / "flowchart.flow")
+        job = Job.create(
+            job_id,
+            flowchart_filename=str(job_dir / "flowchart.flow"),
+            project_names=["default"],
+            path=str(job_dir),
+            title=f"job {job_id}",
+            status=status,
+        )
+        ds.Session.add(job)
+        ds.Session.commit()
+        return job_dir
+
+    make_job(1, "submitted")
+    make_job(2, "running")
+    make_job(3, "finished")
+
+    # Bulk kill: submitted/running jobs are killed, the finished one is
+    # silently skipped (not an error), and a nonexistent id is reported
+    # separately from "skipped".
+    response = client.post("/api/jobs/kill", json={"ids": [1, 2, 3, 999]})
+    assert response.status_code == 200
+    body = response.json()
+    assert sorted(body["killed"]) == [1, 2]
+    assert body["skipped"] == [3]
+    assert body["not_found"] == [999]
+
+    assert Job.query.filter(Job.id == 1).one().status == "kill"
+    assert Job.query.filter(Job.id == 2).one().status == "kill"
+    assert Job.query.filter(Job.id == 3).one().status == "finished"
+
+    # Bulk delete: existing jobs are removed (row + files), the
+    # nonexistent id is reported, nothing errors.
+    response = client.post("/api/jobs/delete", json={"ids": [1, 3, 999]})
+    assert response.status_code == 200
+    body = response.json()
+    assert sorted(body["deleted"]) == [1, 3]
+    assert body["not_found"] == [999]
+
+    assert Job.query.filter(Job.id == 1).one_or_none() is None
+    assert Job.query.filter(Job.id == 3).one_or_none() is None
+    assert not (tmp_path / "datastore" / "projects" / "default" / "Job_000001").exists()
+    assert not (tmp_path / "datastore" / "projects" / "default" / "Job_000003").exists()
+
+    # Job 2 was only killed, not deleted -- its row and files remain.
+    assert Job.query.filter(Job.id == 2).one().status == "kill"
+    assert (tmp_path / "datastore" / "projects" / "default" / "Job_000002").exists()

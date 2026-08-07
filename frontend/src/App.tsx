@@ -11,7 +11,7 @@ function App() {
       <h1>seamm_webui</h1>
       <p>Backend: {health ? health.status : 'checking…'}</p>
       <p>
-        <Link to="/submit">+ Submit a job</Link>
+        <Link to="/submit">+ Submit a job</Link> · <Link to="/projects">Projects</Link>
       </p>
       <JobsPage />
     </>

@@ -5,8 +5,9 @@ submission, reusing seamm_datastore's existing Job.get()/get_by_id()/create()
 as-is.
 """
 
+import shutil
 from pathlib import Path
-from typing import Optional
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
@@ -25,16 +26,66 @@ class JobSubmission(BaseModel):
     parameters: dict = Field(default_factory=dict)
 
 
+class JobIds(BaseModel):
+    ids: List[int]
+
+
 MAX_PREVIEW_BYTES = 2_000_000
 
+# Job statuses seamm_jobserver will actually act on when asked to kill --
+# matches its own check_for_stopped_jobs() (jobserver.py), which polls for
+# status == "kill" and, separately, still-"running" jobs whose datastore
+# row vanished. A job in any other status has either not started running
+# under a jobserver yet in a way that matters, or is already done, so there
+# is nothing for a kill request to stop.
+KILLABLE_STATUSES = ("submitted", "running")
 
-def _get_job_or_404(job_id: int):
+
+def _get_job_or_404(job_id: int, permission: str = "read"):
     from seamm_datastore.database.models import Job
 
-    job = Job.get_by_id(job_id)
+    job = Job.get_by_id(job_id, permission=permission)
     if job is None:
         raise HTTPException(status_code=404, detail=f"Job {job_id} not found")
     return job
+
+
+def _kill_if_possible(job) -> bool:
+    """Request a stop for ``job`` if it's in a status seamm_jobserver will
+    actually act on. Returns whether it did; callers decide whether "no"
+    is an error (the single-job endpoint) or just skipped (bulk).
+    """
+    from seamm_datastore.database.models import Job
+
+    if job.status not in KILLABLE_STATUSES:
+        return False
+    Job.update(job.id, status="kill")
+    return True
+
+
+def _delete_job_files_and_row(job) -> None:
+    """Remove a job's directory from disk (if it's safely inside the
+    datastore) and mark its row for deletion. Does not commit -- callers
+    (single or bulk) control commit timing.
+
+    Deleting the row is itself what stops a running job: unlike deleting a
+    project (which only clears the job_project association -- confirmed
+    empirically, see routers/projects.py's delete_project), removing a
+    Job's own row makes it vanish from the `jobs` table, which
+    seamm_jobserver's check_for_stopped_jobs() polls for and treats as "was
+    stopped out from under me" for anything it's actively tracking. No
+    separate status="kill" request needed here.
+    """
+    from seamm_webui.db import get_datastore, get_datastore_dir
+
+    if job.path:
+        target = Path(job.path).resolve()
+        datastore_root = Path(get_datastore_dir()).expanduser().resolve()
+        if target.is_relative_to(datastore_root) and target.is_dir():
+            shutil.rmtree(target)
+
+    ds = get_datastore()
+    ds.Session.delete(job)
 
 
 def _resolve_job_file(job, filename: str) -> Path:
@@ -149,6 +200,105 @@ def get_job(job_id: int, _: None = Depends(require_permission("read"))):
 
     job = _get_job_or_404(job_id)
     return JobSchema(many=False).dump(job)
+
+
+@router.post("/{job_id}/kill")
+def kill_job(job_id: int, _: None = Depends(require_permission("update"))):
+    """Ask seamm_jobserver to stop this job, keeping its files -- unlike
+    deleting the job's project, which removes them (routers/projects.py's
+    delete_project).
+
+    This only *requests* the stop by setting status to "kill"; it doesn't
+    perform it. seamm_jobserver's check_for_stopped_jobs() polls for
+    status == "kill" every cycle, issues the actual local-process-kill/
+    scancel, and then flips status to "killed" itself. So the job's status
+    in the response here will be "kill", not yet "killed" -- the frontend
+    should treat both as "a kill is in flight or done", not poll this
+    endpoint waiting for "killed" synchronously.
+    """
+    from seamm_datastore.database.schema import JobSchema
+    from seamm_webui.db import get_datastore
+
+    job = _get_job_or_404(job_id, permission="update")
+    if not _kill_if_possible(job):
+        raise HTTPException(
+            status_code=400,
+            detail=f"Cannot kill a job with status {job.status!r}",
+        )
+
+    get_datastore().Session.commit()
+
+    return JobSchema(many=False).dump(_get_job_or_404(job_id))
+
+
+@router.post("/kill")
+def kill_jobs(payload: JobIds, _: None = Depends(require_permission("update"))):
+    """Bulk version of kill_job, for the job list's "Kill selected".
+
+    Silently skips anything not killable (already finished, nonexistent,
+    no permission) rather than failing the whole batch over one job that
+    was already done -- that's the point of a bulk action. ``skipped``
+    distinguishes "found but not in a killable status" from ``not_found``
+    ("no such job / no permission"), so the frontend can say something more
+    useful than "some jobs were skipped."
+    """
+    from seamm_datastore.database.models import Job
+    from seamm_webui.db import get_datastore
+
+    killed: List[int] = []
+    skipped: List[int] = []
+    not_found: List[int] = []
+
+    for job_id in payload.ids:
+        job = Job.get_by_id(job_id, permission="update")
+        if job is None:
+            not_found.append(job_id)
+        elif _kill_if_possible(job):
+            killed.append(job_id)
+        else:
+            skipped.append(job_id)
+
+    get_datastore().Session.commit()
+
+    return {"killed": killed, "skipped": skipped, "not_found": not_found}
+
+
+@router.delete("/{job_id}")
+def delete_job(job_id: int, _: None = Depends(require_permission("delete"))):
+    """Delete a job: removes the DB row AND its directory on disk,
+    matching the old dashboard's delete_job. No status restriction (same
+    as the old dashboard) -- deleting a still-running job is allowed, and
+    is itself what stops it (see _delete_job_files_and_row).
+    """
+    from seamm_webui.db import get_datastore
+
+    job = _get_job_or_404(job_id, permission="delete")
+    _delete_job_files_and_row(job)
+    get_datastore().Session.commit()
+
+    return {"deleted": True}
+
+
+@router.post("/delete")
+def delete_jobs(payload: JobIds, _: None = Depends(require_permission("delete"))):
+    """Bulk version of delete_job, for the job list's "Delete selected"."""
+    from seamm_datastore.database.models import Job
+    from seamm_webui.db import get_datastore
+
+    deleted: List[int] = []
+    not_found: List[int] = []
+
+    for job_id in payload.ids:
+        job = Job.get_by_id(job_id, permission="delete")
+        if job is None:
+            not_found.append(job_id)
+        else:
+            _delete_job_files_and_row(job)
+            deleted.append(job_id)
+
+    get_datastore().Session.commit()
+
+    return {"deleted": deleted, "not_found": not_found}
 
 
 @router.get("/{job_id}/files")
