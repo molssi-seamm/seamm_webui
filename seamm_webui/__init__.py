@@ -1,3 +1,9 @@
 """seamm_webui: SPA-based web dashboard for SEAMM."""
 
-__version__ = "0.0.1"
+# Handle versioneer
+from ._version import get_versions
+
+versions = get_versions()
+__version__ = versions["version"]
+__git_revision__ = versions["full-revisionid"]
+del get_versions, versions
