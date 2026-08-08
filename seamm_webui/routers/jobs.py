@@ -9,7 +9,7 @@ import shutil
 from pathlib import Path
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
@@ -140,7 +140,7 @@ def list_jobs(
     return JobSchema(many=True).dump(query.all())
 
 
-@router.post("")
+@router.post("", status_code=201)
 def submit_job(
     submission: JobSubmission, _: None = Depends(require_permission("create"))
 ):
@@ -320,6 +320,48 @@ def list_job_files(job_id: int, _: None = Depends(require_permission("read"))):
                 }
             )
     return files
+
+
+def _resolve_upload_target(job, filename: str) -> Path:
+    """Resolve where an uploaded file should be written under the job's
+    directory. Strips a leading "job:" prefix -- seamm_dashboard_client's
+    safe_filename() always adds one (e.g. "job:data/foo.xyz"; see
+    Dashboard.submit()/put_file() there) -- and guards against traversal
+    outside the job directory the same way _resolve_job_file guards
+    downloads, just for a write target rather than a required-to-exist
+    read.
+    """
+    if filename.startswith("job:"):
+        filename = filename[4:]
+
+    base = Path(job.path).resolve()
+    target = (base / filename).resolve()
+
+    if not target.is_relative_to(base):
+        raise HTTPException(status_code=403, detail="Invalid filename")
+    return target
+
+
+@router.post("/{job_id}/files", status_code=201)
+async def upload_job_file(
+    job_id: int,
+    file: UploadFile = File(...),
+    _: None = Depends(require_permission("update")),
+):
+    """Upload a file into the job's directory -- the counterpart to
+    seamm_dashboard_client's Dashboard.submit(), which calls this once per
+    external data file a flowchart references (e.g. an initial structure
+    file for a --file argument), right after creating the job itself.
+    Mirrors the old dashboard's add_file_to_job: strip a leading "job:"
+    from the filename, write under the job's directory, creating any
+    subdirectory (e.g. "data/") as needed.
+    """
+    job = _get_job_or_404(job_id, permission="update")
+    target = _resolve_upload_target(job, file.filename)
+    target.parent.mkdir(parents=True, exist_ok=True)
+    target.write_bytes(await file.read())
+
+    return {"path": str(target)}
 
 
 @router.get("/{job_id}/files/download")

@@ -21,6 +21,8 @@ dependencies = [
     "uvicorn[standard]",
     "seamm-datastore",
     "fasteners",
+    "itsdangerous",
+    "python-multipart",
 ]
 
 [project.optional-dependencies]
@@ -31,6 +33,7 @@ dev = [
 
 [project.scripts]
 seamm-webui = "seamm_webui.main:run"
+seamm-webui-user = "seamm_webui.manage:run"
 
 [tool.setuptools.packages.find]
 include = ["seamm_webui*"]

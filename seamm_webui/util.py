@@ -11,10 +11,40 @@ so this must stay wire-compatible with the original format.
 import json
 import os
 import re
+import secrets
 from datetime import datetime, timezone
 from pathlib import Path
 
 import fasteners
+
+
+def get_or_create_secret_key(datastore_dir: str) -> str:
+    """Return the key used to sign session cookies (Phase 3 auth), creating
+    one on first use and persisting it in the datastore directory -- same
+    "lives next to seamm.db, not the general --root config dir" convention
+    as get_job_id's job.id counter file. Without persisting this, every
+    server restart would invalidate every session cookie and log everyone
+    out. Lock-guarded (like get_job_id) so two processes starting against
+    the same fresh datastore at once can't race and end up disagreeing on
+    the key.
+    """
+    path = Path(datastore_dir).expanduser() / ".webui_secret_key"
+
+    lock = fasteners.InterProcessLock(str(path) + ".lock")
+    locked = lock.acquire(blocking=True, timeout=5)
+    if not locked:
+        raise RuntimeError(f"Could not lock the secret-key file '{path}'")
+
+    try:
+        if path.is_file():
+            return path.read_text().strip()
+
+        key = secrets.token_hex(32)
+        path.write_text(key)
+        os.chmod(path, 0o600)
+        return key
+    finally:
+        lock.release()
 
 
 def get_job_id(filename: str) -> int:

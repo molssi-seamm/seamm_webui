@@ -1,4 +1,22 @@
-export const API_BASE = import.meta.env.VITE_API_BASE ?? 'http://127.0.0.1:8010'
+// Deliberately `localhost`, not `127.0.0.1`, to match Vite's own dev
+// server URL (also `localhost:5173`). They resolve to the same loopback
+// address, but browsers treat them as different *sites* for SameSite
+// cookie purposes (not just different origins) -- a `SameSite=Lax`
+// session cookie (Phase 3 auth) set by `127.0.0.1:8010` would silently
+// never be attached to fetch()/XHR calls from a page loaded at
+// `localhost:5173`, since Lax only allows cross-*site* requests on
+// top-level navigations, not subresource fetches. Same hostname, just a
+// different port, is a same-site relationship regardless of SameSite
+// policy, so this pairing is what actually works.
+export const API_BASE = import.meta.env.VITE_API_BASE ?? 'http://localhost:8010'
+
+// All requests go through this so the session cookie is always sent --
+// 'include' is required, not just the fetch default of 'same-origin',
+// since the Vite dev server and the API are different origins (same site,
+// different port).
+async function apiFetch(path: string, options: RequestInit = {}): Promise<Response> {
+  return fetch(`${API_BASE}${path}`, { ...options, credentials: 'include' })
+}
 
 export interface Job {
   id: number
@@ -35,8 +53,37 @@ export interface ProjectDetail extends Project {
   flowcharts: number[]
 }
 
+export interface CurrentUser {
+  auth_mode: 'none' | 'local'
+  username: string | null
+}
+
+export async function fetchCurrentUser(): Promise<CurrentUser> {
+  const res = await apiFetch('/api/auth/me')
+  if (!res.ok) throw new Error(`fetching current user failed: ${res.status}`)
+  return res.json()
+}
+
+export async function login(username: string, password: string): Promise<{ username: string }> {
+  const res = await apiFetch('/api/auth/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password }),
+  })
+  if (!res.ok) {
+    const detail = await res.text()
+    throw new Error(`login failed: ${res.status} ${detail}`)
+  }
+  return res.json()
+}
+
+export async function logout(): Promise<void> {
+  const res = await apiFetch('/api/auth/logout', { method: 'POST' })
+  if (!res.ok) throw new Error(`logout failed: ${res.status}`)
+}
+
 export async function fetchHealth(): Promise<{ status: string }> {
-  const res = await fetch(`${API_BASE}/api/health`)
+  const res = await apiFetch('/api/health')
   if (!res.ok) throw new Error(`health check failed: ${res.status}`)
   return res.json()
 }
@@ -54,13 +101,13 @@ export async function fetchJobs(
     order: 'desc',
   })
   if (project) params.set('project', project)
-  const res = await fetch(`${API_BASE}/api/jobs?${params}`)
+  const res = await apiFetch(`/api/jobs?${params}`)
   if (!res.ok) throw new Error(`fetching jobs failed: ${res.status}`)
   return res.json()
 }
 
 export async function fetchJob(id: number | string): Promise<JobDetail> {
-  const res = await fetch(`${API_BASE}/api/jobs/${id}`)
+  const res = await apiFetch(`/api/jobs/${id}`)
   if (!res.ok) throw new Error(`fetching job ${id} failed: ${res.status}`)
   return res.json()
 }
@@ -70,7 +117,7 @@ export async function fetchJob(id: number | string): Promise<JobDetail> {
 // is "kill", not yet "killed" -- seamm_jobserver polls for "kill" and
 // flips it to "killed" itself, out of band.
 export async function killJob(id: number | string): Promise<JobDetail> {
-  const res = await fetch(`${API_BASE}/api/jobs/${id}/kill`, { method: 'POST' })
+  const res = await apiFetch(`/api/jobs/${id}/kill`, { method: 'POST' })
   if (!res.ok) {
     const detail = await res.text()
     throw new Error(`killing job ${id} failed: ${res.status} ${detail}`)
@@ -79,7 +126,7 @@ export async function killJob(id: number | string): Promise<JobDetail> {
 }
 
 export async function deleteJob(id: number | string): Promise<{ deleted: boolean }> {
-  const res = await fetch(`${API_BASE}/api/jobs/${id}`, { method: 'DELETE' })
+  const res = await apiFetch(`/api/jobs/${id}`, { method: 'DELETE' })
   if (!res.ok) {
     const detail = await res.text()
     throw new Error(`deleting job ${id} failed: ${res.status} ${detail}`)
@@ -97,7 +144,7 @@ export interface BulkKillResult {
 // throws over individual jobs that aren't killable (e.g. already
 // finished) -- those come back in `skipped`, not as an error.
 export async function killJobs(ids: number[]): Promise<BulkKillResult> {
-  const res = await fetch(`${API_BASE}/api/jobs/kill`, {
+  const res = await apiFetch('/api/jobs/kill', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ids }),
@@ -115,7 +162,7 @@ export interface BulkDeleteResult {
 }
 
 export async function deleteJobs(ids: number[]): Promise<BulkDeleteResult> {
-  const res = await fetch(`${API_BASE}/api/jobs/delete`, {
+  const res = await apiFetch('/api/jobs/delete', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ids }),
@@ -128,7 +175,7 @@ export async function deleteJobs(ids: number[]): Promise<BulkDeleteResult> {
 }
 
 export async function fetchJobFiles(id: number | string): Promise<JobFile[]> {
-  const res = await fetch(`${API_BASE}/api/jobs/${id}/files`)
+  const res = await apiFetch(`/api/jobs/${id}/files`)
   if (!res.ok) throw new Error(`fetching files for job ${id} failed: ${res.status}`)
   return res.json()
 }
@@ -149,19 +196,19 @@ export async function fetchJobFileContent(
   filename: string,
 ): Promise<JobFileContent> {
   const params = new URLSearchParams({ filename })
-  const res = await fetch(`${API_BASE}/api/jobs/${id}/files/content?${params}`)
+  const res = await apiFetch(`/api/jobs/${id}/files/content?${params}`)
   if (!res.ok) throw new Error(`fetching content of ${filename} failed: ${res.status}`)
   return res.json()
 }
 
 export async function fetchProjects(): Promise<ProjectDetail[]> {
-  const res = await fetch(`${API_BASE}/api/projects`)
+  const res = await apiFetch('/api/projects')
   if (!res.ok) throw new Error(`fetching projects failed: ${res.status}`)
   return res.json()
 }
 
 export async function fetchProject(id: number | string): Promise<ProjectDetail> {
-  const res = await fetch(`${API_BASE}/api/projects/${id}`)
+  const res = await apiFetch(`/api/projects/${id}`)
   if (!res.ok) throw new Error(`fetching project ${id} failed: ${res.status}`)
   return res.json()
 }
@@ -172,7 +219,7 @@ export interface ProjectSubmission {
 }
 
 export async function createProject(payload: ProjectSubmission): Promise<ProjectDetail> {
-  const res = await fetch(`${API_BASE}/api/projects`, {
+  const res = await apiFetch('/api/projects', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
@@ -188,7 +235,7 @@ export async function updateProject(
   id: number | string,
   payload: Partial<ProjectSubmission>,
 ): Promise<ProjectDetail> {
-  const res = await fetch(`${API_BASE}/api/projects/${id}`, {
+  const res = await apiFetch(`/api/projects/${id}`, {
     method: 'PATCH',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
@@ -206,7 +253,7 @@ export interface ProjectDeleteResult {
 }
 
 export async function deleteProject(id: number | string): Promise<ProjectDeleteResult> {
-  const res = await fetch(`${API_BASE}/api/projects/${id}`, { method: 'DELETE' })
+  const res = await apiFetch(`/api/projects/${id}`, { method: 'DELETE' })
   if (!res.ok) {
     const detail = await res.text()
     throw new Error(`deleting project ${id} failed: ${res.status} ${detail}`)
@@ -220,7 +267,7 @@ export async function deleteProject(id: number | string): Promise<ProjectDeleteR
 // every matching job (routers/jobs.py only applies them if given).
 export async function fetchAllJobsForProject(project: string): Promise<Job[]> {
   const params = new URLSearchParams({ project })
-  const res = await fetch(`${API_BASE}/api/jobs?${params}`)
+  const res = await apiFetch(`/api/jobs?${params}`)
   if (!res.ok) throw new Error(`fetching jobs for project ${project} failed: ${res.status}`)
   return res.json()
 }
@@ -233,7 +280,7 @@ export interface JobSubmission {
 }
 
 export async function submitJob(payload: JobSubmission): Promise<JobDetail> {
-  const res = await fetch(`${API_BASE}/api/jobs`, {
+  const res = await apiFetch('/api/jobs', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),

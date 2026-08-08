@@ -12,6 +12,7 @@ run would leave that patch trying to use Flask's real (app-context-less)
 and only then imports the routers, which is what keeps this safe.
 """
 
+import contextvars
 from pathlib import Path
 from typing import Optional
 
@@ -19,6 +20,69 @@ import seamm_datastore
 
 _datastore: Optional["seamm_datastore.connect"] = None
 _datastore_dir: Optional[str] = None
+
+# Phase 3: who seamm_datastore's permission checks see as "logged in", made
+# request-scoped instead of living on the one shared SEAMMDatastore
+# connection object every request uses. See _patch_current_user_to_contextvar
+# below for why this is necessary and how it works.
+_current_username: contextvars.ContextVar[Optional[str]] = contextvars.ContextVar(
+    "seamm_webui_current_username", default=None
+)
+
+
+def set_current_user(username: Optional[str]) -> None:
+    """Set the identity seamm_datastore's permission checks will see for the
+    rest of the current request (or, outside of a request, the rest of the
+    current context). ``seamm_webui.auth``'s ``require_permission`` calls
+    this once it's established who's making the request -- the fixed
+    built-in identity in "none" mode, or the verified session cookie's
+    username in "local" mode. Deliberately does *not* go through
+    ``SEAMMDatastore.login()`` (which re-verifies a password) since a valid
+    session cookie already proved identity.
+    """
+    _current_username.set(username)
+
+
+def _patch_current_user_to_contextvar():
+    """Make ``SEAMMDatastore._user`` request-scoped.
+
+    ``seamm_datastore.connect.SEAMMDatastore.login()``/``.logout()``/
+    ``.current_user()`` just read and write a plain ``self._user`` string
+    attribute, and the constructor does
+    ``self.authorize = Authorize(current_user=self.current_user)`` -- a
+    bound method flask_authorize calls fresh on every permission check, not
+    a value captured once. That's exactly right for one shared connection
+    object serving one process-wide identity (Phase 1/2's fixed admin
+    login), and exactly wrong once real per-user logins mean two different
+    people can be logged in at the same time: ``self._user`` is a single
+    mutable attribute on the *one* datastore connection every request in
+    this FastAPI process shares, so without this patch, one request's login
+    would leak into every other concurrent request's permission checks.
+
+    Fix, without touching the seamm_datastore package itself: replace the
+    plain instance attribute with a class-level ``property`` backed by a
+    ``contextvars.ContextVar``. FastAPI/Starlette gives each request its own
+    ``contextvars.Context`` (correctly propagated into ``run_in_threadpool``
+    for sync routes too), so this makes "current user" request-isolated
+    while every request still shares the same underlying datastore
+    connection/engine/session pool -- nothing else about how
+    ``login()``/``logout()``/``current_user()`` are written needs to change,
+    since they already only ever do ``self._user = ...`` / ``if
+    self._user``.
+
+    Called before ``seamm_datastore.connect()`` so even the constructor's
+    own ``self._user = None`` (when no ``username=`` is passed, our case)
+    goes through the property.
+    """
+    from seamm_datastore.connect import SEAMMDatastore
+
+    def _get_user(self):
+        return _current_username.get()
+
+    def _set_user(self, value):
+        _current_username.set(value)
+
+    SEAMMDatastore._user = property(_get_user, _set_user)
 
 
 def init_datastore(datastore_dir: str, default_project: str = "default"):
@@ -40,16 +104,13 @@ def init_datastore(datastore_dir: str, default_project: str = "default"):
     (e.g. the one the old ``seamm_dashboard`` already uses) is connected to
     as-is, never dropped/recreated.
 
-    Permission stub (Phase 1, single-user): every seamm_datastore.connect()
-    call -- fresh or existing -- bootstraps (or already has) a fixed
-    "admin"/"admin" account via `_build_initial`. flask_authorize's
-    `authorized()` check short-circuits to allow-everything for any
-    admin-role user (see `flask_authorize_patch.py:105-107`), so logging in
-    as this fixed account is a real, already-supported "always OK" -- not a
-    monkeypatch -- and it's what makes permission-filtered calls like
-    `Job.get()`/`Project.get()` actually return rows for an anonymous
-    caller. Real per-user auth replaces this fixed login in a later phase --
-    see `seamm_webui/auth.py` and dashboard-rewrite-plan.md, Phase 3.
+    Identity is deliberately left unset here (no ``login()`` call) --
+    ``_current_username``'s own ``default=None`` means any request that
+    somehow reaches a permission check without going through
+    ``seamm_webui.auth.require_permission`` first fails closed (looks
+    logged-out), not open (looks like the admin account). Establishing who's
+    making a given request is entirely ``require_permission``'s job now
+    (Phase 3) -- see ``seamm_webui/auth.py``.
     """
     global _datastore, _datastore_dir
 
@@ -58,28 +119,21 @@ def init_datastore(datastore_dir: str, default_project: str = "default"):
     db_path = root / "seamm.db"
     initialize = not db_path.exists()
 
+    _patch_current_user_to_contextvar()
+
     # Note: NOT passing username= here on purpose. seamm_datastore.connect()
     # has a bug (connect.py:201, `self.add_user` does not exist) that's hit
     # when `initialize=True` and a `username` is passed to the constructor
     # itself -- see https://github.com/molssi-seamm/seamm_datastore (file an
-    # issue). Logging in as a separate step below avoids that code path
-    # entirely and works whether this connection just created the datastore
-    # or is attaching to an existing one.
+    # issue). Not logging in at all (see docstring above) avoids that code
+    # path entirely and works whether this connection just created the
+    # datastore or is attaching to an existing one.
     _datastore = seamm_datastore.connect(
         database_uri=f"sqlite:///{db_path}",
         datastore_location=str(root),
         initialize=initialize,
         default_project=default_project,
     )
-    _datastore.login("admin", "admin")
-
-    # Belt-and-suspenders: also allow anonymous actions at the datastore
-    # layer, in case any code path checks permissions without a logged-in
-    # user (this is what the old seamm_dashboard relies on by default via
-    # its `AUTHORIZE_ALLOW_ANONYMOUS_ACTIONS` Flask config flag).
-    from seamm_datastore.connect import fake_app
-
-    fake_app.config["AUTHORIZE_ALLOW_ANONYMOUS_ACTIONS"] = True
 
     _datastore_dir = str(root)
 

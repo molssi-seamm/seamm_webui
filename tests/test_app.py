@@ -226,7 +226,7 @@ def test_submit_job(tmp_path):
             "description": "a test submission",
         },
     )
-    assert response.status_code == 200
+    assert response.status_code == 201
     job = response.json()
     assert job["title"] == "my first job"
     assert job["status"] == "submitted"
@@ -267,7 +267,7 @@ def test_project_crud(tmp_path):
     response = client.post(
         "/api/projects", json={"name": "widgets", "description": "Widget jobs"}
     )
-    assert response.status_code == 200
+    assert response.status_code == 201
     project = response.json()
     project_id = project["id"]
     assert project["name"] == "widgets"
@@ -505,3 +505,71 @@ def test_bulk_kill_and_delete_jobs(tmp_path):
     # Job 2 was only killed, not deleted -- its row and files remain.
     assert Job.query.filter(Job.id == 2).one().status == "kill"
     assert (tmp_path / "datastore" / "projects" / "default" / "Job_000002").exists()
+
+
+def test_status_endpoint(tmp_path):
+    """seamm_dashboard_client.Dashboard.status()/submit() call this before
+    doing anything else, and refuse to submit unless it reports
+    status == "running" -- see dashboard.py's status()/submit().
+    """
+    app = create_app(str(tmp_path / "datastore"))
+    client = TestClient(app)
+
+    response = client.get("/api/status")
+    assert response.status_code == 200
+    body = response.json()
+    assert body["status"] == "running"
+    assert body["jobs"] == {"total": 0, "running": 0, "finished": 0, "submitted": 0}
+
+
+def test_upload_job_file(tmp_path):
+    """Counterpart to Dashboard.submit()'s file-transfer step
+    (put_file() -> POST /api/jobs/{id}/files, multipart, field "file"),
+    called once per external data file a flowchart references, right
+    after the job itself is created.
+    """
+    import seamm_datastore
+    from seamm_datastore.database.models import Job
+    from seamm_webui.db import get_datastore
+
+    app = create_app(str(tmp_path / "datastore"))
+    client = TestClient(app)
+
+    job_dir = tmp_path / "datastore" / "projects" / "default" / "Job_000001"
+    job_dir.mkdir(parents=True)
+    sample = Path(seamm_datastore.__file__).parent / "data" / "sample_flowchart_v2.flow"
+    shutil.copy(sample, job_dir / "flowchart.flow")
+    job = Job.create(
+        1,
+        flowchart_filename=str(job_dir / "flowchart.flow"),
+        project_names=["default"],
+        path=str(job_dir),
+        title="upload test",
+    )
+    ds = get_datastore()
+    ds.Session.add(job)
+    ds.Session.commit()
+
+    # seamm_dashboard_client.safe_filename() always produces a "job:"
+    # prefixed name, e.g. "job:data/structure.xyz" -- the server strips it.
+    response = client.post(
+        "/api/jobs/1/files",
+        files={"file": ("job:data/structure.xyz", b"18\n\ncomment\n", "text/plain")},
+    )
+    assert response.status_code == 201
+    assert response.json() == {"path": str(job_dir / "data" / "structure.xyz")}
+    assert (job_dir / "data" / "structure.xyz").read_bytes() == b"18\n\ncomment\n"
+
+    # Path traversal must be rejected here too, same as downloads.
+    response = client.post(
+        "/api/jobs/1/files",
+        files={"file": ("job:../../../../etc/passwd", b"nope", "text/plain")},
+    )
+    assert response.status_code == 403
+
+    # A nonexistent job is a clean 404.
+    response = client.post(
+        "/api/jobs/999/files",
+        files={"file": ("job:data/x.txt", b"x", "text/plain")},
+    )
+    assert response.status_code == 404

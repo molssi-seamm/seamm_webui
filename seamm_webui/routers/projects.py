@@ -49,7 +49,7 @@ def list_projects(_: None = Depends(require_permission("read"))):
     return ProjectSchema(many=True).dump(projects)
 
 
-@router.post("")
+@router.post("", status_code=201)
 def create_project(
     submission: ProjectCreate, _: None = Depends(require_permission("create"))
 ):
