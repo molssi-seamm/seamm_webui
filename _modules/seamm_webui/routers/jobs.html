@@ -1,0 +1,980 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>seamm_webui.routers.jobs &#8212; seamm_webui 2026.8.8 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=c224919a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
+<!-- End Google Tag Manager -->
+
+    <script src="../../../_static/documentation_options.js?v=d318b753"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../../../_static/copybutton.js?v=f281be69"></script>
+    <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/seamm_webui/routers/jobs';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2026.8.8" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/SEAMM logo.png" class="logo__image only-light" alt=""/>
+    <img src="../../../_static/SEAMM inverted.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">seamm_webui</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../developer_guide/index.html">
+    Developer Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../authors.html">
+    Credits
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../../../history.html">
+    History
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://molssi-seamm.github.io">
+    SEAMM Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/molssi-seamm/seamm_webui" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../developer_guide/index.html">
+    Developer Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../authors.html">
+    Credits
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../history.html">
+    History
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://molssi-seamm.github.io">
+    SEAMM Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/molssi-seamm/seamm_webui" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">seamm_webui.routers.jobs</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for seamm_webui.routers.jobs</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Job endpoints.</span>
+
+<span class="sd">Real, paginated listing + single-job lookup + file listing/download +</span>
+<span class="sd">submission, reusing seamm_datastore&#39;s existing Job.get()/get_by_id()/create()</span>
+<span class="sd">as-is.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">APIRouter</span><span class="p">,</span> <span class="n">Depends</span><span class="p">,</span> <span class="n">File</span><span class="p">,</span> <span class="n">HTTPException</span><span class="p">,</span> <span class="n">UploadFile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.responses</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileResponse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">require_permission</span>
+
+<span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/api/jobs&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;jobs&quot;</span><span class="p">])</span>
+
+
+<div class="viewcode-block" id="JobSubmission">
+<a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.JobSubmission">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">JobSubmission</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">flowchart</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">project</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span>
+    <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">parameters</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="JobIds">
+<a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.JobIds">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">JobIds</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">ids</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span></div>
+
+
+
+<span class="n">MAX_PREVIEW_BYTES</span> <span class="o">=</span> <span class="mi">2_000_000</span>
+
+<span class="c1"># Job statuses seamm_jobserver will actually act on when asked to kill --</span>
+<span class="c1"># matches its own check_for_stopped_jobs() (jobserver.py), which polls for</span>
+<span class="c1"># status == &quot;kill&quot; and, separately, still-&quot;running&quot; jobs whose datastore</span>
+<span class="c1"># row vanished. A job in any other status has either not started running</span>
+<span class="c1"># under a jobserver yet in a way that matters, or is already done, so there</span>
+<span class="c1"># is nothing for a kill request to stop.</span>
+<span class="n">KILLABLE_STATUSES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;submitted&quot;</span><span class="p">,</span> <span class="s2">&quot;running&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_job_or_404</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">permission</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;read&quot;</span><span class="p">):</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Job</span>
+
+    <span class="n">job</span> <span class="o">=</span> <span class="n">Job</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="n">permission</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">job</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Job </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2"> not found&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">job</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_kill_if_possible</span><span class="p">(</span><span class="n">job</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Request a stop for ``job`` if it&#39;s in a status seamm_jobserver will</span>
+<span class="sd">    actually act on. Returns whether it did; callers decide whether &quot;no&quot;</span>
+<span class="sd">    is an error (the single-job endpoint) or just skipped (bulk).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Job</span>
+
+    <span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">status</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">KILLABLE_STATUSES</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="n">Job</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="s2">&quot;kill&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_delete_job_files_and_row</span><span class="p">(</span><span class="n">job</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove a job&#39;s directory from disk (if it&#39;s safely inside the</span>
+<span class="sd">    datastore) and mark its row for deletion. Does not commit -- callers</span>
+<span class="sd">    (single or bulk) control commit timing.</span>
+
+<span class="sd">    Deleting the row is itself what stops a running job: unlike deleting a</span>
+<span class="sd">    project (which only clears the job_project association -- confirmed</span>
+<span class="sd">    empirically, see routers/projects.py&#39;s delete_project), removing a</span>
+<span class="sd">    Job&#39;s own row makes it vanish from the `jobs` table, which</span>
+<span class="sd">    seamm_jobserver&#39;s check_for_stopped_jobs() polls for and treats as &quot;was</span>
+<span class="sd">    stopped out from under me&quot; for anything it&#39;s actively tracking. No</span>
+<span class="sd">    separate status=&quot;kill&quot; request needed here.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_datastore</span><span class="p">,</span> <span class="n">get_datastore_dir</span>
+
+    <span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
+        <span class="n">target</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+        <span class="n">datastore_root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">get_datastore_dir</span><span class="p">())</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">target</span><span class="o">.</span><span class="n">is_relative_to</span><span class="p">(</span><span class="n">datastore_root</span><span class="p">)</span> <span class="ow">and</span> <span class="n">target</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">target</span><span class="p">)</span>
+
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">get_datastore</span><span class="p">()</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">Session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_resolve_job_file</span><span class="p">(</span><span class="n">job</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Resolve ``filename`` under the job&#39;s directory, guarding against</span>
+<span class="sd">    traversal outside it via ``Path.is_relative_to`` (not a substring check</span>
+<span class="sd">    like the old dashboard&#39;s ``&quot;../&quot; in filename``, which can&#39;t be bypassed</span>
+<span class="sd">    by how the traversal is encoded).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="p">(</span><span class="n">base</span> <span class="o">/</span> <span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">target</span><span class="o">.</span><span class="n">is_relative_to</span><span class="p">(</span><span class="n">base</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">403</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Invalid filename&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">target</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;File not found&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">target</span>
+
+
+<div class="viewcode-block" id="list_jobs">
+<a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.list_jobs">[docs]</a>
+<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_jobs</span><span class="p">(</span>
+    <span class="n">offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">sort_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span>
+    <span class="n">order</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;asc&quot;</span><span class="p">,</span>
+    <span class="n">project</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;read&quot;</span><span class="p">)),</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;List jobs, optionally filtered to a single project by name.</span>
+
+<span class="sd">    seamm_datastore&#39;s Job.get() has no project filter, so this builds the</span>
+<span class="sd">    same permission-filtered query it uses internally (Job.permissions_query)</span>
+<span class="sd">    directly, adding the project filter before pagination -- filtering</span>
+<span class="sd">    Job.get()&#39;s already-paginated results after the fact would make &quot;page 2</span>
+<span class="sd">    of Electrolytes&quot; not actually be the second page of Electrolytes jobs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Job</span><span class="p">,</span> <span class="n">Project</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">JobSchema</span>
+
+    <span class="n">query</span> <span class="o">=</span> <span class="n">Job</span><span class="o">.</span><span class="n">permissions_query</span><span class="p">(</span><span class="s2">&quot;read&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">project</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Job</span><span class="o">.</span><span class="n">projects</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">Project</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">project</span><span class="p">))</span>
+
+    <span class="n">column</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">Job</span><span class="p">,</span> <span class="n">sort_by</span><span class="p">)</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">desc</span><span class="p">()</span> <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;desc&quot;</span> <span class="k">else</span> <span class="n">column</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">limit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">limit</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">JobSchema</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">all</span><span class="p">())</span></div>
+
+
+
+<div class="viewcode-block" id="submit_job">
+<a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.submit_job">[docs]</a>
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">201</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">submit_job</span><span class="p">(</span>
+    <span class="n">submission</span><span class="p">:</span> <span class="n">JobSubmission</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;create&quot;</span><span class="p">))</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Submit a new job.</span>
+
+<span class="sd">    Writes flowchart.flow + job_data.json to the project directory (mirroring</span>
+<span class="sd">    seamm_dashboard&#39;s add_job / setup_job) and registers it via Job.create().</span>
+<span class="sd">    No separate &quot;enqueue&quot; step -- the seamm_jobserver daemon picks up jobs</span>
+<span class="sd">    with status &quot;submitted&quot; on its own, independent of which dashboard wrote</span>
+<span class="sd">    them.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Job</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">JobSchema</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_datastore</span><span class="p">,</span> <span class="n">get_datastore_dir</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_job_id</span><span class="p">,</span> <span class="n">write_job_files</span>
+
+    <span class="n">datastore_dir</span> <span class="o">=</span> <span class="n">get_datastore_dir</span><span class="p">()</span>
+    <span class="n">job_id_file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">datastore_dir</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;job.id&quot;</span><span class="p">)</span>
+    <span class="n">job_id</span> <span class="o">=</span> <span class="n">get_job_id</span><span class="p">(</span><span class="n">job_id_file</span><span class="p">)</span>
+
+    <span class="n">project_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">submission</span><span class="o">.</span><span class="n">project</span><span class="p">]</span>
+    <span class="n">parameters</span> <span class="o">=</span> <span class="n">submission</span><span class="o">.</span><span class="n">parameters</span> <span class="ow">or</span> <span class="p">{</span><span class="s2">&quot;cmdline&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+
+    <span class="n">directory</span> <span class="o">=</span> <span class="n">write_job_files</span><span class="p">(</span>
+        <span class="n">datastore_dir</span><span class="p">,</span>
+        <span class="n">submission</span><span class="o">.</span><span class="n">project</span><span class="p">,</span>
+        <span class="n">job_id</span><span class="p">,</span>
+        <span class="n">submission</span><span class="o">.</span><span class="n">flowchart</span><span class="p">,</span>
+        <span class="n">submission</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+        <span class="n">project_names</span><span class="p">,</span>
+        <span class="n">parameters</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">Job</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+            <span class="n">job_id</span><span class="p">,</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">directory</span><span class="p">,</span>
+            <span class="n">flowchart_filename</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;flowchart.flow&quot;</span><span class="p">),</span>
+            <span class="n">project_names</span><span class="o">=</span><span class="n">project_names</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">submission</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">submission</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
+            <span class="n">parameters</span><span class="o">=</span><span class="n">parameters</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">NameError</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">exc</span><span class="p">))</span>
+
+    <span class="n">ds</span> <span class="o">=</span> <span class="n">get_datastore</span><span class="p">()</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">Session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+    <span class="n">ds</span><span class="o">.</span><span class="n">Session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">JobSchema</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">job</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_job">
+<a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.get_job">[docs]</a>
+<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{job_id}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;read&quot;</span><span class="p">))):</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">JobSchema</span>
+
+    <span class="n">job</span> <span class="o">=</span> <span class="n">_get_job_or_404</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">JobSchema</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">job</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="kill_job">
+<a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.kill_job">[docs]</a>
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{job_id}</span><span class="s2">/kill&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">kill_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;update&quot;</span><span class="p">))):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ask seamm_jobserver to stop this job, keeping its files -- unlike</span>
+<span class="sd">    deleting the job&#39;s project, which removes them (routers/projects.py&#39;s</span>
+<span class="sd">    delete_project).</span>
+
+<span class="sd">    This only *requests* the stop by setting status to &quot;kill&quot;; it doesn&#39;t</span>
+<span class="sd">    perform it. seamm_jobserver&#39;s check_for_stopped_jobs() polls for</span>
+<span class="sd">    status == &quot;kill&quot; every cycle, issues the actual local-process-kill/</span>
+<span class="sd">    scancel, and then flips status to &quot;killed&quot; itself. So the job&#39;s status</span>
+<span class="sd">    in the response here will be &quot;kill&quot;, not yet &quot;killed&quot; -- the frontend</span>
+<span class="sd">    should treat both as &quot;a kill is in flight or done&quot;, not poll this</span>
+<span class="sd">    endpoint waiting for &quot;killed&quot; synchronously.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">JobSchema</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_datastore</span>
+
+    <span class="n">job</span> <span class="o">=</span> <span class="n">_get_job_or_404</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_kill_if_possible</span><span class="p">(</span><span class="n">job</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
+            <span class="n">status_code</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span>
+            <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Cannot kill a job with status </span><span class="si">{</span><span class="n">job</span><span class="o">.</span><span class="n">status</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="n">get_datastore</span><span class="p">()</span><span class="o">.</span><span class="n">Session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">JobSchema</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">_get_job_or_404</span><span class="p">(</span><span class="n">job_id</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="kill_jobs">
+<a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.kill_jobs">[docs]</a>
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/kill&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">kill_jobs</span><span class="p">(</span><span class="n">payload</span><span class="p">:</span> <span class="n">JobIds</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;update&quot;</span><span class="p">))):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bulk version of kill_job, for the job list&#39;s &quot;Kill selected&quot;.</span>
+
+<span class="sd">    Silently skips anything not killable (already finished, nonexistent,</span>
+<span class="sd">    no permission) rather than failing the whole batch over one job that</span>
+<span class="sd">    was already done -- that&#39;s the point of a bulk action. ``skipped``</span>
+<span class="sd">    distinguishes &quot;found but not in a killable status&quot; from ``not_found``</span>
+<span class="sd">    (&quot;no such job / no permission&quot;), so the frontend can say something more</span>
+<span class="sd">    useful than &quot;some jobs were skipped.&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Job</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_datastore</span>
+
+    <span class="n">killed</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">skipped</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">not_found</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">job_id</span> <span class="ow">in</span> <span class="n">payload</span><span class="o">.</span><span class="n">ids</span><span class="p">:</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">Job</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">job</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">not_found</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">_kill_if_possible</span><span class="p">(</span><span class="n">job</span><span class="p">):</span>
+            <span class="n">killed</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">skipped</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+
+    <span class="n">get_datastore</span><span class="p">()</span><span class="o">.</span><span class="n">Session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;killed&quot;</span><span class="p">:</span> <span class="n">killed</span><span class="p">,</span> <span class="s2">&quot;skipped&quot;</span><span class="p">:</span> <span class="n">skipped</span><span class="p">,</span> <span class="s2">&quot;not_found&quot;</span><span class="p">:</span> <span class="n">not_found</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="delete_job">
+<a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.delete_job">[docs]</a>
+<span class="nd">@router</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{job_id}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">delete_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;delete&quot;</span><span class="p">))):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Delete a job: removes the DB row AND its directory on disk,</span>
+<span class="sd">    matching the old dashboard&#39;s delete_job. No status restriction (same</span>
+<span class="sd">    as the old dashboard) -- deleting a still-running job is allowed, and</span>
+<span class="sd">    is itself what stops it (see _delete_job_files_and_row).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_datastore</span>
+
+    <span class="n">job</span> <span class="o">=</span> <span class="n">_get_job_or_404</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">)</span>
+    <span class="n">_delete_job_files_and_row</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+    <span class="n">get_datastore</span><span class="p">()</span><span class="o">.</span><span class="n">Session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;deleted&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="delete_jobs">
+<a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.delete_jobs">[docs]</a>
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/delete&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">delete_jobs</span><span class="p">(</span><span class="n">payload</span><span class="p">:</span> <span class="n">JobIds</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;delete&quot;</span><span class="p">))):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bulk version of delete_job, for the job list&#39;s &quot;Delete selected&quot;.&quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Job</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_datastore</span>
+
+    <span class="n">deleted</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">not_found</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">for</span> <span class="n">job_id</span> <span class="ow">in</span> <span class="n">payload</span><span class="o">.</span><span class="n">ids</span><span class="p">:</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">Job</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">job</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">not_found</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_delete_job_files_and_row</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+            <span class="n">deleted</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+
+    <span class="n">get_datastore</span><span class="p">()</span><span class="o">.</span><span class="n">Session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;deleted&quot;</span><span class="p">:</span> <span class="n">deleted</span><span class="p">,</span> <span class="s2">&quot;not_found&quot;</span><span class="p">:</span> <span class="n">not_found</span><span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="list_job_files">
+<a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.list_job_files">[docs]</a>
+<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{job_id}</span><span class="s2">/files&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_job_files</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;read&quot;</span><span class="p">))):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;List files under the job&#39;s directory, as relative paths + sizes.&quot;&quot;&quot;</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="n">_get_job_or_404</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+
+    <span class="n">base</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">base</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">base</span><span class="p">)),</span>
+                    <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+    <span class="k">return</span> <span class="n">files</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_resolve_upload_target</span><span class="p">(</span><span class="n">job</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Resolve where an uploaded file should be written under the job&#39;s</span>
+<span class="sd">    directory. Strips a leading &quot;job:&quot; prefix -- seamm_dashboard_client&#39;s</span>
+<span class="sd">    safe_filename() always adds one (e.g. &quot;job:data/foo.xyz&quot;; see</span>
+<span class="sd">    Dashboard.submit()/put_file() there) -- and guards against traversal</span>
+<span class="sd">    outside the job directory the same way _resolve_job_file guards</span>
+<span class="sd">    downloads, just for a write target rather than a required-to-exist</span>
+<span class="sd">    read.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;job:&quot;</span><span class="p">):</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
+
+    <span class="n">base</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="p">(</span><span class="n">base</span> <span class="o">/</span> <span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">target</span><span class="o">.</span><span class="n">is_relative_to</span><span class="p">(</span><span class="n">base</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">403</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Invalid filename&quot;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">target</span>
+
+
+<div class="viewcode-block" id="upload_job_file">
+<a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.upload_job_file">[docs]</a>
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{job_id}</span><span class="s2">/files&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">201</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">upload_job_file</span><span class="p">(</span>
+    <span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">file</span><span class="p">:</span> <span class="n">UploadFile</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="o">...</span><span class="p">),</span>
+    <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;update&quot;</span><span class="p">)),</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Upload a file into the job&#39;s directory -- the counterpart to</span>
+<span class="sd">    seamm_dashboard_client&#39;s Dashboard.submit(), which calls this once per</span>
+<span class="sd">    external data file a flowchart references (e.g. an initial structure</span>
+<span class="sd">    file for a --file argument), right after creating the job itself.</span>
+<span class="sd">    Mirrors the old dashboard&#39;s add_file_to_job: strip a leading &quot;job:&quot;</span>
+<span class="sd">    from the filename, write under the job&#39;s directory, creating any</span>
+<span class="sd">    subdirectory (e.g. &quot;data/&quot;) as needed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="n">_get_job_or_404</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">)</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">_resolve_upload_target</span><span class="p">(</span><span class="n">job</span><span class="p">,</span> <span class="n">file</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
+    <span class="n">target</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="n">target</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="k">await</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">target</span><span class="p">)}</span></div>
+
+
+
+<div class="viewcode-block" id="download_job_file">
+<a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.download_job_file">[docs]</a>
+<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{job_id}</span><span class="s2">/files/download&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">download_job_file</span><span class="p">(</span>
+    <span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;read&quot;</span><span class="p">))</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Download a single file from the job&#39;s directory as an attachment.&quot;&quot;&quot;</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="n">_get_job_or_404</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">_resolve_job_file</span><span class="p">(</span><span class="n">job</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">FileResponse</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">target</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_job_file_content">
+<a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.get_job_file_content">[docs]</a>
+<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{job_id}</span><span class="s2">/files/content&quot;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_job_file_content</span><span class="p">(</span>
+    <span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;read&quot;</span><span class="p">))</span>
+<span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a file&#39;s text content for in-browser viewing (not a download).</span>
+
+<span class="sd">    Guards against two things a naive &quot;just read_text() it&quot; would choke on:</span>
+<span class="sd">    binary files (decoding fails) and files too large to reasonably render in</span>
+<span class="sd">    a browser tab. Both come back as a normal 200 with ``content: null`` and</span>
+<span class="sd">    a ``reason``, not an error -- the frontend falls back to offering the</span>
+<span class="sd">    download link instead of showing an error page.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="n">_get_job_or_404</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
+    <span class="n">target</span> <span class="o">=</span> <span class="n">_resolve_job_file</span><span class="p">(</span><span class="n">job</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+    <span class="n">size</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span>
+    <span class="k">if</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="n">MAX_PREVIEW_BYTES</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;too_large&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">size</span><span class="p">}</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">UnicodeDecodeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;binary&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">size</span><span class="p">}</span>
+
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">content</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">size</span><span class="p">}</span></div>
+
+</pre></div>
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

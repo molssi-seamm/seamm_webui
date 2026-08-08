@@ -1,0 +1,958 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>seamm_webui package &#8212; seamm_webui 2026.8.8 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=c224919a" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
+<!-- End Google Tag Manager -->
+
+    <script src="../_static/documentation_options.js?v=d318b753"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/seamm_webui';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="seamm_webui.routers package" href="seamm_webui.routers.html" />
+    <link rel="prev" title="seamm_webui" href="modules.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="2026.8.8" />
+  
+    
+    <script src="../_static/searchtools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script src="../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class="col-lg-3 navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/SEAMM logo.png" class="logo__image only-light" alt=""/>
+    <img src="../_static/SEAMM inverted.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">seamm_webui</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class="col-lg-9 navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer_guide/index.html">
+    Developer Documentation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    API Documentation
+  </a>
+</li>
+
+            <li class="nav-item dropdown">
+                <button class="btn dropdown-toggle nav-item" type="button"
+                data-bs-toggle="dropdown" aria-expanded="false"
+                aria-controls="pst-nav-more-links">
+                    More
+                </button>
+                <ul id="pst-nav-more-links" class="dropdown-menu">
+                    
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../authors.html">
+    Credits
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-internal" href="../history.html">
+    History
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://molssi-seamm.github.io">
+    SEAMM Documentation
+  </a>
+</li>
+
+
+<li class=" ">
+  <a class="nav-link dropdown-item nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+                </ul>
+            </li>
+            
+  </ul>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/molssi-seamm/seamm_webui" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
+</div>
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../getting_started/index.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../user_guide/index.html">
+    User Guide
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../developer_guide/index.html">
+    Developer Documentation
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
+    API Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../authors.html">
+    Credits
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../history.html">
+    History
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://molssi-seamm.github.io">
+    SEAMM Documentation
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-external" href="https://molssi.org">
+    MolSSI
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/molssi-seamm/seamm_webui" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-github fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://twitter.com/MolSSI_NSF" title="Twitter" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="fa-brands fa-square-twitter fa-lg" aria-hidden="true"></i><span class="visually-hidden">Twitter</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar">
+  <svg class="pst-icon" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="modules.html">seamm_webui</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">seamm_webui package</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html">seamm_webui.routers package</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">API Documentation</a></li>
+    
+    
+    <li class="breadcrumb-item"><a href="modules.html" class="nav-link">seamm_webui</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">seamm_webui package</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="seamm-webui-package">
+<h1>seamm_webui package<a class="headerlink" href="#seamm-webui-package" title="Link to this heading">#</a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">#</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="seamm_webui.routers.html">seamm_webui.routers package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="seamm_webui.routers.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="seamm_webui.routers.html#module-seamm_webui.routers.auth">seamm_webui.routers.auth module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.auth.LoginRequest"><code class="docutils literal notranslate"><span class="pre">LoginRequest</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.auth.LoginRequest.model_config"><code class="docutils literal notranslate"><span class="pre">LoginRequest.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.auth.LoginRequest.password"><code class="docutils literal notranslate"><span class="pre">LoginRequest.password</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.auth.LoginRequest.username"><code class="docutils literal notranslate"><span class="pre">LoginRequest.username</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.auth.login"><code class="docutils literal notranslate"><span class="pre">login()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.auth.logout"><code class="docutils literal notranslate"><span class="pre">logout()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.auth.me"><code class="docutils literal notranslate"><span class="pre">me()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="seamm_webui.routers.html#module-seamm_webui.routers.jobs">seamm_webui.routers.jobs module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.JobIds"><code class="docutils literal notranslate"><span class="pre">JobIds</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.JobIds.ids"><code class="docutils literal notranslate"><span class="pre">JobIds.ids</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.JobIds.model_config"><code class="docutils literal notranslate"><span class="pre">JobIds.model_config</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.JobSubmission"><code class="docutils literal notranslate"><span class="pre">JobSubmission</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.JobSubmission.description"><code class="docutils literal notranslate"><span class="pre">JobSubmission.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.JobSubmission.flowchart"><code class="docutils literal notranslate"><span class="pre">JobSubmission.flowchart</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.JobSubmission.model_config"><code class="docutils literal notranslate"><span class="pre">JobSubmission.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.JobSubmission.parameters"><code class="docutils literal notranslate"><span class="pre">JobSubmission.parameters</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.JobSubmission.project"><code class="docutils literal notranslate"><span class="pre">JobSubmission.project</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.JobSubmission.title"><code class="docutils literal notranslate"><span class="pre">JobSubmission.title</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.delete_job"><code class="docutils literal notranslate"><span class="pre">delete_job()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.delete_jobs"><code class="docutils literal notranslate"><span class="pre">delete_jobs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.download_job_file"><code class="docutils literal notranslate"><span class="pre">download_job_file()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.get_job"><code class="docutils literal notranslate"><span class="pre">get_job()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.get_job_file_content"><code class="docutils literal notranslate"><span class="pre">get_job_file_content()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.kill_job"><code class="docutils literal notranslate"><span class="pre">kill_job()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.kill_jobs"><code class="docutils literal notranslate"><span class="pre">kill_jobs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.list_job_files"><code class="docutils literal notranslate"><span class="pre">list_job_files()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.list_jobs"><code class="docutils literal notranslate"><span class="pre">list_jobs()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.submit_job"><code class="docutils literal notranslate"><span class="pre">submit_job()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.upload_job_file"><code class="docutils literal notranslate"><span class="pre">upload_job_file()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="seamm_webui.routers.html#module-seamm_webui.routers.projects">seamm_webui.routers.projects module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.projects.ProjectCreate"><code class="docutils literal notranslate"><span class="pre">ProjectCreate</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.projects.ProjectCreate.description"><code class="docutils literal notranslate"><span class="pre">ProjectCreate.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.projects.ProjectCreate.model_config"><code class="docutils literal notranslate"><span class="pre">ProjectCreate.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.projects.ProjectCreate.name"><code class="docutils literal notranslate"><span class="pre">ProjectCreate.name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.projects.ProjectUpdate"><code class="docutils literal notranslate"><span class="pre">ProjectUpdate</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.projects.ProjectUpdate.description"><code class="docutils literal notranslate"><span class="pre">ProjectUpdate.description</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.projects.ProjectUpdate.model_config"><code class="docutils literal notranslate"><span class="pre">ProjectUpdate.model_config</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.projects.ProjectUpdate.name"><code class="docutils literal notranslate"><span class="pre">ProjectUpdate.name</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.projects.create_project"><code class="docutils literal notranslate"><span class="pre">create_project()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.projects.delete_project"><code class="docutils literal notranslate"><span class="pre">delete_project()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.projects.get_project"><code class="docutils literal notranslate"><span class="pre">get_project()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.projects.list_projects"><code class="docutils literal notranslate"><span class="pre">list_projects()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.projects.update_project"><code class="docutils literal notranslate"><span class="pre">update_project()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="seamm_webui.routers.html#module-seamm_webui.routers">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">#</a></h2>
+</section>
+<section id="module-seamm_webui.auth">
+<span id="seamm-webui-auth-module"></span><h2>seamm_webui.auth module<a class="headerlink" href="#module-seamm_webui.auth" title="Link to this heading">#</a></h2>
+<p>Authentication for seamm_webui.</p>
+<p>Two modes (see main.py’s –auth flag and dashboard-rewrite-plan.md, Phase 3):</p>
+<ul class="simple">
+<li><p>“none” – no login at all; every request acts as the fixed built-in
+identity. Default when bound to loopback; main.py refuses to start this
+mode on any other host.</p></li>
+<li><p>“local” – real per-user login via a signed session cookie, checked
+against seamm_datastore’s existing User/password_hash (proper salted
+hashing, already there – see models.py’s User.verify_password).</p></li>
+</ul>
+<p>Both modes funnel through require_permission(), the FastAPI dependency
+every route already depends on – adding a third mode later (e.g. an
+OIDC front door) is a change to this file, not to route code.</p>
+<p>Deliberately no separate CSRF-cookie mechanism (unlike the old
+seamm_dashboard’s flask_jwt_extended double-submit setup): this is a
+JSON-only API behind CORS locked to known origins, so an httpOnly,
+SameSite=Lax session cookie closes the same gap a CSRF token would,
+without a second cookie that can collide with another seamm-webui
+instance’s (see init_auth’s cookie-name note).</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm_webui.auth.clear_session_cookie">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.auth.</span></span><span class="sig-name descname"><span class="pre">clear_session_cookie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Response</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/seamm_webui/auth.html#clear_session_cookie"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.auth.clear_session_cookie" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm_webui.auth.create_session_cookie">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.auth.</span></span><span class="sig-name descname"><span class="pre">create_session_cookie</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">response</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Response</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/seamm_webui/auth.html#create_session_cookie"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.auth.create_session_cookie" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm_webui.auth.get_auth_mode">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.auth.</span></span><span class="sig-name descname"><span class="pre">get_auth_mode</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'none'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'local'</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/seamm_webui/auth.html#get_auth_mode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.auth.get_auth_mode" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm_webui.auth.get_current_user">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.auth.</span></span><span class="sig-name descname"><span class="pre">get_current_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">request</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Request</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/seamm_webui/auth.html#get_current_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.auth.get_current_user" title="Link to this definition">#</a></dt>
+<dd><p>Return the username this request’s session cookie asserts, or None
+if there isn’t one, or it’s missing/tampered/expired. Doesn’t raise –
+callers (require_permission, GET /api/auth/me) decide what “no
+identity” means for them.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm_webui.auth.init_auth">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.auth.</span></span><span class="sig-name descname"><span class="pre">init_auth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Literal</span><span class="p"><span class="pre">[</span></span><span class="s"><span class="pre">'none'</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="s"><span class="pre">'local'</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secret_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cookie_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">secure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm_webui/auth.html#init_auth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.auth.init_auth" title="Link to this definition">#</a></dt>
+<dd><p>Configure auth for this process. Called once from main.py’s
+create_app(), before any request is served.</p>
+<p><code class="docutils literal notranslate"><span class="pre">cookie_name</span></code> should be unique per running instance (main.py derives
+it from the port) – browser cookies are scoped by domain only, not
+port, so two seamm-webui instances both reachable as <cite>localhost</cite> (a
+local one plus an SSH-tunneled cluster one, say) would otherwise
+silently overwrite each other’s session cookie.</p>
+<p>In “none” mode, also sets an ambient default identity for the whole
+process (not just per-request, which require_permission already does)
+– there’s no security boundary in this mode to protect, so code that
+talks to the datastore directly rather than through an HTTP request
+(test fixtures, scripts using seamm_webui.db.init_datastore() directly)
+should just work the way it always did in Phase 1/2, without needing
+its own request to go through require_permission first. “local” mode
+deliberately does <em>not</em> do this – db.py’s contextvar default stays
+None there, so anything that reaches a permission check without going
+through require_permission fails closed, not open.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm_webui.auth.require_permission">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.auth.</span></span><span class="sig-name descname"><span class="pre">require_permission</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm_webui/auth.html#require_permission"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.auth.require_permission" title="Link to this definition">#</a></dt>
+<dd><p>FastAPI dependency factory: establish who’s making this request (for
+seamm_datastore’s permission checks – db.py’s set_current_user) and,
+in “local” mode, reject if nobody’s logged in.</p>
+<p><code class="docutils literal notranslate"><span class="pre">action</span></code> (e.g. “read”, “update”) is accepted so call sites already
+read the way they will if this ever needs to check it, but it isn’t
+checked here – fine-grained authorization (who can see/touch what) is
+seamm_datastore’s existing owner/group permission model, which starts
+applying for real the moment a real per-request identity is set here;
+this dependency only answers “is anyone logged in at all.”</p>
+</dd></dl>
+
+</section>
+<section id="module-seamm_webui.db">
+<span id="seamm-webui-db-module"></span><h2>seamm_webui.db module<a class="headerlink" href="#module-seamm_webui.db" title="Link to this heading">#</a></h2>
+<p>Datastore connection management for seamm_webui.</p>
+<p>IMPORTANT ordering constraint: <code class="docutils literal notranslate"><span class="pre">init_datastore()</span></code> must run before anything
+else in this process imports <code class="docutils literal notranslate"><span class="pre">seamm_datastore.database.models</span></code> (directly or
+transitively, e.g. via a router). <code class="docutils literal notranslate"><span class="pre">seamm_datastore</span></code>’s internal
+<code class="docutils literal notranslate"><span class="pre">flask_authorize_patch</span></code> decides – the <em>first</em> time it is imported in a
+process – whether to bind to a real Flask <code class="docutils literal notranslate"><span class="pre">current_app</span></code> or to the
+standalone <code class="docutils literal notranslate"><span class="pre">fake_app</span></code> shim that <code class="docutils literal notranslate"><span class="pre">SEAMMDatastore.__init__</span></code> sets up. Since
+we have no Flask app, importing the models before <code class="docutils literal notranslate"><span class="pre">init_datastore()</span></code> has
+run would leave that patch trying to use Flask’s real (app-context-less)
+<code class="docutils literal notranslate"><span class="pre">current_app</span></code> proxy and crash. <code class="docutils literal notranslate"><span class="pre">main.py</span></code> calls <code class="docutils literal notranslate"><span class="pre">init_datastore()</span></code> first
+and only then imports the routers, which is what keeps this safe.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm_webui.db.get_datastore">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.db.</span></span><span class="sig-name descname"><span class="pre">get_datastore</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm_webui/db.html#get_datastore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.db.get_datastore" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm_webui.db.get_datastore_dir">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.db.</span></span><span class="sig-name descname"><span class="pre">get_datastore_dir</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/seamm_webui/db.html#get_datastore_dir"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.db.get_datastore_dir" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm_webui.db.init_datastore">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.db.</span></span><span class="sig-name descname"><span class="pre">init_datastore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datastore_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_project</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'default'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm_webui/db.html#init_datastore"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.db.init_datastore" title="Link to this definition">#</a></dt>
+<dd><p>Connect to the SEAMM datastore at <code class="docutils literal notranslate"><span class="pre">datastore_dir</span></code>.</p>
+<p>NOTE: this must be the <em>datastore</em> directory (what the rest of SEAMM
+calls <code class="docutils literal notranslate"><span class="pre">--datastore</span></code>, default <code class="docutils literal notranslate"><span class="pre">${root}/Jobs</span></code>), not the general
+<code class="docutils literal notranslate"><span class="pre">--root</span></code> SEAMM config directory (default <code class="docutils literal notranslate"><span class="pre">~/SEAMM</span></code>, holding the
+per-code <code class="docutils literal notranslate"><span class="pre">.ini</span></code> files) – those are two different, separately
+configurable directories. Conflating them was a real bug here during
+scaffolding: pointing this at <code class="docutils literal notranslate"><span class="pre">~/SEAMM</span></code> directly found no
+<code class="docutils literal notranslate"><span class="pre">seamm.db</span></code>, silently created a fresh empty one there, and connected
+to that instead of the real datastore at <code class="docutils literal notranslate"><span class="pre">~/SEAMM/Jobs/seamm.db</span></code>. See
+<code class="docutils literal notranslate"><span class="pre">main.py</span></code>’s <code class="docutils literal notranslate"><span class="pre">--root</span></code>/<code class="docutils literal notranslate"><span class="pre">--datastore</span></code> handling, which mirrors
+<code class="docutils literal notranslate"><span class="pre">seamm_util.argument_parser</span></code>’s <code class="docutils literal notranslate"><span class="pre">${root}/Jobs</span></code> default.</p>
+<p>Only initializes (creates tables/default project/roles) if there is no
+existing <code class="docutils literal notranslate"><span class="pre">seamm.db</span></code> at that location yet – an existing datastore
+(e.g. the one the old <code class="docutils literal notranslate"><span class="pre">seamm_dashboard</span></code> already uses) is connected to
+as-is, never dropped/recreated.</p>
+<p>Identity is deliberately left unset here (no <code class="docutils literal notranslate"><span class="pre">login()</span></code> call) –
+<code class="docutils literal notranslate"><span class="pre">_current_username</span></code>’s own <code class="docutils literal notranslate"><span class="pre">default=None</span></code> means any request that
+somehow reaches a permission check without going through
+<code class="docutils literal notranslate"><span class="pre">seamm_webui.auth.require_permission</span></code> first fails closed (looks
+logged-out), not open (looks like the admin account). Establishing who’s
+making a given request is entirely <code class="docutils literal notranslate"><span class="pre">require_permission</span></code>’s job now
+(Phase 3) – see <code class="docutils literal notranslate"><span class="pre">seamm_webui/auth.py</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm_webui.db.set_current_user">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.db.</span></span><span class="sig-name descname"><span class="pre">set_current_user</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">username</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/seamm_webui/db.html#set_current_user"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.db.set_current_user" title="Link to this definition">#</a></dt>
+<dd><p>Set the identity seamm_datastore’s permission checks will see for the
+rest of the current request (or, outside of a request, the rest of the
+current context). <code class="docutils literal notranslate"><span class="pre">seamm_webui.auth</span></code>’s <code class="docutils literal notranslate"><span class="pre">require_permission</span></code> calls
+this once it’s established who’s making the request – the fixed
+built-in identity in “none” mode, or the verified session cookie’s
+username in “local” mode. Deliberately does <em>not</em> go through
+<code class="docutils literal notranslate"><span class="pre">SEAMMDatastore.login()</span></code> (which re-verifies a password) since a valid
+session cookie already proved identity.</p>
+</dd></dl>
+
+</section>
+<section id="module-seamm_webui.main">
+<span id="seamm-webui-main-module"></span><h2>seamm_webui.main module<a class="headerlink" href="#module-seamm_webui.main" title="Link to this heading">#</a></h2>
+<p>FastAPI application factory and CLI entry point for seamm_webui.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm_webui.main.create_app">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.main.</span></span><span class="sig-name descname"><span class="pre">create_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datastore_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">8010</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auth_mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'none'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">FastAPI</span></span></span><a class="reference internal" href="../_modules/seamm_webui/main.html#create_app"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.main.create_app" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm_webui.main.run">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.main.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm_webui/main.html#run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.main.run" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-seamm_webui.manage">
+<span id="seamm-webui-manage-module"></span><h2>seamm_webui.manage module<a class="headerlink" href="#module-seamm_webui.manage" title="Link to this heading">#</a></h2>
+<p>CLI for managing seamm_webui local-mode user accounts.</p>
+<p>There’s no admin UI yet (that’s Phase 6) – this is the only way to create
+a “local”-auth-mode account for now. New accounts default to the admin
+role (full visibility, same as everyone gets today) rather than
+seamm_datastore’s real owner/group filtering: Phase 3 is “prove who you
+are,” not per-user data partitioning – see dashboard-rewrite-plan.md.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm_webui.manage.cmd_create">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.manage.</span></span><span class="sig-name descname"><span class="pre">cmd_create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Namespace</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/seamm_webui/manage.html#cmd_create"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.manage.cmd_create" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm_webui.manage.cmd_list">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.manage.</span></span><span class="sig-name descname"><span class="pre">cmd_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Namespace</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/seamm_webui/manage.html#cmd_list"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.manage.cmd_list" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm_webui.manage.run">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.manage.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/seamm_webui/manage.html#run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.manage.run" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="module-seamm_webui.util">
+<span id="seamm-webui-util-module"></span><h2>seamm_webui.util module<a class="headerlink" href="#module-seamm_webui.util" title="Link to this heading">#</a></h2>
+<p>Job submission utilities.</p>
+<p>get_job_id() and the flowchart/job_data.json writing logic are ported from
+seamm_dashboard/util.py and seamm_dashboard/routes/api/jobs.py’s add_job –
+deliberately NOT imported from seamm_dashboard (that package must never be
+imported into this process, see the Base/sys.modules note in db.py). Both
+dashboards point at the same job.id file (see dashboard-rewrite-plan.md),
+so this must stay wire-compatible with the original format.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm_webui.util.get_job_id">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.util.</span></span><span class="sig-name descname"><span class="pre">get_job_id</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="reference internal" href="../_modules/seamm_webui/util.html#get_job_id"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.util.get_job_id" title="Link to this definition">#</a></dt>
+<dd><p>Get the next job id from the given file, incrementing it atomically.</p>
+<p>Uses an inter-process file lock so concurrent submissions – from this
+dashboard, the old one, or a job array – get unique, monotonically
+increasing ids.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm_webui.util.get_or_create_secret_key">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.util.</span></span><span class="sig-name descname"><span class="pre">get_or_create_secret_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datastore_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/seamm_webui/util.html#get_or_create_secret_key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.util.get_or_create_secret_key" title="Link to this definition">#</a></dt>
+<dd><p>Return the key used to sign session cookies (Phase 3 auth), creating
+one on first use and persisting it in the datastore directory – same
+“lives next to seamm.db, not the general –root config dir” convention
+as get_job_id’s job.id counter file. Without persisting this, every
+server restart would invalidate every session cookie and log everyone
+out. Lock-guarded (like get_job_id) so two processes starting against
+the same fresh datastore at once can’t race and end up disagreeing on
+the key.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm_webui.util.write_job_files">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.util.</span></span><span class="sig-name descname"><span class="pre">write_job_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">datastore_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">job_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flowchart</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">project_names</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="../_modules/seamm_webui/util.html#write_job_files"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.util.write_job_files" title="Link to this definition">#</a></dt>
+<dd><p>Write flowchart.flow + job_data.json for a new job.</p>
+<p>Returns the job’s directory path (as a string).</p>
+</dd></dl>
+
+</section>
+<section id="module-seamm_webui">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-seamm_webui" title="Link to this heading">#</a></h2>
+<p>seamm_webui: SPA-based web dashboard for SEAMM.</p>
+</section>
+</section>
+
+
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="modules.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">seamm_webui</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="seamm_webui.routers.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">seamm_webui.routers package</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#subpackages">Subpackages</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#submodules">Submodules</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm_webui.auth">seamm_webui.auth module</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.auth.clear_session_cookie"><code class="docutils literal notranslate"><span class="pre">clear_session_cookie()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.auth.create_session_cookie"><code class="docutils literal notranslate"><span class="pre">create_session_cookie()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.auth.get_auth_mode"><code class="docutils literal notranslate"><span class="pre">get_auth_mode()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.auth.get_current_user"><code class="docutils literal notranslate"><span class="pre">get_current_user()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.auth.init_auth"><code class="docutils literal notranslate"><span class="pre">init_auth()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.auth.require_permission"><code class="docutils literal notranslate"><span class="pre">require_permission()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm_webui.db">seamm_webui.db module</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.db.get_datastore"><code class="docutils literal notranslate"><span class="pre">get_datastore()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.db.get_datastore_dir"><code class="docutils literal notranslate"><span class="pre">get_datastore_dir()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.db.init_datastore"><code class="docutils literal notranslate"><span class="pre">init_datastore()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.db.set_current_user"><code class="docutils literal notranslate"><span class="pre">set_current_user()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm_webui.main">seamm_webui.main module</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.main.create_app"><code class="docutils literal notranslate"><span class="pre">create_app()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.main.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm_webui.manage">seamm_webui.manage module</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.manage.cmd_create"><code class="docutils literal notranslate"><span class="pre">cmd_create()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.manage.cmd_list"><code class="docutils literal notranslate"><span class="pre">cmd_list()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.manage.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm_webui.util">seamm_webui.util module</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.util.get_job_id"><code class="docutils literal notranslate"><span class="pre">get_job_id()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.util.get_or_create_secret_key"><code class="docutils literal notranslate"><span class="pre">get_or_create_secret_key()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.util.write_job_files"><code class="docutils literal notranslate"><span class="pre">write_job_files()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm_webui">Module contents</a></li>
+</ul>
+  </nav></div>
+
+  <div class="sidebar-secondary-item">
+
+  <div class="tocsection sourcelink">
+    <a href="../_sources/api/seamm_webui.rst.txt">
+      <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+  </div>
+</div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
+</html>

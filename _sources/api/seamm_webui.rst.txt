@@ -1,0 +1,61 @@
+seamm\_webui package
+====================
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   seamm_webui.routers
+
+Submodules
+----------
+
+seamm\_webui.auth module
+------------------------
+
+.. automodule:: seamm_webui.auth
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+seamm\_webui.db module
+----------------------
+
+.. automodule:: seamm_webui.db
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+seamm\_webui.main module
+------------------------
+
+.. automodule:: seamm_webui.main
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+seamm\_webui.manage module
+--------------------------
+
+.. automodule:: seamm_webui.manage
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+seamm\_webui.util module
+------------------------
+
+.. automodule:: seamm_webui.util
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: seamm_webui
+   :members:
+   :show-inheritance:
+   :undoc-members:

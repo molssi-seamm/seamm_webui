@@ -1,0 +1,37 @@
+seamm\_webui.routers package
+============================
+
+Submodules
+----------
+
+seamm\_webui.routers.auth module
+--------------------------------
+
+.. automodule:: seamm_webui.routers.auth
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+seamm\_webui.routers.jobs module
+--------------------------------
+
+.. automodule:: seamm_webui.routers.jobs
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+seamm\_webui.routers.projects module
+------------------------------------
+
+.. automodule:: seamm_webui.routers.projects
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Module contents
+---------------
+
+.. automodule:: seamm_webui.routers
+   :members:
+   :show-inheritance:
+   :undoc-members:
