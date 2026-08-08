@@ -1,10 +1,10 @@
 [build-system]
-requires = ["setuptools>=68", "wheel"]
+requires = ["setuptools>=68", "wheel", "versioneer"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "seamm-webui"
-version = "0.0.1"
+dynamic = ["version"]
 description = "SPA-based web dashboard for SEAMM"
 readme = "README.md"
 license = { text = "BSD-3-Clause" }

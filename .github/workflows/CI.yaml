@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    branches:
+      - "main"
+  schedule:
+    # Run on main by default Sunday morning at 3:30:
+    #   Scheduled workflows run on the latest commit on the default or base branch.
+    #   (from https://help.github.com/en/actions/reference/events-that-trigger-workflows#scheduled-events-schedule)
+    - cron: "30 3 * * 0"
+
+jobs:
+  ci:
+    name: CI
+    uses: molssi-seamm/devops/.github/workflows/CI.yaml@main
+    with:
+      src: seamm_webui
+
+  # No sibling SEAMM package has a JS frontend, so the shared devops
+  # workflow above (Python/conda only) has no way to test it -- this job
+  # runs alongside it instead of trying to shoehorn Node into a reusable
+  # workflow that doesn't know about it.
+  frontend:
+    name: Frontend (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: ["22", "24"]
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm run build
+      - run: npm run lint
