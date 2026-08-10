@@ -7,6 +7,9 @@ User Guide
 ``seamm_webui`` is a browser-based dashboard for SEAMM: a job list (with
 per-project filtering), a job detail page (status, files, live output,
 kill/delete), project management (create/edit/delete), and job submission.
+If the paired JobServer has more than one queue configured (see the
+Getting Started guide), the job list and detail pages also show which
+queue each job ran on.
 
 Authentication
 ==============

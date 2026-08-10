@@ -35,6 +35,19 @@ about it being untrusted, the same as any self-signed certificate, until
 it's trusted or replaced with a real one). See ``seamm-webui --help`` for
 the full set of options, and the User Guide for how authentication works.
 
+If the paired JobServer instance (the one actually running submitted jobs,
+sharing the same ``--root``) is configured with more than one queue --
+different clusters, or a plain local-subprocess queue alongside one or
+more real SLURM ones -- ``GET /api/queues`` lists them, for a submission
+client (e.g. the SEAMM desktop app's submit dialog) to offer a picker
+instead of always using that instance's default; the job list/detail
+pages here also show which queue a job ran on (see the User Guide). This
+needs no configuration beyond what the JobServer itself already has:
+``seamm-webui`` reads the same ``<root>/<jobserver-name>.ini``. The one
+case needing an explicit ``--jobserver-name`` is a host running more than
+one independent JobServer instance -- it otherwise defaults to this
+host's hostname, matching the JobServer's own default.
+
 For setting this up as a persistent daemon (rather than a foreground
 terminal command), see :doc:`../developer_guide/installation`.
 
