@@ -15,6 +15,7 @@ venv/
 frontend/node_modules/
 frontend/dist/
 frontend/.vite/
+seamm_webui/static/
 
 # Docs
 docs/_build/

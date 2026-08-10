@@ -1,14 +1,23 @@
 """FastAPI application factory and CLI entry point for seamm_webui."""
 
 import argparse
+from pathlib import Path
 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from seamm_webui.db import init_datastore, get_datastore_dir
 
 # Hosts that mean "this machine only" -- see run()'s --auth guardrail.
 LOOPBACK_HOSTS = {"127.0.0.1", "localhost", "::1"}
+
+# Populated by `npm run build` (see frontend/vite.config.ts's build.outDir)
+# and shipped as package data in released wheels. Absent in an editable/
+# source dev install that hasn't built the frontend -- create_app() falls
+# back to API-only in that case rather than erroring.
+STATIC_DIR = (Path(__file__).parent / "static").resolve()
 
 
 def create_app(
@@ -89,6 +98,35 @@ def create_app(
             },
         }
 
+    if (STATIC_DIR / "index.html").is_file():
+        # Registered last -- it's a catch-all, so /api/... routes above
+        # must already be in place or this would shadow them.
+        assets_dir = STATIC_DIR / "assets"
+        if assets_dir.is_dir():
+            app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+
+        @app.get("/{full_path:path}", include_in_schema=False)
+        def spa_fallback(full_path: str):
+            # Client-side routes (e.g. /jobs/123) have no file on disk --
+            # serve index.html for those so a hard refresh doesn't 404, but
+            # let a genuinely missing /api/... route 404 normally rather
+            # than silently returning the SPA shell.
+            if full_path.startswith("api/"):
+                raise HTTPException(status_code=404)
+            # Resolve and verify containment before treating this as a real
+            # static asset -- full_path is attacker-controlled (e.g. a
+            # crafted "../../../etc/passwd"), and plain path concatenation
+            # doesn't stop it climbing out of STATIC_DIR (CodeQL
+            # py/path-injection).
+            candidate = (STATIC_DIR / full_path).resolve()
+            if (
+                full_path
+                and candidate.is_relative_to(STATIC_DIR)
+                and candidate.is_file()
+            ):
+                return FileResponse(candidate)
+            return FileResponse(STATIC_DIR / "index.html")
+
     return app
 
 
@@ -129,7 +167,24 @@ def run():
             "a non-loopback --host."
         ),
     )
+    parser.add_argument(
+        "--ssl-certfile",
+        default=None,
+        help=(
+            "Path to a TLS certificate. If omitted and --host is "
+            "non-loopback, a self-signed certificate is generated (once) "
+            "and reused under --root -- see --ssl-keyfile."
+        ),
+    )
+    parser.add_argument(
+        "--ssl-keyfile",
+        default=None,
+        help="Path to the private key matching --ssl-certfile.",
+    )
     args = parser.parse_args()
+
+    if (args.ssl_certfile is None) != (args.ssl_keyfile is None):
+        parser.error("--ssl-certfile and --ssl-keyfile must be given together")
 
     auth_mode = args.auth
     if auth_mode == "auto":
@@ -143,14 +198,31 @@ def run():
 
     datastore_dir = args.datastore
     if datastore_dir is None:
-        from pathlib import Path
-
         datastore_dir = str(Path(args.root).expanduser() / "Jobs")
+
+    ssl_certfile = args.ssl_certfile
+    ssl_keyfile = args.ssl_keyfile
+    if ssl_certfile is None and ssl_keyfile is None and args.host not in LOOPBACK_HOSTS:
+        from seamm_webui.tls import get_or_create_self_signed_cert
+
+        ssl_certfile, ssl_keyfile = get_or_create_self_signed_cert(args.root)
+        print(
+            f"No --ssl-certfile/--ssl-keyfile given; using a self-signed "
+            f"certificate at {ssl_certfile}. Browsers will warn about this "
+            "until it's trusted or replaced with a real certificate.",
+            flush=True,
+        )
 
     import uvicorn
 
     app = create_app(datastore_dir, port=args.port, auth_mode=auth_mode)
-    uvicorn.run(app, host=args.host, port=args.port)
+    uvicorn.run(
+        app,
+        host=args.host,
+        port=args.port,
+        ssl_certfile=ssl_certfile,
+        ssl_keyfile=ssl_keyfile,
+    )
 
 
 if __name__ == "__main__":

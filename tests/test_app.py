@@ -573,3 +573,51 @@ def test_upload_job_file(tmp_path):
         files={"file": ("job:data/x.txt", b"x", "text/plain")},
     )
     assert response.status_code == 404
+
+
+def test_static_spa_fallback_and_traversal(tmp_path, monkeypatch):
+    """The SPA-fallback route (registered only when a built frontend is
+    present -- see create_app()) must serve real static files, fall back to
+    index.html for client-side routes, and never let a crafted full_path
+    (e.g. "../../../etc/passwd") escape STATIC_DIR -- the
+    CodeQL py/path-injection finding this guards against.
+    """
+    import seamm_webui.main as main
+
+    static_dir = tmp_path / "static"
+    (static_dir / "assets").mkdir(parents=True)
+    (static_dir / "index.html").write_text("<html>shell</html>")
+    (static_dir / "assets" / "index-abc123.js").write_text("console.log(1)")
+    secret = tmp_path / "secret.txt"
+    secret.write_text("do not serve me")
+
+    monkeypatch.setattr(main, "STATIC_DIR", static_dir.resolve())
+
+    app = main.create_app(str(tmp_path / "datastore"))
+    client = TestClient(app)
+
+    # A real asset is served as itself, not the SPA shell.
+    response = client.get("/assets/index-abc123.js")
+    assert response.status_code == 200
+    assert "console.log" in response.text
+
+    # An unknown client-side route falls back to the SPA shell.
+    response = client.get("/jobs/123")
+    assert response.status_code == 200
+    assert "shell" in response.text
+
+    # /api/... still 404s normally rather than returning the SPA shell.
+    response = client.get("/api/does-not-exist")
+    assert response.status_code == 404
+
+    # Traversal attempts must not escape STATIC_DIR -- they fall back to
+    # the SPA shell (like any other unmatched path), never the real file.
+    for path in (
+        "/../secret.txt",
+        "/assets/../../secret.txt",
+        "/..%2f..%2fsecret.txt",
+    ):
+        response = client.get(path)
+        assert response.status_code == 200
+        assert "do not serve me" not in response.text
+        assert "shell" in response.text
