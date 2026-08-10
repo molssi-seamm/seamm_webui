@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm_webui package &#8212; seamm_webui 2026.8.10.1 documentation</title>
+    <title>seamm_webui package &#8212; seamm_webui 2026.8.10.2 documentation</title>
   
   
   
@@ -49,7 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=0415d067"></script>
+    <script src="../_static/documentation_options.js?v=33ed5a0d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="seamm_webui" href="modules.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.8.10.1" />
+  <meta name="docsearch:version" content="2026.8.10.2" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -787,6 +787,17 @@ are,” not per-user data partitioning – see dashboard-rewrite-plan.md.</p>
 <dd></dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="seamm_webui.manage.cmd_set_password">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.manage.</span></span><span class="sig-name descname"><span class="pre">cmd_set_password</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Namespace</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/seamm_webui/manage.html#cmd_set_password"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.manage.cmd_set_password" title="Link to this definition">#</a></dt>
+<dd><p>Reset an existing user’s password.</p>
+<p>Deliberately no –password flag (unlike create, which allows one for
+scripting) – this always prompts via getpass, so the new password
+never has to be typed anywhere it could be logged or captured (a
+shell’s command history, a chat transcript run through a shared
+terminal session, etc.), only into a genuinely hidden terminal prompt.</p>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="seamm_webui.manage.run">
 <span class="sig-prename descclassname"><span class="pre">seamm_webui.manage.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="../_modules/seamm_webui/manage.html#run"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.manage.run" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -972,6 +983,7 @@ the key.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm_webui.manage">seamm_webui.manage module</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.manage.cmd_create"><code class="docutils literal notranslate"><span class="pre">cmd_create()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.manage.cmd_list"><code class="docutils literal notranslate"><span class="pre">cmd_list()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.manage.cmd_set_password"><code class="docutils literal notranslate"><span class="pre">cmd_set_password()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.manage.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
 </ul>
 </li>

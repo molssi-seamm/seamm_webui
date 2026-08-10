@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Getting Started &#8212; seamm_webui 2026.8.10.1 documentation</title>
+    <title>Getting Started &#8212; seamm_webui 2026.8.10.2 documentation</title>
   
   
   
@@ -49,7 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=0415d067"></script>
+    <script src="../_static/documentation_options.js?v=33ed5a0d"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="seamm_webui" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.8.10.1" />
+  <meta name="docsearch:version" content="2026.8.10.2" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -555,6 +555,14 @@ terminal command), see <a class="reference internal" href="../developer_guide/in
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">seamm</span><span class="o">-</span><span class="n">webui</span><span class="o">-</span><span class="n">user</span> <span class="n">create</span> <span class="n">alice</span>
 </pre></div>
 </div>
+<p>An existing account’s password can be reset the same way (e.g. if it’s
+forgotten, or was only ever a bootstrap/test default):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">seamm</span><span class="o">-</span><span class="n">webui</span><span class="o">-</span><span class="n">user</span> <span class="nb">set</span><span class="o">-</span><span class="n">password</span> <span class="n">alice</span>
+</pre></div>
+</div>
+<p>This always prompts for the new password interactively (there’s no
+<code class="docutils literal notranslate"><span class="pre">--password</span></code> flag, unlike <code class="docutils literal notranslate"><span class="pre">create</span></code>) so it’s never typed anywhere –
+a shell command, a shared terminal session – where it could be captured.</p>
 <p>That should be enough to get started. For more detail about using the
 dashboard, see the <a class="reference internal" href="../user_guide/index.html#user-guide"><span class="std std-ref">User Guide</span></a>.</p>
 </section>
