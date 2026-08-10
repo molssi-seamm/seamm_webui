@@ -29,9 +29,14 @@ dependencies:
 
   # Pip-only installs
   - pip:
-    # seamm-datastore has no conda-forge package -- every SEAMM package
-    # that depends on it pip-installs it the same way.
+    # seamm-datastore/seamm-slurm have no conda-forge package -- every
+    # SEAMM package that depends on them pip-installs them the same way.
+    # CI installs this package itself via `pip install . --no-deps` (see
+    # Release.yaml), so pyproject.toml's own `dependencies` list is never
+    # consulted -- everything actually needed at runtime/test time must be
+    # listed here explicitly, not just in pyproject.toml.
     - seamm-datastore
+    - seamm-slurm
 
     # Documentation
     - sphinx-copybutton
