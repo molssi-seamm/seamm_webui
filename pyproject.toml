@@ -23,6 +23,7 @@ dependencies = [
     "fasteners",
     "itsdangerous",
     "python-multipart",
+    "cryptography",
 ]
 
 [project.optional-dependencies]
@@ -37,3 +38,6 @@ seamm-webui-user = "seamm_webui.manage:run"
 
 [tool.setuptools.packages.find]
 include = ["seamm_webui*"]
+
+[tool.setuptools.package-data]
+seamm_webui = ["static/**"]
