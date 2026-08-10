@@ -17,7 +17,7 @@ LOOPBACK_HOSTS = {"127.0.0.1", "localhost", "::1"}
 # and shipped as package data in released wheels. Absent in an editable/
 # source dev install that hasn't built the frontend -- create_app() falls
 # back to API-only in that case rather than erroring.
-STATIC_DIR = Path(__file__).parent / "static"
+STATIC_DIR = (Path(__file__).parent / "static").resolve()
 
 
 def create_app(
@@ -113,8 +113,17 @@ def create_app(
             # than silently returning the SPA shell.
             if full_path.startswith("api/"):
                 raise HTTPException(status_code=404)
-            candidate = STATIC_DIR / full_path
-            if full_path and candidate.is_file():
+            # Resolve and verify containment before treating this as a real
+            # static asset -- full_path is attacker-controlled (e.g. a
+            # crafted "../../../etc/passwd"), and plain path concatenation
+            # doesn't stop it climbing out of STATIC_DIR (CodeQL
+            # py/path-injection).
+            candidate = (STATIC_DIR / full_path).resolve()
+            if (
+                full_path
+                and candidate.is_relative_to(STATIC_DIR)
+                and candidate.is_file()
+            ):
                 return FileResponse(candidate)
             return FileResponse(STATIC_DIR / "index.html")
 
