@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm_webui.routers package &#8212; seamm_webui 2026.8.10 documentation</title>
+    <title>seamm_webui.routers package &#8212; seamm_webui 2026.8.10.1 documentation</title>
   
   
   
@@ -49,7 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=7ddc0e42"></script>
+    <script src="../_static/documentation_options.js?v=0415d067"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="seamm_webui package" href="seamm_webui.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.8.10" />
+  <meta name="docsearch:version" content="2026.8.10.1" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -833,6 +833,32 @@ before their files disappear out from under them.</p>
 <dd></dd></dl>
 
 </section>
+<section id="module-seamm_webui.routers.queues">
+<span id="seamm-webui-routers-queues-module"></span><h2>seamm_webui.routers.queues module<a class="headerlink" href="#module-seamm_webui.routers.queues" title="Link to this heading">#</a></h2>
+<p>Queue/cluster-target endpoints.</p>
+<p>Read-only visibility into the <code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&lt;jobserver-name&gt;.ini</span></code> config the
+JobServer paired with this Dashboard uses to route jobs to multiple
+clusters/queues (<code class="docutils literal notranslate"><span class="pre">local</span></code>, <code class="docutils literal notranslate"><span class="pre">TinkerCliffs</span></code>, <code class="docutils literal notranslate"><span class="pre">Owl</span></code>, …) – what a
+submission client (the Tk desktop dialog’s queue picker, Phase 4) needs to
+render a queue dropdown and the per-queue <code class="docutils literal notranslate"><span class="pre">.limits</span></code>-constrained override
+fields. See <code class="docutils literal notranslate"><span class="pre">seamm_jobserver</span></code>’s
+<code class="docutils literal notranslate"><span class="pre">docs/developer_guide/campaigns/2026-08-10/</span></code> (multi-queue routing) for the
+full design; this is Phase 3, the read side.</p>
+<p>Deliberately never returns <code class="docutils literal notranslate"><span class="pre">transport</span></code>/<code class="docutils literal notranslate"><span class="pre">host</span></code>/<code class="docutils literal notranslate"><span class="pre">remote_*</span></code> – those are
+this host’s own system/machine config (how <em>this</em> JobServer instance
+reaches a cluster), not something a submitting client needs or should see.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm_webui.routers.queues.list_queues">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.routers.queues.</span></span><span class="sig-name descname"><span class="pre">list_queues</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">Depends(dependency=&lt;function</span> <span class="pre">require_permission.&lt;locals&gt;._check&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scope</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm_webui/routers/queues.html#list_queues"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.routers.queues.list_queues" title="Link to this definition">#</a></dt>
+<dd><p>List every queue the paired JobServer instance can route jobs to.</p>
+<p>Empty if no <code class="docutils literal notranslate"><span class="pre">root</span></code> was configured for this Dashboard (see
+<code class="docutils literal notranslate"><span class="pre">queue_config.configure()</span></code>) or no <code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&lt;jobserver-name&gt;.ini</span></code>
+exists there – both mean “the queue feature isn’t in use here”,
+exactly as a JobServer with no such file runs every job as a plain
+local subprocess.</p>
+</dd></dl>
+
+</section>
 <section id="module-seamm_webui.routers">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-seamm_webui.routers" title="Link to this heading">#</a></h2>
 </section>
@@ -944,6 +970,10 @@ before their files disappear out from under them.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.routers.projects.get_project"><code class="docutils literal notranslate"><span class="pre">get_project()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.routers.projects.list_projects"><code class="docutils literal notranslate"><span class="pre">list_projects()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.routers.projects.update_project"><code class="docutils literal notranslate"><span class="pre">update_project()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm_webui.routers.queues">seamm_webui.routers.queues module</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.routers.queues.list_queues"><code class="docutils literal notranslate"><span class="pre">list_queues()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm_webui.routers">Module contents</a></li>

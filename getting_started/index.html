@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Getting Started &#8212; seamm_webui 2026.8.10 documentation</title>
+    <title>Getting Started &#8212; seamm_webui 2026.8.10.1 documentation</title>
   
   
   
@@ -49,7 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=7ddc0e42"></script>
+    <script src="../_static/documentation_options.js?v=0415d067"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="seamm_webui" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.8.10" />
+  <meta name="docsearch:version" content="2026.8.10.1" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -536,6 +536,18 @@ certificate is generated once and reused from then on (browsers will warn
 about it being untrusted, the same as any self-signed certificate, until
 it’s trusted or replaced with a real one). See <code class="docutils literal notranslate"><span class="pre">seamm-webui</span> <span class="pre">--help</span></code> for
 the full set of options, and the User Guide for how authentication works.</p>
+<p>If the paired JobServer instance (the one actually running submitted jobs,
+sharing the same <code class="docutils literal notranslate"><span class="pre">--root</span></code>) is configured with more than one queue –
+different clusters, or a plain local-subprocess queue alongside one or
+more real SLURM ones – <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/queues</span></code> lists them, for a submission
+client (e.g. the SEAMM desktop app’s submit dialog) to offer a picker
+instead of always using that instance’s default; the job list/detail
+pages here also show which queue a job ran on (see the User Guide). This
+needs no configuration beyond what the JobServer itself already has:
+<code class="docutils literal notranslate"><span class="pre">seamm-webui</span></code> reads the same <code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&lt;jobserver-name&gt;.ini</span></code>. The one
+case needing an explicit <code class="docutils literal notranslate"><span class="pre">--jobserver-name</span></code> is a host running more than
+one independent JobServer instance – it otherwise defaults to this
+host’s hostname, matching the JobServer’s own default.</p>
 <p>For setting this up as a persistent daemon (rather than a foreground
 terminal command), see <a class="reference internal" href="../developer_guide/installation.html"><span class="doc">Installation</span></a>.</p>
 <p>Accounts for that login mode are created with the companion

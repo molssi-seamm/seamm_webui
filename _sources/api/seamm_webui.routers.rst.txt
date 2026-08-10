@@ -28,6 +28,14 @@ seamm\_webui.routers.projects module
    :show-inheritance:
    :undoc-members:
 
+seamm\_webui.routers.queues module
+----------------------------------
+
+.. automodule:: seamm_webui.routers.queues
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 Module contents
 ---------------
 
