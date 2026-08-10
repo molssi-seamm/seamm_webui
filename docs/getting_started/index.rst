@@ -56,5 +56,14 @@ Accounts for that login mode are created with the companion
 
   seamm-webui-user create alice
 
+An existing account's password can be reset the same way (e.g. if it's
+forgotten, or was only ever a bootstrap/test default)::
+
+  seamm-webui-user set-password alice
+
+This always prompts for the new password interactively (there's no
+``--password`` flag, unlike ``create``) so it's never typed anywhere --
+a shell command, a shared terminal session -- where it could be captured.
+
 That should be enough to get started. For more detail about using the
 dashboard, see the :ref:`User Guide <user-guide>`.

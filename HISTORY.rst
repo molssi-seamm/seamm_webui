@@ -2,6 +2,13 @@
 History
 =======
 
+2026.8.10.2 -- Add seamm-webui-user set-password
+    * New ``seamm-webui-user set-password <username>`` resets an existing
+      account's password. Always prompts interactively (no ``--password``
+      flag, unlike ``create``), so a reset never has to pass the new
+      password anywhere it could be captured -- shell history, a shared
+      terminal session, and so on.
+
 2026.8.10.1 -- Multi-cluster queue picker, and a real frontend port bug
     * New ``GET /api/queues``: lists every queue (cluster/local target) the
       paired JobServer can route jobs to, with each field's override limits
