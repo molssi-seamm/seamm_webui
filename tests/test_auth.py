@@ -3,8 +3,12 @@ mode requires real login, and the per-instance cookie-name scoping that
 fixes the old dashboard's multi-instance-logs-you-out bug.
 """
 
+import argparse
+
+import pytest
 from fastapi.testclient import TestClient
 
+import seamm_webui.manage as manage
 from seamm_webui.main import create_app
 
 
@@ -132,6 +136,78 @@ def test_new_local_account_can_log_in(tmp_path):
 
     response = client.get("/api/jobs")
     assert response.status_code == 200
+
+
+def test_set_password_cli(tmp_path, monkeypatch):
+    """seamm-webui-user set-password resets an existing user's password via
+    a hidden getpass prompt -- deliberately no --password flag (unlike
+    create), so a reset never has to pass the new password anywhere it
+    could be captured (shell history, a shared terminal/chat transcript).
+    """
+    app = create_app(str(tmp_path / "datastore"), auth_mode="local")
+    client = TestClient(app)
+
+    # admin/admin is seamm_datastore's bootstrap default (build.py) -- new
+    # password doesn't work yet.
+    response = client.post(
+        "/api/auth/login", json={"username": "admin", "password": "newpass456"}
+    )
+    assert response.status_code == 401
+
+    passwords = iter(["newpass456", "newpass456"])
+    monkeypatch.setattr(manage.getpass, "getpass", lambda prompt="": next(passwords))
+
+    manage.cmd_set_password(
+        argparse.Namespace(
+            root="~/SEAMM", datastore=str(tmp_path / "datastore"), username="admin"
+        )
+    )
+
+    # Old password no longer works, new one does.
+    response = client.post(
+        "/api/auth/login", json={"username": "admin", "password": "admin"}
+    )
+    assert response.status_code == 401
+
+    response = client.post(
+        "/api/auth/login", json={"username": "admin", "password": "newpass456"}
+    )
+    assert response.status_code == 200
+
+
+def test_set_password_mismatch_leaves_password_unchanged(tmp_path, monkeypatch):
+    app = create_app(str(tmp_path / "datastore"), auth_mode="local")
+    client = TestClient(app)
+
+    passwords = iter(["newpass456", "typo"])
+    monkeypatch.setattr(manage.getpass, "getpass", lambda prompt="": next(passwords))
+
+    with pytest.raises(SystemExit):
+        manage.cmd_set_password(
+            argparse.Namespace(
+                root="~/SEAMM",
+                datastore=str(tmp_path / "datastore"),
+                username="admin",
+            )
+        )
+
+    response = client.post(
+        "/api/auth/login", json={"username": "admin", "password": "admin"}
+    )
+    assert response.status_code == 200
+
+
+def test_set_password_unknown_user(tmp_path):
+    create_app(str(tmp_path / "datastore"), auth_mode="local")
+
+    with pytest.raises(SystemExit):
+        manage.cmd_set_password(
+            argparse.Namespace(
+                root="~/SEAMM",
+                datastore=str(tmp_path / "datastore"),
+                username="nobody",
+            )
+        )
 
 
 def test_auth_token_alias(tmp_path):

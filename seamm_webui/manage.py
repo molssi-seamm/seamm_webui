@@ -69,6 +69,33 @@ def cmd_create(args: argparse.Namespace) -> None:
     print(f"Created user {user.username!r}.")
 
 
+def cmd_set_password(args: argparse.Namespace) -> None:
+    """Reset an existing user's password.
+
+    Deliberately no --password flag (unlike create, which allows one for
+    scripting) -- this always prompts via getpass, so the new password
+    never has to be typed anywhere it could be logged or captured (a
+    shell's command history, a chat transcript run through a shared
+    terminal session, etc.), only into a genuinely hidden terminal prompt.
+    """
+    init_datastore(_resolve_datastore_dir(args))
+    from seamm_datastore.database.models import User
+
+    ds = get_datastore()
+
+    user = User.query.filter_by(username=args.username).one_or_none()
+    if user is None:
+        raise SystemExit(f"No such user {args.username!r}.")
+
+    password = getpass.getpass("New password: ")
+    if password != getpass.getpass("Confirm new password: "):
+        raise SystemExit("Passwords did not match.")
+
+    user.password = password
+    ds.Session.commit()
+    print(f"Password updated for {user.username!r}.")
+
+
 def cmd_list(args: argparse.Namespace) -> None:
     init_datastore(_resolve_datastore_dir(args))
     from seamm_datastore.database.models import User
@@ -94,6 +121,13 @@ def run() -> None:
     create.add_argument("--first-name", default=None)
     create.add_argument("--last-name", default=None)
     create.set_defaults(func=cmd_create)
+
+    set_password = subparsers.add_parser(
+        "set-password", help="Reset an existing user's password."
+    )
+    _add_common_args(set_password)
+    set_password.add_argument("username")
+    set_password.set_defaults(func=cmd_set_password)
 
     list_cmd = subparsers.add_parser("list", help="List existing user accounts.")
     _add_common_args(list_cmd)
