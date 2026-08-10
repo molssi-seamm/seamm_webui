@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm_webui.db &#8212; seamm_webui 2026.8.10 documentation</title>
+    <title>seamm_webui.tls &#8212; seamm_webui 2026.8.10 documentation</title>
   
   
   
@@ -54,7 +54,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../../_static/copybutton.js?v=f281be69"></script>
     <script src="../../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/seamm_webui/db';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/seamm_webui/tls';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
 
     <link rel="index" title="Index" href="../../genindex.html" />
@@ -468,7 +468,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     
     <li class="breadcrumb-item"><a href="../index.html" class="nav-link">Module code</a></li>
     
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">seamm_webui.db</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">seamm_webui.tls</span></li>
   </ul>
 </nav>
 </div>
@@ -485,174 +485,97 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <h1>Source code for seamm_webui.db</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Datastore connection management for seamm_webui.</span>
+  <h1>Source code for seamm_webui.tls</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Self-signed TLS certificate generation for non-loopback deployments.</span>
 
-<span class="sd">IMPORTANT ordering constraint: ``init_datastore()`` must run before anything</span>
-<span class="sd">else in this process imports ``seamm_datastore.database.models`` (directly or</span>
-<span class="sd">transitively, e.g. via a router). ``seamm_datastore``&#39;s internal</span>
-<span class="sd">``flask_authorize_patch`` decides -- the *first* time it is imported in a</span>
-<span class="sd">process -- whether to bind to a real Flask ``current_app`` or to the</span>
-<span class="sd">standalone ``fake_app`` shim that ``SEAMMDatastore.__init__`` sets up. Since</span>
-<span class="sd">we have no Flask app, importing the models before ``init_datastore()`` has</span>
-<span class="sd">run would leave that patch trying to use Flask&#39;s real (app-context-less)</span>
-<span class="sd">``current_app`` proxy and crash. ``main.py`` calls ``init_datastore()`` first</span>
-<span class="sd">and only then imports the routers, which is what keeps this safe.</span>
+<span class="sd">seamm_webui has to be self-contained -- no separately-installed/managed</span>
+<span class="sd">httpd (Apache/nginx/Caddy) in front of it, since installs are expected on</span>
+<span class="sd">machines run by non-computer-savvy users. So when it&#39;s asked to bind a</span>
+<span class="sd">non-loopback host with no certificate supplied, it generates and reuses its</span>
+<span class="sd">own self-signed certificate, the same way an SSH server generates a host</span>
+<span class="sd">key on first boot: real, browser-trusted HTTPS (Let&#39;s Encrypt-style) needs</span>
+<span class="sd">the host to be publicly reachable on a real DNS name, which doesn&#39;t hold</span>
+<span class="sd">for cluster-internal deployments.</span>
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">contextvars</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ipaddress</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">socket</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">seamm_datastore</span>
-
-<span class="n">_datastore</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="s2">&quot;seamm_datastore.connect&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">_datastore_dir</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-<span class="c1"># Phase 3: who seamm_datastore&#39;s permission checks see as &quot;logged in&quot;, made</span>
-<span class="c1"># request-scoped instead of living on the one shared SEAMMDatastore</span>
-<span class="c1"># connection object every request uses. See _patch_current_user_to_contextvar</span>
-<span class="c1"># below for why this is necessary and how it works.</span>
-<span class="n">_current_username</span><span class="p">:</span> <span class="n">contextvars</span><span class="o">.</span><span class="n">ContextVar</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="n">contextvars</span><span class="o">.</span><span class="n">ContextVar</span><span class="p">(</span>
-    <span class="s2">&quot;seamm_webui_current_username&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
-<span class="p">)</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">fasteners</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cryptography</span><span class="w"> </span><span class="kn">import</span> <span class="n">x509</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cryptography.hazmat.primitives</span><span class="w"> </span><span class="kn">import</span> <span class="n">hashes</span><span class="p">,</span> <span class="n">serialization</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cryptography.hazmat.primitives.asymmetric</span><span class="w"> </span><span class="kn">import</span> <span class="n">rsa</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cryptography.x509.oid</span><span class="w"> </span><span class="kn">import</span> <span class="n">NameOID</span>
 
 
-<div class="viewcode-block" id="set_current_user">
-<a class="viewcode-back" href="../../api/seamm_webui.html#seamm_webui.db.set_current_user">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">set_current_user</span><span class="p">(</span><span class="n">username</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set the identity seamm_datastore&#39;s permission checks will see for the</span>
-<span class="sd">    rest of the current request (or, outside of a request, the rest of the</span>
-<span class="sd">    current context). ``seamm_webui.auth``&#39;s ``require_permission`` calls</span>
-<span class="sd">    this once it&#39;s established who&#39;s making the request -- the fixed</span>
-<span class="sd">    built-in identity in &quot;none&quot; mode, or the verified session cookie&#39;s</span>
-<span class="sd">    username in &quot;local&quot; mode. Deliberately does *not* go through</span>
-<span class="sd">    ``SEAMMDatastore.login()`` (which re-verifies a password) since a valid</span>
-<span class="sd">    session cookie already proved identity.</span>
+<div class="viewcode-block" id="get_or_create_self_signed_cert">
+<a class="viewcode-back" href="../../api/seamm_webui.html#seamm_webui.tls.get_or_create_self_signed_cert">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_or_create_self_signed_cert</span><span class="p">(</span><span class="n">root_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return (certfile, keyfile) paths under `root_dir`, generating a</span>
+<span class="sd">    self-signed cert/key pair on first use and reusing them on subsequent</span>
+<span class="sd">    calls so a restart doesn&#39;t invalidate every browser&#39;s trust decision.</span>
+<span class="sd">    Lock-guarded (like get_or_create_secret_key) so two processes starting</span>
+<span class="sd">    against the same fresh --root at once can&#39;t race.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">_current_username</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">username</span><span class="p">)</span></div>
-
-
-
-<span class="k">def</span><span class="w"> </span><span class="nf">_patch_current_user_to_contextvar</span><span class="p">():</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Make ``SEAMMDatastore._user`` request-scoped.</span>
-
-<span class="sd">    ``seamm_datastore.connect.SEAMMDatastore.login()``/``.logout()``/</span>
-<span class="sd">    ``.current_user()`` just read and write a plain ``self._user`` string</span>
-<span class="sd">    attribute, and the constructor does</span>
-<span class="sd">    ``self.authorize = Authorize(current_user=self.current_user)`` -- a</span>
-<span class="sd">    bound method flask_authorize calls fresh on every permission check, not</span>
-<span class="sd">    a value captured once. That&#39;s exactly right for one shared connection</span>
-<span class="sd">    object serving one process-wide identity (Phase 1/2&#39;s fixed admin</span>
-<span class="sd">    login), and exactly wrong once real per-user logins mean two different</span>
-<span class="sd">    people can be logged in at the same time: ``self._user`` is a single</span>
-<span class="sd">    mutable attribute on the *one* datastore connection every request in</span>
-<span class="sd">    this FastAPI process shares, so without this patch, one request&#39;s login</span>
-<span class="sd">    would leak into every other concurrent request&#39;s permission checks.</span>
-
-<span class="sd">    Fix, without touching the seamm_datastore package itself: replace the</span>
-<span class="sd">    plain instance attribute with a class-level ``property`` backed by a</span>
-<span class="sd">    ``contextvars.ContextVar``. FastAPI/Starlette gives each request its own</span>
-<span class="sd">    ``contextvars.Context`` (correctly propagated into ``run_in_threadpool``</span>
-<span class="sd">    for sync routes too), so this makes &quot;current user&quot; request-isolated</span>
-<span class="sd">    while every request still shares the same underlying datastore</span>
-<span class="sd">    connection/engine/session pool -- nothing else about how</span>
-<span class="sd">    ``login()``/``logout()``/``current_user()`` are written needs to change,</span>
-<span class="sd">    since they already only ever do ``self._user = ...`` / ``if</span>
-<span class="sd">    self._user``.</span>
-
-<span class="sd">    Called before ``seamm_datastore.connect()`` so even the constructor&#39;s</span>
-<span class="sd">    own ``self._user = None`` (when no ``username=`` is passed, our case)</span>
-<span class="sd">    goes through the property.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.connect</span><span class="w"> </span><span class="kn">import</span> <span class="n">SEAMMDatastore</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_get_user</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">_current_username</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
-
-    <span class="k">def</span><span class="w"> </span><span class="nf">_set_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="n">_current_username</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-
-    <span class="n">SEAMMDatastore</span><span class="o">.</span><span class="n">_user</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">_get_user</span><span class="p">,</span> <span class="n">_set_user</span><span class="p">)</span>
-
-
-<div class="viewcode-block" id="init_datastore">
-<a class="viewcode-back" href="../../api/seamm_webui.html#seamm_webui.db.init_datastore">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">init_datastore</span><span class="p">(</span><span class="n">datastore_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default_project</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Connect to the SEAMM datastore at ``datastore_dir``.</span>
-
-<span class="sd">    NOTE: this must be the *datastore* directory (what the rest of SEAMM</span>
-<span class="sd">    calls ``--datastore``, default ``${root}/Jobs``), not the general</span>
-<span class="sd">    ``--root`` SEAMM config directory (default ``~/SEAMM``, holding the</span>
-<span class="sd">    per-code ``.ini`` files) -- those are two different, separately</span>
-<span class="sd">    configurable directories. Conflating them was a real bug here during</span>
-<span class="sd">    scaffolding: pointing this at ``~/SEAMM`` directly found no</span>
-<span class="sd">    ``seamm.db``, silently created a fresh empty one there, and connected</span>
-<span class="sd">    to that instead of the real datastore at ``~/SEAMM/Jobs/seamm.db``. See</span>
-<span class="sd">    ``main.py``&#39;s ``--root``/``--datastore`` handling, which mirrors</span>
-<span class="sd">    ``seamm_util.argument_parser``&#39;s ``${root}/Jobs`` default.</span>
-
-<span class="sd">    Only initializes (creates tables/default project/roles) if there is no</span>
-<span class="sd">    existing ``seamm.db`` at that location yet -- an existing datastore</span>
-<span class="sd">    (e.g. the one the old ``seamm_dashboard`` already uses) is connected to</span>
-<span class="sd">    as-is, never dropped/recreated.</span>
-
-<span class="sd">    Identity is deliberately left unset here (no ``login()`` call) --</span>
-<span class="sd">    ``_current_username``&#39;s own ``default=None`` means any request that</span>
-<span class="sd">    somehow reaches a permission check without going through</span>
-<span class="sd">    ``seamm_webui.auth.require_permission`` first fails closed (looks</span>
-<span class="sd">    logged-out), not open (looks like the admin account). Establishing who&#39;s</span>
-<span class="sd">    making a given request is entirely ``require_permission``&#39;s job now</span>
-<span class="sd">    (Phase 3) -- see ``seamm_webui/auth.py``.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">global</span> <span class="n">_datastore</span><span class="p">,</span> <span class="n">_datastore_dir</span>
-
-    <span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">datastore_dir</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+    <span class="n">root</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">root_dir</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span>
     <span class="n">root</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-    <span class="n">db_path</span> <span class="o">=</span> <span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;seamm.db&quot;</span>
-    <span class="n">initialize</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">db_path</span><span class="o">.</span><span class="n">exists</span><span class="p">()</span>
+    <span class="n">certfile</span> <span class="o">=</span> <span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;webui.crt&quot;</span>
+    <span class="n">keyfile</span> <span class="o">=</span> <span class="n">root</span> <span class="o">/</span> <span class="s2">&quot;webui.key&quot;</span>
 
-    <span class="n">_patch_current_user_to_contextvar</span><span class="p">()</span>
+    <span class="n">lock</span> <span class="o">=</span> <span class="n">fasteners</span><span class="o">.</span><span class="n">InterProcessLock</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">certfile</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.lock&quot;</span><span class="p">)</span>
+    <span class="n">locked</span> <span class="o">=</span> <span class="n">lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">(</span><span class="n">blocking</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">locked</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not lock the certificate files under &#39;</span><span class="si">{</span><span class="n">root</span><span class="si">}</span><span class="s2">&#39;&quot;</span><span class="p">)</span>
 
-    <span class="c1"># Note: NOT passing username= here on purpose. seamm_datastore.connect()</span>
-    <span class="c1"># has a bug (connect.py:201, `self.add_user` does not exist) that&#39;s hit</span>
-    <span class="c1"># when `initialize=True` and a `username` is passed to the constructor</span>
-    <span class="c1"># itself -- see https://github.com/molssi-seamm/seamm_datastore (file an</span>
-    <span class="c1"># issue). Not logging in at all (see docstring above) avoids that code</span>
-    <span class="c1"># path entirely and works whether this connection just created the</span>
-    <span class="c1"># datastore or is attaching to an existing one.</span>
-    <span class="n">_datastore</span> <span class="o">=</span> <span class="n">seamm_datastore</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
-        <span class="n">database_uri</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;sqlite:///</span><span class="si">{</span><span class="n">db_path</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
-        <span class="n">datastore_location</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">root</span><span class="p">),</span>
-        <span class="n">initialize</span><span class="o">=</span><span class="n">initialize</span><span class="p">,</span>
-        <span class="n">default_project</span><span class="o">=</span><span class="n">default_project</span><span class="p">,</span>
-    <span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">certfile</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span> <span class="ow">and</span> <span class="n">keyfile</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">certfile</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">keyfile</span><span class="p">)</span>
 
-    <span class="n">_datastore_dir</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+        <span class="n">hostname</span> <span class="o">=</span> <span class="n">socket</span><span class="o">.</span><span class="n">gethostname</span><span class="p">()</span>
+        <span class="n">san_names</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">({</span><span class="n">hostname</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">getfqdn</span><span class="p">(),</span> <span class="s2">&quot;localhost&quot;</span><span class="p">})</span>
 
-    <span class="k">return</span> <span class="n">_datastore</span></div>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">rsa</span><span class="o">.</span><span class="n">generate_private_key</span><span class="p">(</span><span class="n">public_exponent</span><span class="o">=</span><span class="mi">65537</span><span class="p">,</span> <span class="n">key_size</span><span class="o">=</span><span class="mi">2048</span><span class="p">)</span>
 
-
-
-<div class="viewcode-block" id="get_datastore">
-<a class="viewcode-back" href="../../api/seamm_webui.html#seamm_webui.db.get_datastore">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_datastore</span><span class="p">():</span>
-    <span class="k">if</span> <span class="n">_datastore</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-            <span class="s2">&quot;Datastore not initialized; call init_datastore() at app startup.&quot;</span>
+        <span class="n">subject</span> <span class="o">=</span> <span class="n">issuer</span> <span class="o">=</span> <span class="n">x509</span><span class="o">.</span><span class="n">Name</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">x509</span><span class="o">.</span><span class="n">NameAttribute</span><span class="p">(</span><span class="n">NameOID</span><span class="o">.</span><span class="n">COMMON_NAME</span><span class="p">,</span> <span class="n">hostname</span><span class="p">)]</span>
         <span class="p">)</span>
-    <span class="k">return</span> <span class="n">_datastore</span></div>
-
-
-
-<div class="viewcode-block" id="get_datastore_dir">
-<a class="viewcode-back" href="../../api/seamm_webui.html#seamm_webui.db.get_datastore_dir">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_datastore_dir</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-    <span class="k">if</span> <span class="n">_datastore_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-            <span class="s2">&quot;Datastore not initialized; call init_datastore() at app startup.&quot;</span>
+        <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">datetime</span><span class="o">.</span><span class="n">timezone</span><span class="o">.</span><span class="n">utc</span><span class="p">)</span>
+        <span class="n">cert</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">x509</span><span class="o">.</span><span class="n">CertificateBuilder</span><span class="p">()</span>
+            <span class="o">.</span><span class="n">subject_name</span><span class="p">(</span><span class="n">subject</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">issuer_name</span><span class="p">(</span><span class="n">issuer</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">public_key</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">public_key</span><span class="p">())</span>
+            <span class="o">.</span><span class="n">serial_number</span><span class="p">(</span><span class="n">x509</span><span class="o">.</span><span class="n">random_serial_number</span><span class="p">())</span>
+            <span class="o">.</span><span class="n">not_valid_before</span><span class="p">(</span><span class="n">now</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+            <span class="o">.</span><span class="n">not_valid_after</span><span class="p">(</span><span class="n">now</span> <span class="o">+</span> <span class="n">datetime</span><span class="o">.</span><span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">3650</span><span class="p">))</span>
+            <span class="o">.</span><span class="n">add_extension</span><span class="p">(</span>
+                <span class="n">x509</span><span class="o">.</span><span class="n">SubjectAlternativeName</span><span class="p">(</span>
+                    <span class="p">[</span><span class="n">x509</span><span class="o">.</span><span class="n">DNSName</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">san_names</span><span class="p">]</span>
+                    <span class="o">+</span> <span class="p">[</span><span class="n">x509</span><span class="o">.</span><span class="n">IPAddress</span><span class="p">(</span><span class="n">ipaddress</span><span class="o">.</span><span class="n">ip_address</span><span class="p">(</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">))]</span>
+                <span class="p">),</span>
+                <span class="n">critical</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="o">.</span><span class="n">sign</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">hashes</span><span class="o">.</span><span class="n">SHA256</span><span class="p">())</span>
         <span class="p">)</span>
-    <span class="k">return</span> <span class="n">_datastore_dir</span></div>
+
+        <span class="n">keyfile</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span>
+            <span class="n">key</span><span class="o">.</span><span class="n">private_bytes</span><span class="p">(</span>
+                <span class="n">encoding</span><span class="o">=</span><span class="n">serialization</span><span class="o">.</span><span class="n">Encoding</span><span class="o">.</span><span class="n">PEM</span><span class="p">,</span>
+                <span class="nb">format</span><span class="o">=</span><span class="n">serialization</span><span class="o">.</span><span class="n">PrivateFormat</span><span class="o">.</span><span class="n">PKCS8</span><span class="p">,</span>
+                <span class="n">encryption_algorithm</span><span class="o">=</span><span class="n">serialization</span><span class="o">.</span><span class="n">NoEncryption</span><span class="p">(),</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">keyfile</span><span class="p">,</span> <span class="mo">0o600</span><span class="p">)</span>
+
+        <span class="n">certfile</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="n">cert</span><span class="o">.</span><span class="n">public_bytes</span><span class="p">(</span><span class="n">serialization</span><span class="o">.</span><span class="n">Encoding</span><span class="o">.</span><span class="n">PEM</span><span class="p">))</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">certfile</span><span class="p">,</span> <span class="mo">0o644</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">certfile</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">keyfile</span><span class="p">)</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span></div>
 
 </pre></div>
 

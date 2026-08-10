@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm_webui package &#8212; seamm_webui 2026.8.8 documentation</title>
+    <title>seamm_webui package &#8212; seamm_webui 2026.8.10 documentation</title>
   
   
   
@@ -49,7 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=d318b753"></script>
+    <script src="../_static/documentation_options.js?v=7ddc0e42"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="seamm_webui" href="modules.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.8.8" />
+  <meta name="docsearch:version" content="2026.8.10" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -780,6 +780,28 @@ are,” not per-user data partitioning – see dashboard-rewrite-plan.md.</p>
 <dd></dd></dl>
 
 </section>
+<section id="module-seamm_webui.tls">
+<span id="seamm-webui-tls-module"></span><h2>seamm_webui.tls module<a class="headerlink" href="#module-seamm_webui.tls" title="Link to this heading">#</a></h2>
+<p>Self-signed TLS certificate generation for non-loopback deployments.</p>
+<p>seamm_webui has to be self-contained – no separately-installed/managed
+httpd (Apache/nginx/Caddy) in front of it, since installs are expected on
+machines run by non-computer-savvy users. So when it’s asked to bind a
+non-loopback host with no certificate supplied, it generates and reuses its
+own self-signed certificate, the same way an SSH server generates a host
+key on first boot: real, browser-trusted HTTPS (Let’s Encrypt-style) needs
+the host to be publicly reachable on a real DNS name, which doesn’t hold
+for cluster-internal deployments.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm_webui.tls.get_or_create_self_signed_cert">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.tls.</span></span><span class="sig-name descname"><span class="pre">get_or_create_self_signed_cert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root_dir</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">str</span><span class="p"><span class="pre">]</span></span></span></span><a class="reference internal" href="../_modules/seamm_webui/tls.html#get_or_create_self_signed_cert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.tls.get_or_create_self_signed_cert" title="Link to this definition">#</a></dt>
+<dd><p>Return (certfile, keyfile) paths under <cite>root_dir</cite>, generating a
+self-signed cert/key pair on first use and reusing them on subsequent
+calls so a restart doesn’t invalidate every browser’s trust decision.
+Lock-guarded (like get_or_create_secret_key) so two processes starting
+against the same fresh –root at once can’t race.</p>
+</dd></dl>
+
+</section>
 <section id="module-seamm_webui.util">
 <span id="seamm-webui-util-module"></span><h2>seamm_webui.util module<a class="headerlink" href="#module-seamm_webui.util" title="Link to this heading">#</a></h2>
 <p>Job submission utilities.</p>
@@ -899,6 +921,10 @@ the key.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.manage.cmd_create"><code class="docutils literal notranslate"><span class="pre">cmd_create()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.manage.cmd_list"><code class="docutils literal notranslate"><span class="pre">cmd_list()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.manage.run"><code class="docutils literal notranslate"><span class="pre">run()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm_webui.tls">seamm_webui.tls module</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.tls.get_or_create_self_signed_cert"><code class="docutils literal notranslate"><span class="pre">get_or_create_self_signed_cert()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm_webui.util">seamm_webui.util module</a><ul class="pst-show_toc_level nav section-nav flex-column">

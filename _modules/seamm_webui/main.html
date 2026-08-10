@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm_webui.main &#8212; seamm_webui 2026.8.8 documentation</title>
+    <title>seamm_webui.main &#8212; seamm_webui 2026.8.10 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=d318b753"></script>
+    <script src="../../_static/documentation_options.js?v=7ddc0e42"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.8.8" />
+  <meta name="docsearch:version" content="2026.8.10" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -489,14 +489,23 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span></span><span class="sd">&quot;&quot;&quot;FastAPI application factory and CLI entry point for seamm_webui.&quot;&quot;&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">argparse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span><span class="p">,</span> <span class="n">Request</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span><span class="p">,</span> <span class="n">HTTPException</span><span class="p">,</span> <span class="n">Request</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.middleware.cors</span><span class="w"> </span><span class="kn">import</span> <span class="n">CORSMiddleware</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.responses</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileResponse</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.staticfiles</span><span class="w"> </span><span class="kn">import</span> <span class="n">StaticFiles</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">init_datastore</span><span class="p">,</span> <span class="n">get_datastore_dir</span>
 
 <span class="c1"># Hosts that mean &quot;this machine only&quot; -- see run()&#39;s --auth guardrail.</span>
 <span class="n">LOOPBACK_HOSTS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;127.0.0.1&quot;</span><span class="p">,</span> <span class="s2">&quot;localhost&quot;</span><span class="p">,</span> <span class="s2">&quot;::1&quot;</span><span class="p">}</span>
+
+<span class="c1"># Populated by `npm run build` (see frontend/vite.config.ts&#39;s build.outDir)</span>
+<span class="c1"># and shipped as package data in released wheels. Absent in an editable/</span>
+<span class="c1"># source dev install that hasn&#39;t built the frontend -- create_app() falls</span>
+<span class="c1"># back to API-only in that case rather than erroring.</span>
+<span class="n">STATIC_DIR</span> <span class="o">=</span> <span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;static&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
 
 
 <div class="viewcode-block" id="create_app">
@@ -579,6 +588,35 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <span class="p">},</span>
         <span class="p">}</span>
 
+    <span class="k">if</span> <span class="p">(</span><span class="n">STATIC_DIR</span> <span class="o">/</span> <span class="s2">&quot;index.html&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+        <span class="c1"># Registered last -- it&#39;s a catch-all, so /api/... routes above</span>
+        <span class="c1"># must already be in place or this would shadow them.</span>
+        <span class="n">assets_dir</span> <span class="o">=</span> <span class="n">STATIC_DIR</span> <span class="o">/</span> <span class="s2">&quot;assets&quot;</span>
+        <span class="k">if</span> <span class="n">assets_dir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+            <span class="n">app</span><span class="o">.</span><span class="n">mount</span><span class="p">(</span><span class="s2">&quot;/assets&quot;</span><span class="p">,</span> <span class="n">StaticFiles</span><span class="p">(</span><span class="n">directory</span><span class="o">=</span><span class="n">assets_dir</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;assets&quot;</span><span class="p">)</span>
+
+        <span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/{full_path:path}&quot;</span><span class="p">,</span> <span class="n">include_in_schema</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">spa_fallback</span><span class="p">(</span><span class="n">full_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="c1"># Client-side routes (e.g. /jobs/123) have no file on disk --</span>
+            <span class="c1"># serve index.html for those so a hard refresh doesn&#39;t 404, but</span>
+            <span class="c1"># let a genuinely missing /api/... route 404 normally rather</span>
+            <span class="c1"># than silently returning the SPA shell.</span>
+            <span class="k">if</span> <span class="n">full_path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;api/&quot;</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">)</span>
+            <span class="c1"># Resolve and verify containment before treating this as a real</span>
+            <span class="c1"># static asset -- full_path is attacker-controlled (e.g. a</span>
+            <span class="c1"># crafted &quot;../../../etc/passwd&quot;), and plain path concatenation</span>
+            <span class="c1"># doesn&#39;t stop it climbing out of STATIC_DIR (CodeQL</span>
+            <span class="c1"># py/path-injection).</span>
+            <span class="n">candidate</span> <span class="o">=</span> <span class="p">(</span><span class="n">STATIC_DIR</span> <span class="o">/</span> <span class="n">full_path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
+            <span class="k">if</span> <span class="p">(</span>
+                <span class="n">full_path</span>
+                <span class="ow">and</span> <span class="n">candidate</span><span class="o">.</span><span class="n">is_relative_to</span><span class="p">(</span><span class="n">STATIC_DIR</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="n">candidate</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span>
+            <span class="p">):</span>
+                <span class="k">return</span> <span class="n">FileResponse</span><span class="p">(</span><span class="n">candidate</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">FileResponse</span><span class="p">(</span><span class="n">STATIC_DIR</span> <span class="o">/</span> <span class="s2">&quot;index.html&quot;</span><span class="p">)</span>
+
     <span class="k">return</span> <span class="n">app</span></div>
 
 
@@ -622,7 +660,24 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <span class="s2">&quot;a non-loopback --host.&quot;</span>
         <span class="p">),</span>
     <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--ssl-certfile&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="p">(</span>
+            <span class="s2">&quot;Path to a TLS certificate. If omitted and --host is &quot;</span>
+            <span class="s2">&quot;non-loopback, a self-signed certificate is generated (once) &quot;</span>
+            <span class="s2">&quot;and reused under --root -- see --ssl-keyfile.&quot;</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--ssl-keyfile&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Path to the private key matching --ssl-certfile.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
     <span class="n">args</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">ssl_certfile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span> <span class="o">!=</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">ssl_keyfile</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;--ssl-certfile and --ssl-keyfile must be given together&quot;</span><span class="p">)</span>
 
     <span class="n">auth_mode</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">auth</span>
     <span class="k">if</span> <span class="n">auth_mode</span> <span class="o">==</span> <span class="s2">&quot;auto&quot;</span><span class="p">:</span>
@@ -636,14 +691,31 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     <span class="n">datastore_dir</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">datastore</span>
     <span class="k">if</span> <span class="n">datastore_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
-
         <span class="n">datastore_dir</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">root</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;Jobs&quot;</span><span class="p">)</span>
+
+    <span class="n">ssl_certfile</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">ssl_certfile</span>
+    <span class="n">ssl_keyfile</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">ssl_keyfile</span>
+    <span class="k">if</span> <span class="n">ssl_certfile</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">ssl_keyfile</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">host</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">LOOPBACK_HOSTS</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.tls</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_or_create_self_signed_cert</span>
+
+        <span class="n">ssl_certfile</span><span class="p">,</span> <span class="n">ssl_keyfile</span> <span class="o">=</span> <span class="n">get_or_create_self_signed_cert</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">root</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;No --ssl-certfile/--ssl-keyfile given; using a self-signed &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;certificate at </span><span class="si">{</span><span class="n">ssl_certfile</span><span class="si">}</span><span class="s2">. Browsers will warn about this &quot;</span>
+            <span class="s2">&quot;until it&#39;s trusted or replaced with a real certificate.&quot;</span><span class="p">,</span>
+            <span class="n">flush</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="kn">import</span><span class="w"> </span><span class="nn">uvicorn</span>
 
     <span class="n">app</span> <span class="o">=</span> <span class="n">create_app</span><span class="p">(</span><span class="n">datastore_dir</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">port</span><span class="p">,</span> <span class="n">auth_mode</span><span class="o">=</span><span class="n">auth_mode</span><span class="p">)</span>
-    <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">app</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">port</span><span class="p">)</span></div>
+    <span class="n">uvicorn</span><span class="o">.</span><span class="n">run</span><span class="p">(</span>
+        <span class="n">app</span><span class="p">,</span>
+        <span class="n">host</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">host</span><span class="p">,</span>
+        <span class="n">port</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">port</span><span class="p">,</span>
+        <span class="n">ssl_certfile</span><span class="o">=</span><span class="n">ssl_certfile</span><span class="p">,</span>
+        <span class="n">ssl_keyfile</span><span class="o">=</span><span class="n">ssl_keyfile</span><span class="p">,</span>
+    <span class="p">)</span></div>
 
 
 

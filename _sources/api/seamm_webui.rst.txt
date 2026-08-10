@@ -44,6 +44,14 @@ seamm\_webui.manage module
    :show-inheritance:
    :undoc-members:
 
+seamm\_webui.tls module
+-----------------------
+
+.. automodule:: seamm_webui.tls
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 seamm\_webui.util module
 ------------------------
 

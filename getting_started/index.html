@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Getting Started &#8212; seamm_webui 2026.8.8 documentation</title>
+    <title>Getting Started &#8212; seamm_webui 2026.8.10 documentation</title>
   
   
   
@@ -49,7 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=d318b753"></script>
+    <script src="../_static/documentation_options.js?v=7ddc0e42"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="seamm_webui" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.8.8" />
+  <meta name="docsearch:version" content="2026.8.10" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -517,17 +517,27 @@ datastore to point at):</p>
 </section>
 <section id="running-it">
 <h2>Running it<a class="headerlink" href="#running-it" title="Link to this heading">#</a></h2>
-<p>Start the backend, pointed at an existing SEAMM datastore (defaults to
+<p>Start the server, pointed at an existing SEAMM datastore (defaults to
 <code class="docutils literal notranslate"><span class="pre">~/SEAMM/Jobs</span></code>):</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">seamm</span><span class="o">-</span><span class="n">webui</span> <span class="o">--</span><span class="n">datastore</span> <span class="o">~/</span><span class="n">SEAMM</span><span class="o">/</span><span class="n">Jobs</span>
 </pre></div>
 </div>
+<p>This is fully self-contained: a release install (from PyPI) bundles the
+built browser UI, so there’s nothing else to start or configure – visit
+the URL it prints and the dashboard itself is what loads (not just the
+API). A source/editable install that hasn’t run <code class="docutils literal notranslate"><span class="pre">npm</span> <span class="pre">run</span> <span class="pre">build</span></code> in
+<code class="docutils literal notranslate"><span class="pre">frontend/</span></code> falls back to serving the API only.</p>
 <p>By default this binds to <code class="docutils literal notranslate"><span class="pre">127.0.0.1</span></code> with no login required – fine for
 using it on your own machine. To make it reachable from other machines,
 pass a non-loopback <code class="docutils literal notranslate"><span class="pre">--host</span></code>; real per-user login then becomes required
-automatically (<code class="docutils literal notranslate"><span class="pre">seamm-webui</span></code> refuses to start otherwise). See
-<code class="docutils literal notranslate"><span class="pre">seamm-webui</span> <span class="pre">--help</span></code> for the full set of options, and the User Guide for
-how authentication works.</p>
+automatically (<code class="docutils literal notranslate"><span class="pre">seamm-webui</span></code> refuses to start otherwise), and so does
+HTTPS: with no <code class="docutils literal notranslate"><span class="pre">--ssl-certfile</span></code>/<code class="docutils literal notranslate"><span class="pre">--ssl-keyfile</span></code> given, a self-signed
+certificate is generated once and reused from then on (browsers will warn
+about it being untrusted, the same as any self-signed certificate, until
+it’s trusted or replaced with a real one). See <code class="docutils literal notranslate"><span class="pre">seamm-webui</span> <span class="pre">--help</span></code> for
+the full set of options, and the User Guide for how authentication works.</p>
+<p>For setting this up as a persistent daemon (rather than a foreground
+terminal command), see <a class="reference internal" href="../developer_guide/installation.html"><span class="doc">Installation</span></a>.</p>
 <p>Accounts for that login mode are created with the companion
 <code class="docutils literal notranslate"><span class="pre">seamm-webui-user</span></code> command, e.g.:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">seamm</span><span class="o">-</span><span class="n">webui</span><span class="o">-</span><span class="n">user</span> <span class="n">create</span> <span class="n">alice</span>

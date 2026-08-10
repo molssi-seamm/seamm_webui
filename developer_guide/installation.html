@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Installation &#8212; seamm_webui 2026.8.8 documentation</title>
+    <title>Installation &#8212; seamm_webui 2026.8.10 documentation</title>
   
   
   
@@ -49,7 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=d318b753"></script>
+    <script src="../_static/documentation_options.js?v=7ddc0e42"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="Developer Documentation" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.8.8" />
+  <meta name="docsearch:version" content="2026.8.10" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -514,6 +514,44 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   
   <section id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Link to this heading">#</a></h1>
+<section id="production-deployment">
+<h2>Production deployment<a class="headerlink" href="#production-deployment" title="Link to this heading">#</a></h2>
+<p>For a persistent, self-contained install – not a foreground terminal
+command – use <code class="docutils literal notranslate"><span class="pre">seamm-installer</span></code> (the same tool that installs and
+daemonizes the rest of SEAMM, including the legacy Dashboard and the
+JobServer). It creates a dedicated <code class="docutils literal notranslate"><span class="pre">seamm-webui</span></code> Conda environment
+(<code class="docutils literal notranslate"><span class="pre">seamm_webui</span></code> doesn’t share much with the rest of the SEAMM stack, so it
+stays out of the main <code class="docutils literal notranslate"><span class="pre">seamm</span></code> environment), installs <code class="docutils literal notranslate"><span class="pre">seamm_webui</span></code> from
+PyPI into it, and sets up a systemd (Linux) or launchd (macOS) service:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>seamm-installer<span class="w"> </span>install<span class="w"> </span>seamm-webui
+<span class="gp">$ </span>seamm-installer<span class="w"> </span>services<span class="w"> </span>create<span class="w"> </span>webui
+</pre></div>
+</div>
+<p>By default the created service binds to <code class="docutils literal notranslate"><span class="pre">0.0.0.0</span></code> (reachable from other
+machines) – pass <code class="docutils literal notranslate"><span class="pre">--webui-host</span> <span class="pre">127.0.0.1</span></code> to <code class="docutils literal notranslate"><span class="pre">services</span> <span class="pre">create</span></code> instead
+for a local-only install. Once reachable from other machines,
+<code class="docutils literal notranslate"><span class="pre">seamm_webui</span></code> requires both real per-user login (see the
+<a class="reference internal" href="../user_guide/index.html#user-guide"><span class="std std-ref">User Guide</span></a>, accounts are created with
+<code class="docutils literal notranslate"><span class="pre">seamm-webui-user</span> <span class="pre">create</span></code>) and HTTPS automatically: with no certificate
+supplied it generates and reuses its own self-signed certificate (under
+<code class="docutils literal notranslate"><span class="pre">--root</span></code>, i.e. <code class="docutils literal notranslate"><span class="pre">~/SEAMM</span></code> by default) the first time it starts, the same
+way an SSH server generates a host key on first boot. Browsers will warn
+about it being untrusted until it’s trusted manually or replaced with a
+real certificate – pass <code class="docutils literal notranslate"><span class="pre">--ssl-certfile</span></code>/<code class="docutils literal notranslate"><span class="pre">--ssl-keyfile</span></code> (forwarded by
+<code class="docutils literal notranslate"><span class="pre">seamm-installer</span> <span class="pre">services</span> <span class="pre">create</span></code> if set) to use one instead. Getting a
+browser-trusted certificate automatically (Let’s Encrypt-style) isn’t
+attempted – it requires the host to be publicly reachable on a real DNS
+name, which doesn’t hold for typical cluster-internal deployments.</p>
+<p><code class="docutils literal notranslate"><span class="pre">seamm_webui</span></code> never executes jobs itself – a separate <code class="docutils literal notranslate"><span class="pre">seamm_jobserver</span></code>
+daemon, polling the same datastore, does that. Set it up alongside webui or
+submitted jobs will simply sit unprocessed:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>seamm-installer<span class="w"> </span>services<span class="w"> </span>create<span class="w"> </span>jobserver
+</pre></div>
+</div>
+<p>See <code class="docutils literal notranslate"><span class="pre">seamm-installer</span> <span class="pre">services</span> <span class="pre">--help</span></code> for <code class="docutils literal notranslate"><span class="pre">status</span></code>/<code class="docutils literal notranslate"><span class="pre">stop</span></code>/<code class="docutils literal notranslate"><span class="pre">delete</span></code>,
+and <a class="reference internal" href="../getting_started/index.html"><span class="doc">Getting Started</span></a> for running <code class="docutils literal notranslate"><span class="pre">seamm-webui</span></code> directly
+(not as a daemon) for local/interactive use.</p>
+</section>
 <section id="stable-release">
 <h2>Stable release<a class="headerlink" href="#stable-release" title="Link to this heading">#</a></h2>
 <p>To install seamm_webui, run this command in your terminal:</p>
@@ -594,6 +632,7 @@ guide you through the process.</p>
   </div>
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#production-deployment">Production deployment</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#stable-release">Stable release</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#from-sources">From sources</a></li>
 </ul>
