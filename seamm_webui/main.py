@@ -1,7 +1,9 @@
 """FastAPI application factory and CLI entry point for seamm_webui."""
 
 import argparse
+import socket
 from pathlib import Path
+from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -21,15 +23,32 @@ STATIC_DIR = (Path(__file__).parent / "static").resolve()
 
 
 def create_app(
-    datastore_dir: str, port: int = 8010, auth_mode: str = "none"
+    datastore_dir: str,
+    port: int = 8010,
+    auth_mode: str = "none",
+    root: Optional[str] = None,
+    jobserver_name: Optional[str] = None,
 ) -> FastAPI:
+    """Build the FastAPI app.
+
+    ``root``/``jobserver_name`` are only used for the read-only
+    ``GET /api/queues`` endpoint (``queue_config.py``/``routers/queues.py``)
+    -- ``root=None`` (the default, and what every pre-existing caller/test
+    still gets) means that endpoint reports no queues at all, exactly as if
+    the multi-queue routing feature didn't exist. ``jobserver_name``
+    defaults to this host's hostname, matching ``seamm_jobserver``'s own
+    ``--name`` default, when ``root`` is given but no name is.
+    """
     # Must happen before importing routers -- see the ordering note in
     # seamm_webui/db.py.
     init_datastore(datastore_dir)
 
     from seamm_webui.auth import init_auth
-    from seamm_webui.routers import auth, jobs, projects
+    from seamm_webui.queue_config import configure as configure_queues
+    from seamm_webui.routers import auth, jobs, projects, queues
     from seamm_webui.util import get_or_create_secret_key
+
+    configure_queues(root, jobserver_name or socket.gethostname())
 
     # Cookie name is scoped to the port (not just a fixed string) so two
     # seamm-webui instances reachable as the same host -- a local one plus
@@ -59,6 +78,7 @@ def create_app(
     app.include_router(auth.router)
     app.include_router(jobs.router)
     app.include_router(projects.router)
+    app.include_router(queues.router)
 
     @app.get("/api/health")
     def health():
@@ -150,6 +170,18 @@ def run():
         ),
     )
     parser.add_argument(
+        "--jobserver-name",
+        default=None,
+        help=(
+            "The --name of the JobServer instance paired with this "
+            "Dashboard, for the GET /api/queues endpoint (reads "
+            "<root>/<jobserver-name>.ini). Defaults to this host's "
+            "hostname, matching seamm_jobserver's own --name default -- "
+            "only needed explicitly if this host runs more than one "
+            "independent JobServer instance."
+        ),
+    )
+    parser.add_argument(
         "--port", type=int, default=8010, help="Port to listen on (default: 8010)"
     )
     parser.add_argument(
@@ -215,7 +247,13 @@ def run():
 
     import uvicorn
 
-    app = create_app(datastore_dir, port=args.port, auth_mode=auth_mode)
+    app = create_app(
+        datastore_dir,
+        port=args.port,
+        auth_mode=auth_mode,
+        root=args.root,
+        jobserver_name=args.jobserver_name,
+    )
     uvicorn.run(
         app,
         host=args.host,

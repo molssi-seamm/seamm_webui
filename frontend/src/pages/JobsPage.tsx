@@ -41,6 +41,14 @@ const columns = [
     cell: (info) => <Link to={`/jobs/${info.row.original.id}`}>{info.getValue()}</Link>,
   }),
   columnHelper.accessor('status', { header: 'Status' }),
+  columnHelper.accessor((row) => row.parameters.queue, {
+    id: 'queue',
+    header: 'Queue',
+    cell: (info) => {
+      const queue = info.getValue()
+      return typeof queue === 'string' ? queue : '—'
+    },
+  }),
   columnHelper.accessor('submitted', { header: 'Submitted' }),
   columnHelper.accessor('finished', { header: 'Finished' }),
 ]

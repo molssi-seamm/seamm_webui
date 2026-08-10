@@ -308,6 +308,11 @@ export function JobDetailPage() {
           <span>
             <strong>Projects:</strong> {j.projects.map((p) => p.name).join(', ') || '—'}
           </span>
+          {typeof j.parameters.queue === 'string' && (
+            <span>
+              <strong>Queue:</strong> {j.parameters.queue}
+            </span>
+          )}
           <span>
             <strong>Submitted:</strong> {j.submitted ?? '—'}
           </span>

@@ -1,19 +1,37 @@
-// Deliberately `localhost`, not `127.0.0.1`, to match Vite's own dev
-// server URL (also `localhost:5173`). They resolve to the same loopback
-// address, but browsers treat them as different *sites* for SameSite
-// cookie purposes (not just different origins) -- a `SameSite=Lax`
-// session cookie (Phase 3 auth) set by `127.0.0.1:8010` would silently
-// never be attached to fetch()/XHR calls from a page loaded at
-// `localhost:5173`, since Lax only allows cross-*site* requests on
-// top-level navigations, not subresource fetches. Same hostname, just a
-// different port, is a same-site relationship regardless of SameSite
-// policy, so this pairing is what actually works.
-export const API_BASE = import.meta.env.VITE_API_BASE ?? 'http://localhost:8010'
+// The production build (what seamm_webui actually ships/installs) is
+// always served by the same FastAPI process as the API itself -- same
+// origin, whatever host/port that process happens to run on (8010, 55155,
+// ..., chosen at `seamm-webui` invocation time, not at frontend build
+// time). So the default here is deliberately relative ('') rather than
+// any hardcoded absolute origin: a hardcoded port baked into the compiled
+// bundle would silently break every time the server's port changes --
+// exactly what happened when the dev deployment moved from 8010 to 55155
+// and the bundle, built once with a fixed .env, kept fetching the dead
+// old port no matter what URL the page itself was loaded from.
+//
+// The one real exception is local frontend development: `npm run dev`
+// serves the frontend from Vite's own dev server (localhost:5173) while
+// the API runs as a separately-started `seamm-webui` process on a
+// different port -- genuinely cross-origin, so that case needs an
+// explicit absolute VITE_API_BASE. That's set in `.env.development`
+// (Vite-mode-scoped, so `npm run build`'s production bundle never sees
+// it and falls through to the relative default here), deliberately using
+// `localhost`, not `127.0.0.1`, to match Vite's own dev server URL (also
+// `localhost:5173`): both resolve to the same loopback address, but
+// browsers treat them as different *sites* for SameSite cookie purposes
+// (not just different origins) -- a `SameSite=Lax` session cookie set by
+// `127.0.0.1:<port>` would silently never be attached to fetch()/XHR
+// calls from a page loaded at `localhost:5173`, since Lax only allows
+// cross-*site* requests on top-level navigations, not subresource
+// fetches. Same hostname, different port, is same-site regardless of
+// SameSite policy, so that pairing is what actually works.
+export const API_BASE = import.meta.env.VITE_API_BASE ?? ''
 
-// All requests go through this so the session cookie is always sent --
-// 'include' is required, not just the fetch default of 'same-origin',
-// since the Vite dev server and the API are different origins (same site,
-// different port).
+// All requests go through this so the session cookie is always sent.
+// 'include' (not just the fetch default of 'same-origin') matters
+// specifically for the Vite-dev-server case above, where the frontend and
+// API are different origins (same site, different port); harmless and
+// unnecessary but not wrong for the normal same-origin production case.
 async function apiFetch(path: string, options: RequestInit = {}): Promise<Response> {
   return fetch(`${API_BASE}${path}`, { ...options, credentials: 'include' })
 }
@@ -25,12 +43,19 @@ export interface Job {
   submitted: string | null
   started: string | null
   finished: string | null
+  // seamm_jobserver's multi-queue routing (2026-08-10 campaign) records
+  // which queue/cluster a job ran on here (parameters.queue) -- absent for
+  // any JobServer instance not using the feature, so callers must treat
+  // it as optional. Already present in both the list and detail API
+  // responses (JobSchema.dump() includes the raw parameters JSON as-is,
+  // not a curated field list), so no backend change was needed to surface
+  // it in the frontend.
+  parameters: Record<string, unknown>
 }
 
 export interface JobDetail extends Job {
   description: string
   path: string
-  parameters: Record<string, unknown>
   projects: { id: number; name: string }[]
 }
 
