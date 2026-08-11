@@ -210,6 +210,77 @@ def test_set_password_unknown_user(tmp_path):
         )
 
 
+def test_delete_user_cli(tmp_path):
+    from seamm_datastore.database.models import User
+    from seamm_webui.db import get_datastore
+
+    app = create_app(str(tmp_path / "datastore"), auth_mode="local")
+    client = TestClient(app)
+
+    ds = get_datastore()
+    user = User.create(username="alice", password="secret123", roles=["admin"])
+    ds.Session.add(user)
+    ds.Session.commit()
+
+    manage.cmd_delete(
+        argparse.Namespace(
+            root="~/SEAMM",
+            datastore=str(tmp_path / "datastore"),
+            username="alice",
+            yes=True,
+        )
+    )
+
+    response = client.post(
+        "/api/auth/login", json={"username": "alice", "password": "secret123"}
+    )
+    assert response.status_code == 401
+
+
+def test_delete_user_requires_confirmation(tmp_path, monkeypatch):
+    from seamm_datastore.database.models import User
+    from seamm_webui.db import get_datastore
+
+    app = create_app(str(tmp_path / "datastore"), auth_mode="local")
+    client = TestClient(app)
+
+    ds = get_datastore()
+    user = User.create(username="alice", password="secret123", roles=["admin"])
+    ds.Session.add(user)
+    ds.Session.commit()
+
+    monkeypatch.setattr("builtins.input", lambda prompt="": "n")
+    with pytest.raises(SystemExit):
+        manage.cmd_delete(
+            argparse.Namespace(
+                root="~/SEAMM",
+                datastore=str(tmp_path / "datastore"),
+                username="alice",
+                yes=False,
+            )
+        )
+
+    # Declined -- account still works.
+    response = client.post(
+        "/api/auth/login", json={"username": "alice", "password": "secret123"}
+    )
+    assert response.status_code == 200
+
+
+def test_delete_unknown_user(tmp_path):
+    create_app(str(tmp_path / "datastore"), auth_mode="local")
+
+    with pytest.raises(SystemExit):
+        manage.cmd_delete(
+            argparse.Namespace(
+                root="~/SEAMM",
+                datastore=str(tmp_path / "datastore"),
+                username="nobody",
+                yes=True,
+            )
+        )
+
+
 def test_auth_token_alias(tmp_path):
     """POST /api/auth/token is what seamm_dashboard_client.Dashboard.login()
     actually posts to (the old dashboard's endpoint name) -- must behave

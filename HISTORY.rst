@@ -2,6 +2,10 @@
 History
 =======
 
+2026.8.10.3 -- Add seamm-webui-user delete
+    * New ``seamm-webui-user delete <username>`` removes an account
+      (confirms interactively unless ``--yes`` is given).
+
 2026.8.10.2 -- Add seamm-webui-user set-password
     * New ``seamm-webui-user set-password <username>`` resets an existing
       account's password. Always prompts interactively (no ``--password``
