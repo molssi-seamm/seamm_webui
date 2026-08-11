@@ -64,6 +64,8 @@ forgotten, or was only ever a bootstrap/test default)::
 This always prompts for the new password interactively (there's no
 ``--password`` flag, unlike ``create``) so it's never typed anywhere --
 a shell command, a shared terminal session -- where it could be captured.
+``seamm-webui-user delete alice`` removes an account entirely (asks for
+confirmation unless ``--yes`` is given).
 
 That should be enough to get started. For more detail about using the
 dashboard, see the :ref:`User Guide <user-guide>`.

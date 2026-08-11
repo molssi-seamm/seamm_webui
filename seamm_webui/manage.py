@@ -96,6 +96,26 @@ def cmd_set_password(args: argparse.Namespace) -> None:
     print(f"Password updated for {user.username!r}.")
 
 
+def cmd_delete(args: argparse.Namespace) -> None:
+    init_datastore(_resolve_datastore_dir(args))
+    from seamm_datastore.database.models import User
+
+    ds = get_datastore()
+
+    user = User.query.filter_by(username=args.username).one_or_none()
+    if user is None:
+        raise SystemExit(f"No such user {args.username!r}.")
+
+    if not args.yes:
+        confirm = input(f"Delete user {user.username!r}? [y/N] ")
+        if confirm.strip().lower() not in ("y", "yes"):
+            raise SystemExit("Not deleted.")
+
+    ds.Session.delete(user)
+    ds.Session.commit()
+    print(f"Deleted user {user.username!r}.")
+
+
 def cmd_list(args: argparse.Namespace) -> None:
     init_datastore(_resolve_datastore_dir(args))
     from seamm_datastore.database.models import User
@@ -128,6 +148,14 @@ def run() -> None:
     _add_common_args(set_password)
     set_password.add_argument("username")
     set_password.set_defaults(func=cmd_set_password)
+
+    delete = subparsers.add_parser("delete", help="Delete a user account.")
+    _add_common_args(delete)
+    delete.add_argument("username")
+    delete.add_argument(
+        "--yes", action="store_true", help="Skip the confirmation prompt."
+    )
+    delete.set_defaults(func=cmd_delete)
 
     list_cmd = subparsers.add_parser("list", help="List existing user accounts.")
     _add_common_args(list_cmd)
