@@ -51,16 +51,173 @@
 }
 
 #root {
-  width: 100%;
-  max-width: 1800px;
-  margin: 0 auto;
-  padding: 0 24px;
   min-height: 100svh;
-  box-sizing: border-box;
 }
 
 body {
   margin: 0;
+}
+
+/* App shell: fixed-height sidebar + main column, sole scroll container is
+   .app-content -- keeps the sidebar/top bar in view instead of scrolling
+   away with page content. Not applied on /login (Layout renders that
+   chrome-free), so #root's plain min-height above still governs there. */
+.app-shell {
+  display: flex;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.app-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.app-topbar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 0.6em 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.app-topbar-name {
+  font-family: var(--heading);
+  font-weight: 500;
+  font-size: 1.2em;
+  letter-spacing: -0.2px;
+  color: var(--text-h);
+}
+
+.app-content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 0 24px 24px;
+}
+
+/* Sidebar */
+:root {
+  --sidebar-width: 200px;
+  --sidebar-width-collapsed: 56px;
+}
+
+.sidebar {
+  flex-shrink: 0;
+  width: var(--sidebar-width);
+  transition: width 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0.75em 0.5em;
+  border-right: 1px solid var(--border);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.sidebar-collapsed {
+  width: var(--sidebar-width-collapsed);
+}
+
+.sidebar-nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sidebar-spacer {
+  flex: 1;
+}
+
+.sidebar-link,
+.sidebar-status,
+.sidebar-account {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: 0.5em 0.6em;
+  border-radius: 6px;
+  color: var(--text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+a.sidebar-link:hover {
+  background: var(--code-bg);
+}
+
+a.sidebar-link.active {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+.sidebar-button {
+  width: 100%;
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.sidebar-button:hover {
+  background: var(--code-bg);
+}
+
+.sidebar-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.sidebar-collapsed .sidebar-label {
+  display: none;
+}
+
+.sidebar-status,
+.sidebar-account {
+  font-size: 0.9em;
+}
+
+.status-dot-wrap {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.status-dot.status-up {
+  background: #22c55e;
+}
+
+.status-dot.status-down {
+  background: #ef4444;
+}
+
+.sidebar-collapse-btn {
+  margin-top: 0.5em;
+  border-top: 1px solid var(--border);
+  padding-top: 0.75em;
+  border-radius: 0;
 }
 
 table {

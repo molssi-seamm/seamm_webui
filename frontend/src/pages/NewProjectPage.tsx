@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { createProject } from '../api'
 
@@ -27,9 +27,6 @@ export function NewProjectPage() {
 
   return (
     <div>
-      <p>
-        <Link to="/projects">&larr; Back to projects</Link>
-      </p>
       <h2>New project</h2>
       <form onSubmit={handleSubmit}>
         <div>

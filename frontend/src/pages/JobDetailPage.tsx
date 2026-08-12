@@ -259,11 +259,14 @@ export function JobDetailPage() {
   const j = job.data
 
   return (
-    // Pinned to the viewport height, not just min-height -- the page itself
-    // must never scroll; only the panes below (file tree, file content) do.
+    // Fills 100% of .app-content's height (a definite value, via the
+    // .app-shell/.app-main flex chain in index.css) rather than 100svh --
+    // this page must never scroll itself; only the panes below (file tree,
+    // file content) do. Using the viewport height directly would overflow
+    // below the fold now that the sidebar/top bar also share that height.
     <div
       style={{
-        height: '100svh',
+        height: '100%',
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',

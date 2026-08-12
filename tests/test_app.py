@@ -12,7 +12,12 @@ def test_health_and_listing(tmp_path):
 
     response = client.get("/api/health")
     assert response.status_code == 200
-    assert response.json() == {"status": "ok"}
+    body = response.json()
+    assert body["status"] == "ok"
+    # Defaults to the hostname (via --jobserver-name's own default) when no
+    # explicit --name is given -- just assert it's a non-empty string here
+    # rather than hardcoding a machine-specific hostname.
+    assert body["name"]
 
     response = client.get("/api/jobs")
     assert response.status_code == 200
@@ -22,6 +27,20 @@ def test_health_and_listing(tmp_path):
     assert response.status_code == 200
     names = [p["name"] for p in response.json()]
     assert "default" in names
+
+
+def test_health_name_override_and_default(tmp_path):
+    # Explicit --name wins outright.
+    app = create_app(
+        str(tmp_path / "ds1"), jobserver_name="molssi10", name="MolSSI10 Prod"
+    )
+    client = TestClient(app)
+    assert client.get("/api/health").json()["name"] == "MolSSI10 Prod"
+
+    # No --name given: falls back to --jobserver-name, not the hostname.
+    app = create_app(str(tmp_path / "ds2"), jobserver_name="molssi10")
+    client = TestClient(app)
+    assert client.get("/api/health").json()["name"] == "molssi10"
 
 
 def test_job_project_filter(tmp_path):

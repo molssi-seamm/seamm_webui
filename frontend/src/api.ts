@@ -81,6 +81,7 @@ export interface ProjectDetail extends Project {
 export interface CurrentUser {
   auth_mode: 'none' | 'local'
   username: string | null
+  is_admin: boolean
 }
 
 export async function fetchCurrentUser(): Promise<CurrentUser> {
@@ -89,7 +90,10 @@ export async function fetchCurrentUser(): Promise<CurrentUser> {
   return res.json()
 }
 
-export async function login(username: string, password: string): Promise<{ username: string }> {
+export async function login(
+  username: string,
+  password: string,
+): Promise<{ username: string; is_admin: boolean }> {
   const res = await apiFetch('/api/auth/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -107,7 +111,7 @@ export async function logout(): Promise<void> {
   if (!res.ok) throw new Error(`logout failed: ${res.status}`)
 }
 
-export async function fetchHealth(): Promise<{ status: string }> {
+export async function fetchHealth(): Promise<{ status: string; name: string }> {
   const res = await apiFetch('/api/health')
   if (!res.ok) throw new Error(`health check failed: ${res.status}`)
   return res.json()
@@ -315,4 +319,64 @@ export async function submitJob(payload: JobSubmission): Promise<JobDetail> {
     throw new Error(`submitting job failed: ${res.status} ${detail}`)
   }
   return res.json()
+}
+
+// Admin: web equivalent of manage.py's seamm-webui-user CLI
+// (routers/admin.py) -- "local"-auth-mode account management, gated
+// server-side by the admin role, not just being logged in.
+export interface AdminUser {
+  username: string
+  email: string | null
+  first_name: string | null
+  last_name: string | null
+  roles: string[]
+}
+
+export async function fetchAdminUsers(): Promise<AdminUser[]> {
+  const res = await apiFetch('/api/admin/users')
+  if (!res.ok) throw new Error(`fetching users failed: ${res.status}`)
+  return res.json()
+}
+
+export interface AdminUserCreate {
+  username: string
+  password: string
+  email?: string
+  first_name?: string
+  last_name?: string
+}
+
+export async function createAdminUser(payload: AdminUserCreate): Promise<AdminUser> {
+  const res = await apiFetch('/api/admin/users', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload),
+  })
+  if (!res.ok) {
+    const detail = await res.text()
+    throw new Error(`creating user failed: ${res.status} ${detail}`)
+  }
+  return res.json()
+}
+
+export async function setAdminUserPassword(username: string, password: string): Promise<void> {
+  const res = await apiFetch(`/api/admin/users/${encodeURIComponent(username)}/set-password`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password }),
+  })
+  if (!res.ok) {
+    const detail = await res.text()
+    throw new Error(`setting password for ${username} failed: ${res.status} ${detail}`)
+  }
+}
+
+export async function deleteAdminUser(username: string): Promise<void> {
+  const res = await apiFetch(`/api/admin/users/${encodeURIComponent(username)}`, {
+    method: 'DELETE',
+  })
+  if (!res.ok) {
+    const detail = await res.text()
+    throw new Error(`deleting user ${username} failed: ${res.status} ${detail}`)
+  }
 }

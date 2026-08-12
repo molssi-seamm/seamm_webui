@@ -9,9 +9,6 @@ export function ProjectsPage() {
 
   return (
     <div>
-      <p>
-        <Link to="/">&larr; Back to jobs</Link>
-      </p>
       <h2>Projects</h2>
       <p>
         <Link to="/projects/new">+ New project</Link>
