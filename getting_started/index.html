@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Getting Started &#8212; seamm_webui 2026.8.13 documentation</title>
+    <title>Getting Started &#8212; seamm_webui 2026.8.13.1 documentation</title>
   
   
   
@@ -49,7 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=4a248428"></script>
+    <script src="../_static/documentation_options.js?v=966a0e8c"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="seamm_webui" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.8.13" />
+  <meta name="docsearch:version" content="2026.8.13.1" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -548,6 +548,16 @@ needs no configuration beyond what the JobServer itself already has:
 case needing an explicit <code class="docutils literal notranslate"><span class="pre">--jobserver-name</span></code> is a host running more than
 one independent JobServer instance – it otherwise defaults to this
 host’s hostname, matching the JobServer’s own default.</p>
+<p>For a queue with <code class="docutils literal notranslate"><span class="pre">transport</span> <span class="pre">=</span> <span class="pre">ssh</span></code> (a remote SLURM cluster with no
+filesystem shared with the JobServer), a running job’s files live in a
+scratch directory on that remote host and are otherwise only pulled back
+once the job finishes. <code class="docutils literal notranslate"><span class="pre">seamm-webui</span></code> reuses that same <code class="docutils literal notranslate"><span class="pre">seamm_slurm</span></code>
+staging machinery to pull them back on demand instead – automatically
+when a job’s detail page is opened, and again from that page’s file
+viewer Refresh button – so files are visible while the job is still
+running, not just after. This also needs no separate configuration: it
+reads the same ini section (<code class="docutils literal notranslate"><span class="pre">remote_root</span></code>, etc.) the JobServer itself
+uses to stage the job out there in the first place.</p>
 <p>For setting this up as a persistent daemon (rather than a foreground
 terminal command), see <a class="reference internal" href="../developer_guide/installation.html"><span class="doc">Installation</span></a>.</p>
 <p>Accounts for that login mode are created with the companion

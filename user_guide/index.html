@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>User Guide &#8212; seamm_webui 2026.8.13 documentation</title>
+    <title>User Guide &#8212; seamm_webui 2026.8.13.1 documentation</title>
   
   
   
@@ -49,7 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=4a248428"></script>
+    <script src="../_static/documentation_options.js?v=966a0e8c"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="Getting Started" href="../getting_started/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.8.13" />
+  <meta name="docsearch:version" content="2026.8.13.1" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -516,7 +516,11 @@ a job, plus Admin – see below – for an admin account in “local” mode)
 gives access to every page and shows whether the backend is reachable. If
 the paired JobServer has more than one queue configured (see the Getting
 Started guide), the job list and detail pages also show which queue each
-job ran on.</p>
+job ran on. A job routed to a remote SLURM cluster with no shared
+filesystem (a queue’s <code class="docutils literal notranslate"><span class="pre">transport</span> <span class="pre">=</span> <span class="pre">ssh</span></code>, see the Getting Started guide)
+is marked “remote” on its detail page – its files are pulled back on
+demand (opening the page, or clicking a file’s Refresh button) while it’s
+still running, rather than only once it finishes.</p>
 <section id="authentication">
 <h2>Authentication<a class="headerlink" href="#authentication" title="Link to this heading">#</a></h2>
 <p>Two modes, chosen automatically from how the server is started (see the

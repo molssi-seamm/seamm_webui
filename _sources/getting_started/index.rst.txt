@@ -48,6 +48,17 @@ case needing an explicit ``--jobserver-name`` is a host running more than
 one independent JobServer instance -- it otherwise defaults to this
 host's hostname, matching the JobServer's own default.
 
+For a queue with ``transport = ssh`` (a remote SLURM cluster with no
+filesystem shared with the JobServer), a running job's files live in a
+scratch directory on that remote host and are otherwise only pulled back
+once the job finishes. ``seamm-webui`` reuses that same ``seamm_slurm``
+staging machinery to pull them back on demand instead -- automatically
+when a job's detail page is opened, and again from that page's file
+viewer Refresh button -- so files are visible while the job is still
+running, not just after. This also needs no separate configuration: it
+reads the same ini section (``remote_root``, etc.) the JobServer itself
+uses to stage the job out there in the first place.
+
 For setting this up as a persistent daemon (rather than a foreground
 terminal command), see :doc:`../developer_guide/installation`.
 

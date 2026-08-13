@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm_webui.routers.queues &#8212; seamm_webui 2026.8.13 documentation</title>
+    <title>seamm_webui.routers.queues &#8212; seamm_webui 2026.8.13.1 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../../_static/documentation_options.js?v=4a248428"></script>
+    <script src="../../../_static/documentation_options.js?v=966a0e8c"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.8.13" />
+  <meta name="docsearch:version" content="2026.8.13.1" />
   
     
     <script src="../../../_static/searchtools.js"></script>
@@ -565,6 +565,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
             <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">section</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
             <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="n">name</span> <span class="o">==</span> <span class="n">default_name</span><span class="p">,</span>
+            <span class="c1"># transport=ssh means a job routed here runs in a scratch</span>
+            <span class="c1"># directory on the remote host with no shared filesystem --</span>
+            <span class="c1"># the frontend uses this to show a &quot;syncing from cluster&quot;</span>
+            <span class="c1"># indicator, not to reach the host itself (host/remote_root</span>
+            <span class="c1"># stay hidden, per the module docstring).</span>
+            <span class="s2">&quot;remote&quot;</span><span class="p">:</span> <span class="n">section</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;slurm&quot;</span> <span class="ow">and</span> <span class="n">section</span><span class="o">.</span><span class="n">transport</span> <span class="o">==</span> <span class="s2">&quot;ssh&quot;</span><span class="p">,</span>
             <span class="s2">&quot;limits&quot;</span><span class="p">:</span> <span class="n">_serialize_limits</span><span class="p">(</span><span class="n">section</span><span class="o">.</span><span class="n">limits</span><span class="p">,</span> <span class="n">section</span><span class="o">.</span><span class="n">directives</span><span class="p">),</span>
         <span class="p">}</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">section</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">sections</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
