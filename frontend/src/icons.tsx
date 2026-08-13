@@ -1,7 +1,7 @@
-// Small, dependency-free inline SVG icons for the sidebar -- hand-rolled
-// rather than pulling in an icon library for half a dozen glyphs, matching
-// this project's existing bundle-size discipline (see ResizableSplit.tsx).
-// All 24x24, stroke-based, currentColor -- inherit color/size from CSS.
+// Small, dependency-free inline SVG icons -- hand-rolled rather than
+// pulling in an icon library for a dozen glyphs, matching this project's
+// existing bundle-size discipline (see ResizableSplit.tsx). All 24x24,
+// stroke-based, currentColor -- inherit color/size from CSS.
 
 type IconProps = { className?: string }
 
@@ -74,6 +74,22 @@ export function AdminIcon({ className }: IconProps) {
   )
 }
 
+export function FilterIcon({ className }: IconProps) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <polygon points="4,4 20,4 14,12.5 14,18 10,20 10,12.5" />
+    </svg>
+  )
+}
+
 export function UserIcon({ className }: IconProps) {
   return (
     <svg
@@ -124,6 +140,44 @@ export function CollapseIcon({ className, collapsed }: IconProps & { collapsed: 
       style={{ transform: collapsed ? 'rotate(180deg)' : undefined }}
     >
       <polyline points="15,5 8,12 15,19" />
+    </svg>
+  )
+}
+
+// A classic media-player transport control set, all filled triangles (same
+// visual language) so First/Previous/Next/Last read as one matched group:
+// Prev/Next are a single triangle (step one page); First/Last add a bar
+// (jump to the end), the standard "skip to start/end" glyph.
+export function PrevIcon({ className }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" stroke="none">
+      <polygon points="16,5 16,19 6,12" />
+    </svg>
+  )
+}
+
+export function NextIcon({ className }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" stroke="none">
+      <polygon points="8,5 8,19 18,12" />
+    </svg>
+  )
+}
+
+export function SkipToStartIcon({ className }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" stroke="none">
+      <rect x="4" y="5" width="2.2" height="14" />
+      <polygon points="19,5 19,19 8,12" />
+    </svg>
+  )
+}
+
+export function SkipToEndIcon({ className }: IconProps) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" stroke="none">
+      <rect x="17.8" y="5" width="2.2" height="14" />
+      <polygon points="5,5 5,19 16,12" />
     </svg>
   )
 }

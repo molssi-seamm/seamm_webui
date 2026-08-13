@@ -51,12 +51,15 @@ export interface Job {
   // not a curated field list), so no backend change was needed to surface
   // it in the frontend.
   parameters: Record<string, unknown>
+  // Already present in the list response too (JobSchema.dump() dumps the
+  // same shape either way) -- was only declared on JobDetail before the
+  // job list's Project column/filter needed it here as well.
+  projects: { id: number; name: string }[]
 }
 
 export interface JobDetail extends Job {
   description: string
   path: string
-  projects: { id: number; name: string }[]
 }
 
 export interface JobFile {
@@ -117,11 +120,30 @@ export async function fetchHealth(): Promise<{ status: string; name: string }> {
   return res.json()
 }
 
+export interface JobFilters {
+  project?: string
+  status?: string
+  title?: string
+  queue?: string
+}
+
+export interface JobPage {
+  jobs: Job[]
+  // Total matching count (before offset/limit), from the X-Total-Count
+  // response header -- routers/jobs.py deliberately keeps this out of the
+  // JSON body so the body stays a plain array. null if the header is
+  // somehow missing (an older backend during a rolling upgrade, say)
+  // rather than throwing -- callers that only need "is there a next page"
+  // (data.length < pageSize) still work without it; only jump-to-last-page
+  // needs a real number.
+  total: number | null
+}
+
 export async function fetchJobs(
   offset: number,
   limit: number,
-  project?: string,
-): Promise<Job[]> {
+  filters: JobFilters = {},
+): Promise<JobPage> {
   const params = new URLSearchParams({
     offset: String(offset),
     limit: String(limit),
@@ -129,9 +151,30 @@ export async function fetchJobs(
     sort_by: 'id',
     order: 'desc',
   })
-  if (project) params.set('project', project)
+  if (filters.project) params.set('project', filters.project)
+  if (filters.status) params.set('status', filters.status)
+  if (filters.title) params.set('title', filters.title)
+  if (filters.queue) params.set('queue', filters.queue)
   const res = await apiFetch(`/api/jobs?${params}`)
   if (!res.ok) throw new Error(`fetching jobs failed: ${res.status}`)
+  const totalHeader = res.headers.get('X-Total-Count')
+  return { jobs: await res.json(), total: totalHeader === null ? null : Number(totalHeader) }
+}
+
+// Queues configured for the JobServer paired with this dashboard
+// (routers/queues.py) -- read here only to populate the job list's Queue
+// filter dropdown with real names; empty (not an error) on any instance
+// that hasn't set up multi-queue routing, same as the Queue column already
+// showing "--" for jobs with no queue at all.
+export interface QueueInfo {
+  name: string
+  type: string
+  default: boolean
+}
+
+export async function fetchQueues(): Promise<QueueInfo[]> {
+  const res = await apiFetch('/api/queues')
+  if (!res.ok) throw new Error(`fetching queues failed: ${res.status}`)
   return res.json()
 }
 

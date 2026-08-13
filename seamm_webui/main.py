@@ -84,6 +84,13 @@ def create_app(
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+        # Custom response headers (routers/jobs.py's X-Total-Count) aren't
+        # readable by fetch() cross-origin unless explicitly exposed --
+        # without this, the header is present on the wire (visible in
+        # devtools) but JS's Response.headers.get() silently returns null
+        # in the split-origin `npm run dev` setup. Same-origin production
+        # doesn't need this, but dev mode does.
+        expose_headers=["X-Total-Count"],
     )
 
     app.include_router(auth.router)
