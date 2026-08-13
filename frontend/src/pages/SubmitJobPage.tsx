@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useNavigate, Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { fetchProjects, submitJob } from '../api'
 
@@ -43,9 +43,6 @@ export function SubmitJobPage() {
 
   return (
     <div>
-      <p>
-        <Link to="/">&larr; Back to jobs</Link>
-      </p>
       <h2>Submit a job</h2>
       <form onSubmit={handleSubmit}>
         <div>

@@ -2,6 +2,37 @@
 History
 =======
 
+2026.8.13 -- A real sidebar, an Admin page, and a friendlier job list
+    * New collapsible sidebar (Jobs/Projects/Submit a job, plus Admin for
+      an admin account -- see below) replaces the ad hoc per-page
+      header/back-links every page used to build on its own, and shows
+      whether the backend is reachable. A per-instance ``--name``
+      (defaults to ``--jobserver-name``/hostname) now appears in a top
+      bar and the browser tab title, so multiple open dashboards are
+      distinguishable at a glance.
+    * New **Admin** page (in "local" auth mode, for an account with the
+      admin role): list every account, create a new one, reset a
+      password, or delete an account -- the same operations as the
+      ``seamm-webui-user`` command, just from the browser. An account can
+      never delete itself, so there is always at least one admin left.
+    * The job list can now be filtered by project, status, title
+      (substring search), and queue, all combinable -- click a column
+      header's funnel icon to filter by that column, Excel-style, rather
+      than a separate widget. The Title/Project columns truncate long
+      values with an ellipsis (full value on hover) instead of wrapping,
+      keeping every row the same height.
+    * New First/Last page buttons next to Previous/Next (all four now
+      matching media-player-style icons) jump straight to the first or
+      last page of the current filter instead of stepping one page at a
+      time; the page indicator now shows the total page count when known.
+    * Bugfix: the job list's screen-fit page-size calculation re-measured
+      row height after every page change, and a fraction-of-a-pixel
+      difference between renders could flip the computed page size,
+      triggering a refetch that re-measured again -- a resize/refetch
+      loop that showed up as fast, unusable flickering on a tall window.
+      It now measures once, when the table first has rows, and otherwise
+      only on an actual window resize.
+
 2026.8.10.3 -- Add seamm-webui-user delete
     * New ``seamm-webui-user delete <username>`` removes an account
       (confirms interactively unless ``--yes`` is given).

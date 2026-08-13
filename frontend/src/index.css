@@ -51,16 +51,173 @@
 }
 
 #root {
-  width: 100%;
-  max-width: 1800px;
-  margin: 0 auto;
-  padding: 0 24px;
   min-height: 100svh;
-  box-sizing: border-box;
 }
 
 body {
   margin: 0;
+}
+
+/* App shell: fixed-height sidebar + main column, sole scroll container is
+   .app-content -- keeps the sidebar/top bar in view instead of scrolling
+   away with page content. Not applied on /login (Layout renders that
+   chrome-free), so #root's plain min-height above still governs there. */
+.app-shell {
+  display: flex;
+  height: 100svh;
+  overflow: hidden;
+}
+
+.app-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.app-topbar {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding: 0.6em 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.app-topbar-name {
+  font-family: var(--heading);
+  font-weight: 500;
+  font-size: 1.2em;
+  letter-spacing: -0.2px;
+  color: var(--text-h);
+}
+
+.app-content {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
+  padding: 0 24px 24px;
+}
+
+/* Sidebar */
+:root {
+  --sidebar-width: 200px;
+  --sidebar-width-collapsed: 56px;
+}
+
+.sidebar {
+  flex-shrink: 0;
+  width: var(--sidebar-width);
+  transition: width 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0.75em 0.5em;
+  border-right: 1px solid var(--border);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.sidebar-collapsed {
+  width: var(--sidebar-width-collapsed);
+}
+
+.sidebar-nav {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sidebar-spacer {
+  flex: 1;
+}
+
+.sidebar-link,
+.sidebar-status,
+.sidebar-account {
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: 0.5em 0.6em;
+  border-radius: 6px;
+  color: var(--text);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+a.sidebar-link:hover {
+  background: var(--code-bg);
+}
+
+a.sidebar-link.active {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+.sidebar-button {
+  width: 100%;
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.sidebar-button:hover {
+  background: var(--code-bg);
+}
+
+.sidebar-icon {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.sidebar-collapsed .sidebar-label {
+  display: none;
+}
+
+.sidebar-status,
+.sidebar-account {
+  font-size: 0.9em;
+}
+
+.status-dot-wrap {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.status-dot.status-up {
+  background: #22c55e;
+}
+
+.status-dot.status-down {
+  background: #ef4444;
+}
+
+.sidebar-collapse-btn {
+  margin-top: 0.5em;
+  border-top: 1px solid var(--border);
+  padding-top: 0.75em;
+  border-radius: 0;
 }
 
 table {
@@ -69,11 +226,116 @@ table {
 
 th {
   text-align: left;
-  padding: 2px 1em 2px 0;
+  padding: 6px 1em 6px 0;
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
 }
 
 td {
-  padding: 2px 1em 2px 0;
+  padding: 6px 1em 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+/* Single-line, ellipsis-truncated cell content (long job titles/project
+   lists) -- the full value is still available via the native `title`
+   tooltip. Keeps every row the same height regardless of content length;
+   letting text wrap instead made row height content-dependent, which fed
+   back into JobsPage's screen-fit page-size measurement (see its
+   recomputePageSize comment). */
+.cell-truncate {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: bottom;
+}
+
+/* Excel-style column header filters (ColumnFilter.tsx) -- a funnel icon
+   next to the header label opens a popover anchored under it. */
+.col-filter {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3em;
+}
+
+.col-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border: none;
+  background: none;
+  color: var(--text);
+  cursor: pointer;
+  border-radius: 3px;
+  opacity: 0.55;
+}
+
+.col-filter-btn:hover {
+  opacity: 1;
+  background: var(--code-bg);
+}
+
+.col-filter-btn.active {
+  opacity: 1;
+  color: var(--accent);
+}
+
+.col-filter-icon {
+  width: 13px;
+  height: 13px;
+}
+
+.col-filter-popover {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 20;
+  margin-top: 4px;
+  padding: 0.5em;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  box-shadow: var(--shadow);
+  font-weight: normal;
+  white-space: nowrap;
+}
+
+.col-filter-popover input {
+  width: 14em;
+}
+
+.col-filter-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 16em;
+  overflow-y: auto;
+  min-width: 10em;
+}
+
+.col-filter-list button {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.3em 0.5em;
+  border: none;
+  background: none;
+  font: inherit;
+  color: var(--text);
+  cursor: pointer;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.col-filter-list button:hover {
+  background: var(--code-bg);
+}
+
+.col-filter-list button.selected {
+  background: var(--accent-bg);
+  color: var(--accent);
 }
 
 h1,
@@ -118,4 +380,34 @@ code {
   line-height: 135%;
   padding: 4px 8px;
   background: var(--code-bg);
+}
+
+/* First/Last page buttons (JobsPage's pagination row) -- icon-only, sized
+   and spaced to sit flush against the plain-text Previous/Next buttons
+   next to them rather than looking like a separate control. */
+.pager-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px 6px;
+  margin: 0 0.25em;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.pager-btn:hover:not(:disabled) {
+  background: var(--code-bg);
+}
+
+.pager-btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.pager-icon {
+  width: 15px;
+  height: 15px;
 }

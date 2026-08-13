@@ -18,7 +18,7 @@ def test_none_mode_preserves_today_behavior(tmp_path):
 
     response = client.get("/api/auth/me")
     assert response.status_code == 200
-    assert response.json() == {"auth_mode": "none", "username": None}
+    assert response.json() == {"auth_mode": "none", "username": None, "is_admin": False}
 
     # No login at all -- every route just works, same as Phase 1/2.
     response = client.get("/api/jobs")
@@ -32,7 +32,11 @@ def test_local_mode_requires_login(tmp_path):
 
     response = client.get("/api/auth/me")
     assert response.status_code == 200
-    assert response.json() == {"auth_mode": "local", "username": None}
+    assert response.json() == {
+        "auth_mode": "local",
+        "username": None,
+        "is_admin": False,
+    }
 
     response = client.get("/api/jobs")
     assert response.status_code == 401
@@ -58,10 +62,14 @@ def test_local_mode_login_logout(tmp_path):
         "/api/auth/login", json={"username": "admin", "password": "admin"}
     )
     assert response.status_code == 200
-    assert response.json() == {"username": "admin"}
+    assert response.json() == {"username": "admin", "is_admin": True}
 
     response = client.get("/api/auth/me")
-    assert response.json() == {"auth_mode": "local", "username": "admin"}
+    assert response.json() == {
+        "auth_mode": "local",
+        "username": "admin",
+        "is_admin": True,
+    }
 
     response = client.get("/api/jobs")
     assert response.status_code == 200
@@ -132,7 +140,7 @@ def test_new_local_account_can_log_in(tmp_path):
         "/api/auth/login", json={"username": "alice", "password": "secret123"}
     )
     assert response.status_code == 200
-    assert response.json() == {"username": "alice"}
+    assert response.json() == {"username": "alice", "is_admin": True}
 
     response = client.get("/api/jobs")
     assert response.status_code == 200
@@ -298,7 +306,7 @@ def test_auth_token_alias(tmp_path):
         "/api/auth/token", json={"username": "admin", "password": "admin"}
     )
     assert response.status_code == 200
-    assert response.json() == {"username": "admin"}
+    assert response.json() == {"username": "admin", "is_admin": True}
 
     response = client.get("/api/jobs")
     assert response.status_code == 200

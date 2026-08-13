@@ -157,3 +157,49 @@ def require_permission(action: str):
         set_current_user(username)
 
     return _check
+
+
+def user_is_admin(username: Optional[str]) -> bool:
+    """True if ``username`` exists and has the "admin" role. Shared by
+    require_admin() and GET /api/auth/me (which uses it to decide whether
+    the frontend shows the Admin nav entry at all -- see its own docstring
+    for why that's naturally False, not an error, in "none" mode)."""
+    if username is None:
+        return False
+    from seamm_datastore.database.models import User
+
+    user = User.query.filter_by(username=username).one_or_none()
+    return user is not None and any(role.name == "admin" for role in user.roles)
+
+
+def require_admin():
+    """FastAPI dependency factory for the admin-only user-management routes
+    (routers/admin.py). Stricter than require_permission(): not just "is
+    anyone logged in," but "is this identity's User row tagged with the
+    admin role." Every account created so far has that role (Phase 3's
+    "prove who you are, not partition who sees what" -- see
+    dashboard-rewrite-plan.md), so this is a no-op today, but the check
+    still belongs here from the start rather than being retrofitted once
+    non-admin accounts exist.
+
+    Works in "none" mode too, not just "local" -- the fixed identity there
+    (NONE_MODE_USERNAME) genuinely has the admin role in the datastore
+    (seamm_datastore's _build_initial()), so there's nothing to special-case;
+    the frontend simply never shows the Admin nav entry in "none" mode (see
+    GET /api/auth/me), since there's no login flow to manage there anyway.
+    """
+
+    async def _check(request: Request) -> None:
+        if _auth_mode == "none":
+            set_current_user(NONE_MODE_USERNAME)
+            username = NONE_MODE_USERNAME
+        else:
+            username = get_current_user(request)
+            if username is None:
+                raise HTTPException(status_code=401, detail="Login required")
+            set_current_user(username)
+
+        if not user_is_admin(username):
+            raise HTTPException(status_code=403, detail="Admin role required")
+
+    return _check

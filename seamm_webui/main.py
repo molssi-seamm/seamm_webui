@@ -28,6 +28,7 @@ def create_app(
     auth_mode: str = "none",
     root: Optional[str] = None,
     jobserver_name: Optional[str] = None,
+    name: Optional[str] = None,
 ) -> FastAPI:
     """Build the FastAPI app.
 
@@ -38,6 +39,14 @@ def create_app(
     the multi-queue routing feature didn't exist. ``jobserver_name``
     defaults to this host's hostname, matching ``seamm_jobserver``'s own
     ``--name`` default, when ``root`` is given but no name is.
+
+    ``name`` is this dashboard instance's own display name (frontend header
+    + browser tab title, ``GET /api/health``) -- deliberately a separate
+    concept from ``jobserver_name``, which specifically names the paired
+    JobServer's ``.ini`` file to read for queue routing. Defaults to
+    ``jobserver_name`` (itself defaulting to the hostname) when not given,
+    so the common case needs no extra configuration, but a site can pick a
+    friendly display name (e.g. "MolSSI10") independently of that.
     """
     # Must happen before importing routers -- see the ordering note in
     # seamm_webui/db.py.
@@ -45,10 +54,12 @@ def create_app(
 
     from seamm_webui.auth import init_auth
     from seamm_webui.queue_config import configure as configure_queues
-    from seamm_webui.routers import auth, jobs, projects, queues
+    from seamm_webui.routers import admin, auth, jobs, projects, queues
     from seamm_webui.util import get_or_create_secret_key
 
-    configure_queues(root, jobserver_name or socket.gethostname())
+    resolved_jobserver_name = jobserver_name or socket.gethostname()
+    configure_queues(root, resolved_jobserver_name)
+    resolved_name = name or resolved_jobserver_name
 
     # Cookie name is scoped to the port (not just a fixed string) so two
     # seamm-webui instances reachable as the same host -- a local one plus
@@ -73,16 +84,24 @@ def create_app(
         allow_credentials=True,
         allow_methods=["*"],
         allow_headers=["*"],
+        # Custom response headers (routers/jobs.py's X-Total-Count) aren't
+        # readable by fetch() cross-origin unless explicitly exposed --
+        # without this, the header is present on the wire (visible in
+        # devtools) but JS's Response.headers.get() silently returns null
+        # in the split-origin `npm run dev` setup. Same-origin production
+        # doesn't need this, but dev mode does.
+        expose_headers=["X-Total-Count"],
     )
 
     app.include_router(auth.router)
     app.include_router(jobs.router)
     app.include_router(projects.router)
     app.include_router(queues.router)
+    app.include_router(admin.router)
 
     @app.get("/api/health")
     def health():
-        return {"status": "ok"}
+        return {"status": "ok", "name": resolved_name}
 
     @app.get("/api/status")
     def status(request: Request):
@@ -182,6 +201,17 @@ def run():
         ),
     )
     parser.add_argument(
+        "--name",
+        default=None,
+        help=(
+            "Display name for this dashboard instance -- shown in the "
+            "frontend header and browser tab title, so multiple open "
+            "dashboards are distinguishable at a glance (e.g. 'MolSSI10'). "
+            "Defaults to --jobserver-name (itself defaulting to this "
+            "host's hostname) if not given."
+        ),
+    )
+    parser.add_argument(
         "--port", type=int, default=8010, help="Port to listen on (default: 8010)"
     )
     parser.add_argument(
@@ -253,6 +283,7 @@ def run():
         auth_mode=auth_mode,
         root=args.root,
         jobserver_name=args.jobserver_name,
+        name=args.name,
     )
     uvicorn.run(
         app,

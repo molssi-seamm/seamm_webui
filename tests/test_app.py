@@ -12,7 +12,12 @@ def test_health_and_listing(tmp_path):
 
     response = client.get("/api/health")
     assert response.status_code == 200
-    assert response.json() == {"status": "ok"}
+    body = response.json()
+    assert body["status"] == "ok"
+    # Defaults to the hostname (via --jobserver-name's own default) when no
+    # explicit --name is given -- just assert it's a non-empty string here
+    # rather than hardcoding a machine-specific hostname.
+    assert body["name"]
 
     response = client.get("/api/jobs")
     assert response.status_code == 200
@@ -22,6 +27,20 @@ def test_health_and_listing(tmp_path):
     assert response.status_code == 200
     names = [p["name"] for p in response.json()]
     assert "default" in names
+
+
+def test_health_name_override_and_default(tmp_path):
+    # Explicit --name wins outright.
+    app = create_app(
+        str(tmp_path / "ds1"), jobserver_name="molssi10", name="MolSSI10 Prod"
+    )
+    client = TestClient(app)
+    assert client.get("/api/health").json()["name"] == "MolSSI10 Prod"
+
+    # No --name given: falls back to --jobserver-name, not the hostname.
+    app = create_app(str(tmp_path / "ds2"), jobserver_name="molssi10")
+    client = TestClient(app)
+    assert client.get("/api/health").json()["name"] == "molssi10"
 
 
 def test_job_project_filter(tmp_path):
@@ -82,6 +101,80 @@ def test_job_project_filter(tmp_path):
     # A nonexistent project just yields an empty list, not an error.
     response = client.get("/api/jobs", params={"project": "no-such-project"})
     assert response.status_code == 200
+    assert response.json() == []
+
+    # X-Total-Count reflects the *filtered* total, before offset/limit --
+    # what JobsPage's First/Last buttons need to compute the last page,
+    # kept out of the JSON body (routers/jobs.py's list_jobs docstring)
+    # so the body stays a plain array for every other caller.
+    response = client.get("/api/jobs")
+    assert response.headers["x-total-count"] == "3"
+
+    response = client.get("/api/jobs", params={"project": "default", "limit": 1})
+    assert response.headers["x-total-count"] == "2"
+    assert len(response.json()) == 1
+
+    response = client.get("/api/jobs", params={"project": "no-such-project"})
+    assert response.headers["x-total-count"] == "0"
+
+
+def test_job_status_title_queue_filters(tmp_path):
+    app = create_app(str(tmp_path / "datastore"))
+    client = TestClient(app)
+
+    import seamm_datastore
+    from seamm_datastore.database.models import Job
+    from seamm_webui.db import get_datastore
+
+    ds = get_datastore()
+    sample = Path(seamm_datastore.__file__).parent / "data" / "sample_flowchart_v2.flow"
+
+    def make_job(job_id, title, status, queue=None):
+        job_dir = tmp_path / "datastore" / "projects" / "default" / f"Job_{job_id:06d}"
+        job_dir.mkdir(parents=True)
+        shutil.copy(sample, job_dir / "flowchart.flow")
+        job = Job.create(
+            job_id,
+            flowchart_filename=str(job_dir / "flowchart.flow"),
+            project_names=["default"],
+            path=str(job_dir),
+            title=title,
+            status=status,
+            parameters={"queue": queue} if queue else {},
+        )
+        ds.Session.add(job)
+        ds.Session.commit()
+
+    make_job(1, "Water dimer scan", "running", queue="molssi10")
+    make_job(2, "Water trimer scan", "finished", queue="molssi10")
+    make_job(3, "NaCl optimization", "finished", queue="local")
+    make_job(4, "Errored job", "error")
+
+    # Status: exact match.
+    response = client.get("/api/jobs", params={"status": "finished"})
+    assert {j["id"] for j in response.json()} == {2, 3}
+
+    # Title: case-sensitive-in-SQL substring, but exercised with a matching
+    # case here -- the point is "contains", not "equals".
+    response = client.get("/api/jobs", params={"title": "scan"})
+    assert {j["id"] for j in response.json()} == {1, 2}
+
+    # Queue: exact match against the JSON parameters field; jobs with no
+    # queue at all (job 4) never match.
+    response = client.get("/api/jobs", params={"queue": "molssi10"})
+    assert {j["id"] for j in response.json()} == {1, 2}
+
+    response = client.get("/api/jobs", params={"queue": "local"})
+    assert [j["id"] for j in response.json()] == [3]
+
+    # Filters compose (AND, not OR).
+    response = client.get(
+        "/api/jobs", params={"status": "finished", "queue": "molssi10"}
+    )
+    assert [j["id"] for j in response.json()] == [2]
+
+    # No match is a clean empty list.
+    response = client.get("/api/jobs", params={"status": "killed"})
     assert response.json() == []
 
 

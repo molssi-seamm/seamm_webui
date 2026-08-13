@@ -9,7 +9,7 @@ import shutil
 from pathlib import Path
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, File, HTTPException, Response, UploadFile
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
@@ -106,20 +106,33 @@ def _resolve_job_file(job, filename: str) -> Path:
 
 @router.get("")
 def list_jobs(
+    response: Response,
     offset: Optional[int] = None,
     limit: Optional[int] = None,
     sort_by: str = "id",
     order: str = "asc",
     project: Optional[str] = None,
+    status: Optional[str] = None,
+    title: Optional[str] = None,
+    queue: Optional[str] = None,
     _: None = Depends(require_permission("read")),
 ):
-    """List jobs, optionally filtered to a single project by name.
+    """List jobs, optionally filtered to a single project by name, plus
+    status/title/queue -- all applied before pagination, same reasoning as
+    the project filter below: filtering Job.get()'s already-paginated
+    results after the fact would make "page 2 of running jobs" not
+    actually be the second page of running jobs.
 
-    seamm_datastore's Job.get() has no project filter, so this builds the
-    same permission-filtered query it uses internally (Job.permissions_query)
-    directly, adding the project filter before pagination -- filtering
-    Job.get()'s already-paginated results after the fact would make "page 2
-    of Electrolytes" not actually be the second page of Electrolytes jobs.
+    seamm_datastore's Job.get() only has title/description filters (both
+    substring), not project/status/queue, so this builds the same
+    permission-filtered query it uses internally (Job.permissions_query)
+    directly rather than going through it.
+
+    The total matching count (before offset/limit) goes in an
+    ``X-Total-Count`` response header, not the JSON body -- so the body
+    stays a plain array (what the frontend/seamm_dashboard_client's own
+    callers already expect) while still giving JobsPage enough to jump to
+    the last page rather than only ever knowing "is there a next page."
     """
     from seamm_datastore.database.models import Job, Project
     from seamm_datastore.database.schema import JobSchema
@@ -128,6 +141,20 @@ def list_jobs(
 
     if project is not None:
         query = query.filter(Job.projects.any(Project.name == project))
+    if status is not None:
+        query = query.filter(Job.status == status)
+    if title is not None:
+        query = query.filter(Job.title.contains(title))
+    if queue is not None:
+        # parameters is a JSON column (seamm_jobserver's multi-queue
+        # routing writes parameters["queue"], not a real column) --
+        # .as_string() extracts it as text for comparison. Absent for any
+        # job that predates that feature or wasn't routed, which just
+        # never matches a queue filter, same as the frontend already
+        # treating a missing queue as "--" rather than an error.
+        query = query.filter(Job.parameters["queue"].as_string() == queue)
+
+    response.headers["X-Total-Count"] = str(query.count())
 
     column = getattr(Job, sort_by)
     query = query.order_by(column.desc() if order.lower() == "desc" else column)
