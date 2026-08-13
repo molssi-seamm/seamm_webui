@@ -87,6 +87,38 @@ def test_lists_queues_with_limits_and_default(tmp_path):
     }
 
 
+def test_remote_flag_distinguishes_ssh_from_local_transport(tmp_path):
+    (tmp_path / "mac.ini").write_text(
+        "[DEFAULT]\n"
+        "default = shared\n"
+        "\n"
+        "[local]\n"
+        "type = local\n"
+        "\n"
+        "[shared]\n"
+        "type = slurm\n"
+        "transport = local\n"
+        "\n"
+        "[cluster]\n"
+        "type = slurm\n"
+        "transport = ssh\n"
+        "host = seamm-chemai\n"
+        "remote_root = /home/psaxe/scratch\n"
+        "remote_conda_env = seamm\n"
+    )
+    app = create_app(
+        str(tmp_path / "datastore"), root=str(tmp_path), jobserver_name="mac"
+    )
+    client = TestClient(app)
+
+    response = client.get("/api/queues")
+    queues = {q["name"]: q for q in response.json()}
+
+    assert queues["local"]["remote"] is False  # type=local, no scheduler
+    assert queues["shared"]["remote"] is False  # slurm, shared filesystem
+    assert queues["cluster"]["remote"] is True  # slurm, ssh, no shared fs
+
+
 def test_never_leaks_host_or_transport(tmp_path):
     (tmp_path / "mac.ini").write_text(
         "[chemai]\n"
@@ -104,7 +136,11 @@ def test_never_leaks_host_or_transport(tmp_path):
     response = client.get("/api/queues")
     body = response.json()
     assert len(body) == 1
-    assert set(body[0]) == {"name", "type", "default", "limits"}
+    assert set(body[0]) == {"name", "type", "default", "limits", "remote"}
+    # "remote" is fine to expose (used by the frontend to show a
+    # "syncing from cluster" indicator) -- host/remote_root/transport
+    # itself are what must never leak.
+    assert body[0]["remote"] is True
 
 
 def test_jobserver_name_defaults_to_hostname(tmp_path, monkeypatch):

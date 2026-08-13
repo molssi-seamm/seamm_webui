@@ -170,6 +170,11 @@ export interface QueueInfo {
   name: string
   type: string
   default: boolean
+  // transport=ssh -- a job routed here runs in a scratch directory on the
+  // remote host with no shared filesystem, so its files need syncJobFiles
+  // while it's still running (see JobDetailPage). host/remote_root
+  // themselves are deliberately never exposed by the backend.
+  remote: boolean
 }
 
 export async function fetchQueues(): Promise<QueueInfo[]> {
@@ -243,6 +248,23 @@ export async function deleteJobs(ids: number[]): Promise<BulkDeleteResult> {
     const detail = await res.text()
     throw new Error(`deleting jobs failed: ${res.status} ${detail}`)
   }
+  return res.json()
+}
+
+export interface JobSyncResult {
+  synced: boolean
+  reason?: string
+}
+
+// Pulls a still-running remote (transport=ssh) job's files back on demand
+// -- a no-op (synced: false, never a thrown error) for anything that isn't
+// a real remote-ssh job right now, or that was already synced within the
+// backend's own throttle window. Safe to call unconditionally (e.g. on
+// every JobDetailPage status poll tick) rather than only when the caller
+// already knows the job is remote.
+export async function syncJobFiles(id: number | string): Promise<JobSyncResult> {
+  const res = await apiFetch(`/api/jobs/${id}/sync`, { method: 'POST' })
+  if (!res.ok) throw new Error(`syncing files for job ${id} failed: ${res.status}`)
   return res.json()
 }
 
