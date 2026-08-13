@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm_webui.routers.auth &#8212; seamm_webui 2026.8.11 documentation</title>
+    <title>seamm_webui.routers.auth &#8212; seamm_webui 2026.8.13 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../../_static/documentation_options.js?v=d9a48a5b"></script>
+    <script src="../../../_static/documentation_options.js?v=4a248428"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.8.11" />
+  <meta name="docsearch:version" content="2026.8.13" />
   
     
     <script src="../../../_static/searchtools.js"></script>
@@ -502,6 +502,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <span class="n">create_session_cookie</span><span class="p">,</span>
     <span class="n">get_auth_mode</span><span class="p">,</span>
     <span class="n">get_current_user</span><span class="p">,</span>
+    <span class="n">user_is_admin</span><span class="p">,</span>
 <span class="p">)</span>
 
 <span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/api/auth&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;auth&quot;</span><span class="p">])</span>
@@ -529,7 +530,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">401</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Incorrect username or password&quot;</span><span class="p">)</span>
 
     <span class="n">create_session_cookie</span><span class="p">(</span><span class="n">response</span><span class="p">,</span> <span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">}</span></div>
+    <span class="c1"># is_admin alongside username so the frontend can set its [&#39;auth-me&#39;]</span>
+    <span class="c1"># cache synchronously on login (same reasoning as the username itself --</span>
+    <span class="c1"># see LoginPage.tsx -- an invalidateQueries()-triggered refetch would</span>
+    <span class="c1"># leave the Admin nav entry&#39;s visibility racing the redirect to &#39;/&#39;).</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">,</span> <span class="s2">&quot;is_admin&quot;</span><span class="p">:</span> <span class="n">user_is_admin</span><span class="p">(</span><span class="n">user</span><span class="o">.</span><span class="n">username</span><span class="p">)}</span></div>
 
 
 
@@ -551,10 +556,20 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="sd">    though internally requests run as a fixed identity; see</span>
 <span class="sd">    auth.NONE_MODE_USERNAME), so the frontend never needs to special-case</span>
 <span class="sd">    the mode itself beyond this one field.</span>
+
+<span class="sd">    ``is_admin`` drives whether the frontend shows the Admin nav entry at</span>
+<span class="sd">    all -- naturally False in &quot;none&quot; mode (username is already None there),</span>
+<span class="sd">    not because that mode&#39;s fixed identity lacks the role (it has it, see</span>
+<span class="sd">    auth.require_admin), but because there&#39;s no login flow to manage users</span>
+<span class="sd">    for in the first place.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">mode</span> <span class="o">=</span> <span class="n">get_auth_mode</span><span class="p">()</span>
     <span class="n">username</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s2">&quot;none&quot;</span> <span class="k">else</span> <span class="n">get_current_user</span><span class="p">(</span><span class="n">request</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;auth_mode&quot;</span><span class="p">:</span> <span class="n">mode</span><span class="p">,</span> <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">username</span><span class="p">}</span></div>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;auth_mode&quot;</span><span class="p">:</span> <span class="n">mode</span><span class="p">,</span>
+        <span class="s2">&quot;username&quot;</span><span class="p">:</span> <span class="n">username</span><span class="p">,</span>
+        <span class="s2">&quot;is_admin&quot;</span><span class="p">:</span> <span class="n">user_is_admin</span><span class="p">(</span><span class="n">username</span><span class="p">),</span>
+    <span class="p">}</span></div>
 
 </pre></div>
 

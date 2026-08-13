@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>User Guide &#8212; seamm_webui 2026.8.11 documentation</title>
+    <title>User Guide &#8212; seamm_webui 2026.8.13 documentation</title>
   
   
   
@@ -49,7 +49,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=d9a48a5b"></script>
+    <script src="../_static/documentation_options.js?v=4a248428"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -64,7 +64,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="Getting Started" href="../getting_started/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.8.11" />
+  <meta name="docsearch:version" content="2026.8.13" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -506,12 +506,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                   
   <section id="user-guide">
 <span id="id1"></span><h1>User Guide<a class="headerlink" href="#user-guide" title="Link to this heading">#</a></h1>
-<p><code class="docutils literal notranslate"><span class="pre">seamm_webui</span></code> is a browser-based dashboard for SEAMM: a job list (with
-per-project filtering), a job detail page (status, files, live output,
-kill/delete), project management (create/edit/delete), and job submission.
-If the paired JobServer has more than one queue configured (see the
-Getting Started guide), the job list and detail pages also show which
-queue each job ran on.</p>
+<p><code class="docutils literal notranslate"><span class="pre">seamm_webui</span></code> is a browser-based dashboard for SEAMM: a job list (click
+a column header’s funnel icon to filter by project, status, title, or
+queue – filters combine, and the pager can jump straight to the first or
+last page, not just one page at a time), a job detail page (status,
+files, live output, kill/delete), project management (create/edit/
+delete), and job submission. A collapsible sidebar (Jobs/Projects/Submit
+a job, plus Admin – see below – for an admin account in “local” mode)
+gives access to every page and shows whether the backend is reachable. If
+the paired JobServer has more than one queue configured (see the Getting
+Started guide), the job list and detail pages also show which queue each
+job ran on.</p>
 <section id="authentication">
 <h2>Authentication<a class="headerlink" href="#authentication" title="Link to this heading">#</a></h2>
 <p>Two modes, chosen automatically from how the server is started (see the
@@ -520,9 +525,21 @@ Getting Started guide):</p>
 <li><p><strong>none</strong> – no login at all. The default when the server is only
 reachable on the local machine (<code class="docutils literal notranslate"><span class="pre">--host</span> <span class="pre">127.0.0.1</span></code>, the default).</p></li>
 <li><p><strong>local</strong> – real per-user login, required once the server is reachable
-from other machines. Accounts are created by an administrator with the
-<code class="docutils literal notranslate"><span class="pre">seamm-webui-user</span></code> command; there is no self-service signup.</p></li>
+from other machines. There is no self-service signup; accounts are
+created by an administrator, either with the <code class="docutils literal notranslate"><span class="pre">seamm-webui-user</span></code>
+command or the web UI’s Admin page (see below).</p></li>
 </ul>
+</section>
+<section id="administration">
+<h2>Administration<a class="headerlink" href="#administration" title="Link to this heading">#</a></h2>
+<p>An account with the <code class="docutils literal notranslate"><span class="pre">admin</span></code> role – every account created so far has
+it, whether via the command line or the web UI – sees an <strong>Admin</strong> entry
+in the sidebar (in “local” mode only). It lists every account and can
+create a new one, reset a password, or delete an account: the same
+operations as <code class="docutils literal notranslate"><span class="pre">seamm-webui-user</span></code> (see the Getting Started guide), just
+without needing shell access to the machine running the server. An
+account can never delete itself, so there is always at least one admin
+left to manage the others.</p>
 </section>
 <section id="index">
 <h2>Index<a class="headerlink" href="#index" title="Link to this heading">#</a></h2>
@@ -580,6 +597,7 @@ from other machines. Accounts are created by an administrator with the
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#authentication">Authentication</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#administration">Administration</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#index">Index</a></li>
 </ul>
   </nav></div>

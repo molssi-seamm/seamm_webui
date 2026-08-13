@@ -67,5 +67,10 @@ a shell command, a shared terminal session -- where it could be captured.
 ``seamm-webui-user delete alice`` removes an account entirely (asks for
 confirmation unless ``--yes`` is given).
 
+Once one admin account can log in, the same create/reset-password/delete
+operations are also available from the web UI's Admin page (see the
+:ref:`User Guide <user-guide>`) -- the command line is really only needed
+for that first account, before anyone can log in yet.
+
 That should be enough to get started. For more detail about using the
 dashboard, see the :ref:`User Guide <user-guide>`.

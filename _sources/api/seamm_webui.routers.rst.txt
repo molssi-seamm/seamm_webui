@@ -4,6 +4,14 @@ seamm\_webui.routers package
 Submodules
 ----------
 
+seamm\_webui.routers.admin module
+---------------------------------
+
+.. automodule:: seamm_webui.routers.admin
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 seamm\_webui.routers.auth module
 --------------------------------
 

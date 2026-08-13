@@ -7,7 +7,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm_webui.routers.jobs &#8212; seamm_webui 2026.8.11 documentation</title>
+    <title>seamm_webui.routers.jobs &#8212; seamm_webui 2026.8.13 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../../_static/documentation_options.js?v=d9a48a5b"></script>
+    <script src="../../../_static/documentation_options.js?v=4a248428"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.8.11" />
+  <meta name="docsearch:version" content="2026.8.13" />
   
     
     <script src="../../../_static/searchtools.js"></script>
@@ -497,7 +497,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">APIRouter</span><span class="p">,</span> <span class="n">Depends</span><span class="p">,</span> <span class="n">File</span><span class="p">,</span> <span class="n">HTTPException</span><span class="p">,</span> <span class="n">UploadFile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">APIRouter</span><span class="p">,</span> <span class="n">Depends</span><span class="p">,</span> <span class="n">File</span><span class="p">,</span> <span class="n">HTTPException</span><span class="p">,</span> <span class="n">Response</span><span class="p">,</span> <span class="n">UploadFile</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.responses</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileResponse</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
 
@@ -602,20 +602,33 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.list_jobs">[docs]</a>
 <span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">list_jobs</span><span class="p">(</span>
+    <span class="n">response</span><span class="p">:</span> <span class="n">Response</span><span class="p">,</span>
     <span class="n">offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">sort_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span>
     <span class="n">order</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;asc&quot;</span><span class="p">,</span>
     <span class="n">project</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">queue</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;read&quot;</span><span class="p">)),</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;List jobs, optionally filtered to a single project by name.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;List jobs, optionally filtered to a single project by name, plus</span>
+<span class="sd">    status/title/queue -- all applied before pagination, same reasoning as</span>
+<span class="sd">    the project filter below: filtering Job.get()&#39;s already-paginated</span>
+<span class="sd">    results after the fact would make &quot;page 2 of running jobs&quot; not</span>
+<span class="sd">    actually be the second page of running jobs.</span>
 
-<span class="sd">    seamm_datastore&#39;s Job.get() has no project filter, so this builds the</span>
-<span class="sd">    same permission-filtered query it uses internally (Job.permissions_query)</span>
-<span class="sd">    directly, adding the project filter before pagination -- filtering</span>
-<span class="sd">    Job.get()&#39;s already-paginated results after the fact would make &quot;page 2</span>
-<span class="sd">    of Electrolytes&quot; not actually be the second page of Electrolytes jobs.</span>
+<span class="sd">    seamm_datastore&#39;s Job.get() only has title/description filters (both</span>
+<span class="sd">    substring), not project/status/queue, so this builds the same</span>
+<span class="sd">    permission-filtered query it uses internally (Job.permissions_query)</span>
+<span class="sd">    directly rather than going through it.</span>
+
+<span class="sd">    The total matching count (before offset/limit) goes in an</span>
+<span class="sd">    ``X-Total-Count`` response header, not the JSON body -- so the body</span>
+<span class="sd">    stays a plain array (what the frontend/seamm_dashboard_client&#39;s own</span>
+<span class="sd">    callers already expect) while still giving JobsPage enough to jump to</span>
+<span class="sd">    the last page rather than only ever knowing &quot;is there a next page.&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Job</span><span class="p">,</span> <span class="n">Project</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">JobSchema</span>
@@ -624,6 +637,20 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     <span class="k">if</span> <span class="n">project</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Job</span><span class="o">.</span><span class="n">projects</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">Project</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">project</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">status</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Job</span><span class="o">.</span><span class="n">status</span> <span class="o">==</span> <span class="n">status</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Job</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">title</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">queue</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># parameters is a JSON column (seamm_jobserver&#39;s multi-queue</span>
+        <span class="c1"># routing writes parameters[&quot;queue&quot;], not a real column) --</span>
+        <span class="c1"># .as_string() extracts it as text for comparison. Absent for any</span>
+        <span class="c1"># job that predates that feature or wasn&#39;t routed, which just</span>
+        <span class="c1"># never matches a queue filter, same as the frontend already</span>
+        <span class="c1"># treating a missing queue as &quot;--&quot; rather than an error.</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Job</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;queue&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">as_string</span><span class="p">()</span> <span class="o">==</span> <span class="n">queue</span><span class="p">)</span>
+
+    <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;X-Total-Count&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
 
     <span class="n">column</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">Job</span><span class="p">,</span> <span class="n">sort_by</span><span class="p">)</span>
     <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">desc</span><span class="p">()</span> <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;desc&quot;</span> <span class="k">else</span> <span class="n">column</span><span class="p">)</span>
