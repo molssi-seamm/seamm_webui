@@ -14,7 +14,11 @@ a job, plus Admin -- see below -- for an admin account in "local" mode)
 gives access to every page and shows whether the backend is reachable. If
 the paired JobServer has more than one queue configured (see the Getting
 Started guide), the job list and detail pages also show which queue each
-job ran on.
+job ran on. A job routed to a remote SLURM cluster with no shared
+filesystem (a queue's ``transport = ssh``, see the Getting Started guide)
+is marked "remote" on its detail page -- its files are pulled back on
+demand (opening the page, or clicking a file's Refresh button) while it's
+still running, rather than only once it finishes.
 
 Authentication
 ==============

@@ -75,6 +75,12 @@ def list_queues(_: None = Depends(require_permission("read"))):
             "name": name,
             "type": section.type,
             "default": name == default_name,
+            # transport=ssh means a job routed here runs in a scratch
+            # directory on the remote host with no shared filesystem --
+            # the frontend uses this to show a "syncing from cluster"
+            # indicator, not to reach the host itself (host/remote_root
+            # stay hidden, per the module docstring).
+            "remote": section.type == "slurm" and section.transport == "ssh",
             "limits": _serialize_limits(section.limits, section.directives),
         }
         for name, section in sorted(sections.items())

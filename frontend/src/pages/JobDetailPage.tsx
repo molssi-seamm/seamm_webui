@@ -1,4 +1,4 @@
-import { lazy, Suspense, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
@@ -6,8 +6,10 @@ import {
   fetchJob,
   fetchJobFiles,
   fetchJobFileContent,
+  fetchQueues,
   jobFileDownloadUrl,
   killJob,
+  syncJobFiles,
 } from '../api'
 import { buildTree, TreeView } from '../FileTree'
 import { ResizableSplit } from '../ResizableSplit'
@@ -74,16 +76,46 @@ function FileViewer({
   description,
   selected,
   onSelect,
+  isRemote,
 }: {
   jobId: string
   description: string
   selected: string | null
   onSelect: (path: string) => void
+  // True once we know this job is routed to a transport=ssh queue (see
+  // JobDetailPage) -- gates the auto-sync-on-open below and the "syncing
+  // from cluster" note, purely to skip an unnecessary request for the
+  // (much more common) local-job case. The backend endpoint itself is
+  // safe to call unconditionally -- it no-ops for anything not remote --
+  // so this is an optimization, not a correctness requirement.
+  isRemote: boolean
 }) {
   const files = useQuery({
     queryKey: ['job-files', jobId],
     queryFn: () => fetchJobFiles(jobId),
   })
+
+  // Pulls a still-running remote job's files back on demand (see
+  // routers/jobs.py's sync_job_files -- reuses the same seamm_slurm.stage
+  // machinery seamm_jobserver itself uses at job-terminal time, just
+  // triggered here instead of waiting for the job to finish). Fired once
+  // when we learn the job is remote (below) and again from the manual
+  // Refresh button -- both paths only refetch the file tree/content if a
+  // real sync happened (`synced: true`), so a local job's Refresh button
+  // behaves exactly as it did before this existed.
+  const syncMutation = useMutation({ mutationFn: () => syncJobFiles(jobId) })
+
+  useEffect(() => {
+    if (!isRemote) return
+    syncMutation.mutate(undefined, {
+      onSuccess: (result) => {
+        if (result.synced) files.refetch()
+      },
+    })
+    // Only re-run if the job (or its remote-ness) changes -- not on every
+    // render, and not keyed to `files`/`syncMutation` themselves.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jobId, isRemote])
 
   const isDescription = selected === DESCRIPTION_SENTINEL
   const selectedExt = selected && !isDescription ? getExtension(selected) : null
@@ -101,12 +133,27 @@ function FileViewer({
   // not through react-query, so there's nothing there to refetch --
   // instead bump a key to force it to remount and re-fetch the file itself.
   const [structureRefreshKey, setStructureRefreshKey] = useState(0)
-  const isRefreshing = content.isFetching || files.isFetching
+  const isRefreshing = content.isFetching || files.isFetching || syncMutation.isPending
 
+  // For a remote job, pull its files back first (synchronously, from this
+  // button's point of view) before refetching -- for a local job,
+  // syncJobFiles no-ops quickly and this behaves exactly as it always
+  // did. Always refetches afterward regardless of whether the sync itself
+  // found anything new, matching the button's prior (pre-sync) behavior.
   function handleRefresh() {
-    files.refetch()
-    content.refetch()
-    setStructureRefreshKey((k) => k + 1)
+    if (isRemote) {
+      syncMutation.mutate(undefined, {
+        onSettled: () => {
+          files.refetch()
+          content.refetch()
+          setStructureRefreshKey((k) => k + 1)
+        },
+      })
+    } else {
+      files.refetch()
+      content.refetch()
+      setStructureRefreshKey((k) => k + 1)
+    }
   }
 
   if (files.isLoading) return <p>Loading files…</p>
@@ -232,6 +279,13 @@ export function JobDetailPage() {
     enabled: !!id,
   })
 
+  // Only used to look up whether this job's queue is transport=ssh
+  // (QueueInfo.remote) -- host/remote_root themselves are never exposed.
+  // See FileViewer's isRemote prop for what this gates.
+  const queues = useQuery({ queryKey: ['queues'], queryFn: fetchQueues })
+  const jobQueue = typeof job.data?.parameters.queue === 'string' ? job.data.parameters.queue : null
+  const isRemote = !!jobQueue && !!queues.data?.find((q) => q.name === jobQueue)?.remote
+
   const killMutation = useMutation({
     mutationFn: () => killJob(id!),
     onSuccess: (updated) => {
@@ -314,6 +368,14 @@ export function JobDetailPage() {
           {typeof j.parameters.queue === 'string' && (
             <span>
               <strong>Queue:</strong> {j.parameters.queue}
+              {isRemote && (
+                <span
+                  title="This job runs on a remote cluster with no shared filesystem -- its files are pulled back on demand while opening this page or clicking a file's Refresh button."
+                  style={{ marginLeft: '0.5em', opacity: 0.75 }}
+                >
+                  (remote — files sync automatically)
+                </span>
+              )}
             </span>
           )}
           <span>
@@ -387,6 +449,7 @@ export function JobDetailPage() {
             description={j.description}
             selected={selected}
             onSelect={setSelected}
+            isRemote={isRemote}
           />
         )}
       </div>

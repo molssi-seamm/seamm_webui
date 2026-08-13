@@ -2,6 +2,28 @@
 History
 =======
 
+2026.8.13.1 -- Live file sync for jobs running on a remote SLURM cluster
+    * A job routed to a ``transport = ssh`` queue (a remote SLURM cluster
+      with no filesystem shared with the JobServer) runs in a scratch
+      directory on that remote host, and its files were previously only
+      pulled back once the job finished. The job detail page now pulls
+      them back on demand instead -- automatically when the page is
+      opened, and again from the file viewer's Refresh button -- so
+      files are visible while the job is still running. A job routed
+      this way is now marked "remote" next to its queue on the detail
+      page.
+    * Needs no separate configuration: reuses the same
+      ``<root>/<jobserver-name>.ini`` section (``remote_root``, etc.)
+      the JobServer itself already uses to stage the job out there, and
+      the same lock file the JobServer's own end-of-run pull uses, so
+      the two can never run a transfer against the same job
+      concurrently. Requires ``seamm_slurm >= 2026.8.13`` and
+      ``seamm_jobserver >= 2026.8.13``.
+    * Throttled server-side to at most one real transfer attempt every
+      15 seconds per job, regardless of how often the page/button asks
+      -- safe to leave the page open without generating constant
+      ssh/rsync traffic.
+
 2026.8.13 -- A real sidebar, an Admin page, and a friendlier job list
     * New collapsible sidebar (Jobs/Projects/Submit a job, plus Admin for
       an admin account -- see below) replaces the ad hoc per-page

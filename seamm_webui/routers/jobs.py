@@ -6,16 +6,26 @@ as-is.
 """
 
 import shutil
+import time
 from pathlib import Path
 from typing import List, Optional
 
+import fasteners
 from fastapi import APIRouter, Depends, File, HTTPException, Response, UploadFile
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
+from seamm_slurm.stage import STAGE_LOCK_FILENAME, StageError
 
 from seamm_webui.auth import require_permission
 
 router = APIRouter(prefix="/api/jobs", tags=["jobs"])
+
+# How often (seconds) a given job's remote files can actually be re-synced
+# for real -- see sync_job_files(). In-memory/per-process: worst case after
+# a restart is one extra real sync, not a correctness issue, so this
+# doesn't need to survive restarts or be shared across workers.
+SYNC_MIN_INTERVAL = 15
+_last_synced: dict = {}
 
 
 class JobSubmission(BaseModel):
@@ -326,6 +336,83 @@ def delete_jobs(payload: JobIds, _: None = Depends(require_permission("delete"))
     get_datastore().Session.commit()
 
     return {"deleted": deleted, "not_found": not_found}
+
+
+@router.post("/{job_id}/sync")
+def sync_job_files(job_id: int, _: None = Depends(require_permission("read"))):
+    """Pull a still-running ``transport = ssh`` job's remote files back on
+    demand, reusing the same ``seamm_slurm.stage`` machinery
+    ``seamm_jobserver`` itself uses at job-terminal time -- so the file
+    tree/viewer doesn't stay empty (or stale) for a remote job's entire
+    runtime, only pulling for real once it finishes.
+
+    Independent of the JobServer process: this Dashboard already reads
+    the same ``<root>/<jobserver-name>.ini`` it does (``queue_config.py``,
+    also used by ``GET /api/queues``), so it can recompute the job's
+    remote path itself (``SlurmSection.remote_wdir_for()``) and build its
+    own stager, rather than signaling the JobServer and waiting for its
+    next poll cycle.
+
+    A no-op (``synced: false``, never an error), not a 4xx/5xx, for
+    anything that isn't a real remote-ssh job right now: no queue
+    recorded, an unknown/removed queue, or a ``type=local``/
+    ``transport=local`` queue (nothing to pull -- the JobServer already
+    shares this filesystem). Also a no-op, throttled, if called again for
+    the same job within ``SYNC_MIN_INTERVAL`` -- protects against
+    multiple tabs/users or a tight status-poll loop hammering ssh+rsync.
+    Gated on ``require_permission("read")``, not ``"update"``: the effect
+    is refreshing what's visible, not changing job state, even though it
+    writes files to disk.
+
+    Guarded by a ``fasteners.InterProcessLock`` on the same
+    ``STAGE_LOCK_FILENAME`` ``seamm_jobserver``'s own end-of-run pull
+    locks, so the two can never run ``rsync`` against the same
+    destination concurrently. Lock contention and a real transfer failure
+    are both reported the same way a JobServer poll-cycle failure is
+    treated -- worth trying again shortly, not an error to surface to the
+    user as broken.
+    """
+    from seamm_slurm.config import list_sections
+
+    from seamm_webui.queue_config import get_jobserver_name, get_root
+
+    job = _get_job_or_404(job_id)
+
+    queue = (job.parameters or {}).get("queue")
+    if not queue:
+        return {"synced": False, "reason": "not routed to a queue"}
+
+    root = get_root()
+    if root is None:
+        return {"synced": False, "reason": "no queue config"}
+
+    sections = list_sections(root, get_jobserver_name())
+    section = sections.get(queue)
+    if section is None or section.type != "slurm" or section.transport != "ssh":
+        return {"synced": False, "reason": "not a remote queue"}
+
+    now = time.monotonic()
+    last = _last_synced.get(job_id)
+    if last is not None and now - last < SYNC_MIN_INTERVAL:
+        return {"synced": False, "reason": "throttled"}
+
+    lock = fasteners.InterProcessLock(str(Path(job.path) / STAGE_LOCK_FILENAME))
+    if not lock.acquire(blocking=True, timeout=5):
+        return {"synced": False, "reason": "locked"}
+
+    # Counts as an attempt whether it succeeds or fails below -- a failed
+    # transfer still did real ssh/rsync work, so it should be throttled
+    # the same as a successful one rather than retried on every request.
+    _last_synced[job_id] = now
+    try:
+        remote_wdir = section.remote_wdir_for(job.path)
+        section.build_stager().stage_out(remote_wdir, job.path)
+    except StageError as e:
+        return {"synced": False, "reason": f"transfer failed: {e}"}
+    finally:
+        lock.release()
+
+    return {"synced": True}
 
 
 @router.get("/{job_id}/files")
