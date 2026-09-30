@@ -13,10 +13,13 @@ and only then imports the routers, which is what keeps this safe.
 """
 
 import contextvars
+import logging
 from pathlib import Path
 from typing import Optional
 
 import seamm_datastore
+
+logger = logging.getLogger(__name__)
 
 _datastore: Optional["seamm_datastore.connect"] = None
 _datastore_dir: Optional[str] = None
@@ -120,6 +123,19 @@ def init_datastore(datastore_dir: str, default_project: str = "default"):
     initialize = not db_path.exists()
 
     _patch_current_user_to_contextvar()
+
+    # No datastore, but there are jobs: build it from the job directories, as the
+    # old Dashboard did, rather than starting empty.
+    if initialize and seamm_datastore.job_directories(root / "projects"):
+        logger.warning(f"There is no datastore; building {db_path} from the jobs.")
+        result = seamm_datastore.build_from_jobs(
+            db_path, root / "projects", default_project=default_project
+        )
+        logger.warning(
+            f"Built the datastore from {result['jobs']} jobs in "
+            f"{result['projects']} projects."
+        )
+        initialize = False
 
     # Note: NOT passing username= here on purpose. seamm_datastore.connect()
     # has a bug (connect.py:201, `self.add_user` does not exist) that's hit

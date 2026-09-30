@@ -714,3 +714,38 @@ def test_static_spa_fallback_and_traversal(tmp_path, monkeypatch):
         assert response.status_code == 200
         assert "do not serve me" not in response.text
         assert "shell" in response.text
+
+
+def test_datastore_built_from_jobs_when_missing(tmp_path):
+    """No seamm.db but job directories: the datastore is built from them."""
+    import json
+
+    import seamm_datastore
+
+    sample = Path(seamm_datastore.__file__).parent / "data" / "sample_flowchart_v3.flow"
+    projects = tmp_path / "datastore" / "projects"
+    for job_id, project in ((1, "default"), (2, "water"), (3, "water")):
+        job_dir = projects / project / f"Job_{job_id:06d}"
+        job_dir.mkdir(parents=True)
+        shutil.copy(sample, job_dir / "flowchart.flow")
+        data = {
+            "job id": job_id,
+            "title": f"Job {job_id}",
+            "state": "finished",
+            "projects": [project],
+            "working directory": str(job_dir),
+            "command line": [],
+            "start time": "2026-09-30T16:59:08+00:00",
+            "end time": "2026-09-30T16:59:12+00:00",
+        }
+        (job_dir / "job_data.json").write_text(
+            "!MolSSI job_data 1.0\n" + json.dumps(data)
+        )
+
+    app = create_app(str(tmp_path / "datastore"))
+    client = TestClient(app)
+    response = client.get("/api/jobs")
+    assert response.status_code == 200
+    assert sorted(j["id"] for j in response.json()) == [1, 2, 3]
+    names = [p["name"] for p in client.get("/api/projects").json()]
+    assert "water" in names
