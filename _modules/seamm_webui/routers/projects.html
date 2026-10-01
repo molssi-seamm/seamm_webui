@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 
@@ -7,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm_webui.routers.projects &#8212; seamm_webui 2026.8.13.1 documentation</title>
+    <title>seamm_webui.routers.projects &#8212; seamm_webui 2026.10.1.1 documentation</title>
   
   
   
@@ -26,8 +25,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -35,10 +34,10 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=c224919a" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -48,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../../_static/documentation_options.js?v=966a0e8c"></script>
+    <script src="../../../_static/documentation_options.js?v=e5cd86cf"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +60,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.8.13.1" />
+  <meta name="docsearch:version" content="2026.10.1.1" />
   
     
     <script src="../../../_static/searchtools.js"></script>
@@ -109,7 +108,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   
     <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
-  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
     <span class="fa-solid fa-bars"></span>
   </button>
   
@@ -227,7 +226,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <div class="navbar-item navbar-persistent--container">
           
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
  <i class="fa-solid fa-magnifying-glass"></i>
  <span class="search-button__default-text">Search</span>
  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -238,15 +237,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <div class="navbar-item">
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
     <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
     <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
     <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
   </ul>
 </div></div>
       
@@ -283,7 +282,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   
     <div class="navbar-persistent--mobile">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
  <i class="fa-solid fa-magnifying-glass"></i>
  <span class="search-button__default-text">Search</span>
  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -388,15 +387,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <div class="navbar-item">
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
     <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
     <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
     <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
   </ul>
 </div></div>
         
@@ -486,12 +485,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 <article class="bd-article">
                   
   <h1>Source code for seamm_webui.routers.projects</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Project endpoints.</span>
+<span></span><span class="sd">"""Project endpoints.</span>
 
-<span class="sd">Listing + full CRUD (Phase 2), reusing seamm_datastore&#39;s existing</span>
+<span class="sd">Listing + full CRUD (Phase 2), reusing seamm_datastore's existing</span>
 <span class="sd">Project.create()/Project.update()/get_by_id() as-is, the same pattern</span>
 <span class="sd">routers/jobs.py already uses for jobs.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
@@ -502,18 +501,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">require_permission</span>
 
-<span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/api/projects&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;projects&quot;</span><span class="p">])</span>
+<span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">"/api/projects"</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">"projects"</span><span class="p">])</span>
 
-<span class="c1"># Job statuses that mean &quot;still doing something&quot; -- used only to warn on</span>
+<span class="c1"># Job statuses that mean "still doing something" -- used only to warn on</span>
 <span class="c1"># project deletion (see delete_project below), not to block it.</span>
-<span class="n">ACTIVE_JOB_STATUSES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;submitted&quot;</span><span class="p">,</span> <span class="s2">&quot;running&quot;</span><span class="p">)</span>
+<span class="n">ACTIVE_JOB_STATUSES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"submitted"</span><span class="p">,</span> <span class="s2">"running"</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="ProjectCreate">
 <a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.projects.ProjectCreate">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">ProjectCreate</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">name</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span></div>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span></div>
 
 
 
@@ -525,41 +524,41 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_project_or_404</span><span class="p">(</span><span class="n">project_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">permission</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;read&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_project_or_404</span><span class="p">(</span><span class="n">project_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">permission</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"read"</span><span class="p">):</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Project</span>
 
     <span class="n">project</span> <span class="o">=</span> <span class="n">Project</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">project_id</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="n">permission</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">project</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Project </span><span class="si">{</span><span class="n">project_id</span><span class="si">}</span><span class="s2"> not found&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Project </span><span class="si">{</span><span class="n">project_id</span><span class="si">}</span><span class="s2"> not found"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">project</span>
 
 
 <div class="viewcode-block" id="list_projects">
 <a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.projects.list_projects">[docs]</a>
-<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">list_projects</span><span class="p">(</span><span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;read&quot;</span><span class="p">))):</span>
+<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_projects</span><span class="p">(</span><span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">"read"</span><span class="p">))):</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Project</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectSchema</span>
 
-    <span class="n">projects</span> <span class="o">=</span> <span class="n">Project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">permission</span><span class="o">=</span><span class="s2">&quot;read&quot;</span><span class="p">)</span>
+    <span class="n">projects</span> <span class="o">=</span> <span class="n">Project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">permission</span><span class="o">=</span><span class="s2">"read"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">ProjectSchema</span><span class="p">(</span><span class="n">many</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">projects</span><span class="p">)</span></div>
 
 
 
 <div class="viewcode-block" id="create_project">
 <a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.projects.create_project">[docs]</a>
-<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">201</span><span class="p">)</span>
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">""</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">201</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">create_project</span><span class="p">(</span>
-    <span class="n">submission</span><span class="p">:</span> <span class="n">ProjectCreate</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;create&quot;</span><span class="p">))</span>
+    <span class="n">submission</span><span class="p">:</span> <span class="n">ProjectCreate</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">"create"</span><span class="p">))</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a project, mirroring the old dashboard&#39;s add_project: a</span>
+<span class="w">    </span><span class="sd">"""Create a project, mirroring the old dashboard's add_project: a</span>
 <span class="sd">    directory under ``&lt;datastore&gt;/projects/&lt;name&gt;`` plus the DB row.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Project</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectSchema</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_datastore</span><span class="p">,</span> <span class="n">get_datastore_dir</span>
 
-    <span class="n">directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">get_datastore_dir</span><span class="p">())</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;projects&quot;</span> <span class="o">/</span> <span class="n">submission</span><span class="o">.</span><span class="n">name</span>
+    <span class="n">directory</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">get_datastore_dir</span><span class="p">())</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span> <span class="o">/</span> <span class="s2">"projects"</span> <span class="o">/</span> <span class="n">submission</span><span class="o">.</span><span class="n">name</span>
     <span class="n">directory</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
@@ -581,8 +580,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <div class="viewcode-block" id="get_project">
 <a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.projects.get_project">[docs]</a>
-<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{project_id}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_project</span><span class="p">(</span><span class="n">project_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;read&quot;</span><span class="p">))):</span>
+<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/</span><span class="si">{project_id}</span><span class="s2">"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_project</span><span class="p">(</span><span class="n">project_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">"read"</span><span class="p">))):</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectSchema</span>
 
     <span class="n">project</span> <span class="o">=</span> <span class="n">_get_project_or_404</span><span class="p">(</span><span class="n">project_id</span><span class="p">)</span>
@@ -592,11 +591,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <div class="viewcode-block" id="update_project">
 <a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.projects.update_project">[docs]</a>
-<span class="nd">@router</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{project_id}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nd">@router</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span><span class="s2">"/</span><span class="si">{project_id}</span><span class="s2">"</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">update_project</span><span class="p">(</span>
     <span class="n">project_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">update</span><span class="p">:</span> <span class="n">ProjectUpdate</span><span class="p">,</span>
-    <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;update&quot;</span><span class="p">)),</span>
+    <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">"update"</span><span class="p">)),</span>
 <span class="p">):</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.exc</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntegrityError</span>
 
@@ -604,15 +603,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProjectSchema</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_datastore</span>
 
-    <span class="n">_get_project_or_404</span><span class="p">(</span><span class="n">project_id</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">)</span>
+    <span class="n">_get_project_or_404</span><span class="p">(</span><span class="n">project_id</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s2">"update"</span><span class="p">)</span>
 
     <span class="n">ds</span> <span class="o">=</span> <span class="n">get_datastore</span><span class="p">()</span>
 
-    <span class="c1"># Project.update() doesn&#39;t check for a duplicate name the way</span>
-    <span class="c1"># Project.create() does (it relies on the DB&#39;s unique constraint, which</span>
+    <span class="c1"># Project.update() doesn't check for a duplicate name the way</span>
+    <span class="c1"># Project.create() does (it relies on the DB's unique constraint, which</span>
     <span class="c1"># its own bulk UPDATE statement violates immediately -- not deferred to</span>
     <span class="c1"># a later commit), and -- unlike the old Flask app, which committed</span>
-    <span class="c1"># implicitly at request teardown -- doesn&#39;t commit on success either;</span>
+    <span class="c1"># implicitly at request teardown -- doesn't commit on success either;</span>
     <span class="c1"># both are handled here.</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">Project</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">project_id</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">update</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">update</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
@@ -620,7 +619,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <span class="k">except</span> <span class="n">IntegrityError</span><span class="p">:</span>
         <span class="n">ds</span><span class="o">.</span><span class="n">Session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
         <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
-            <span class="n">status_code</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;A project named </span><span class="si">{</span><span class="n">update</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> already exists&quot;</span>
+            <span class="n">status_code</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s2">"A project named </span><span class="si">{</span><span class="n">update</span><span class="o">.</span><span class="n">name</span><span class="si">!r}</span><span class="s2"> already exists"</span>
         <span class="p">)</span>
 
     <span class="n">project</span> <span class="o">=</span> <span class="n">_get_project_or_404</span><span class="p">(</span><span class="n">project_id</span><span class="p">)</span>
@@ -630,36 +629,36 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <div class="viewcode-block" id="delete_project">
 <a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.projects.delete_project">[docs]</a>
-<span class="nd">@router</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{project_id}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">delete_project</span><span class="p">(</span><span class="n">project_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;delete&quot;</span><span class="p">))):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Delete a project: removes the DB row AND its directory on disk (all</span>
-<span class="sd">    job files), matching the old dashboard&#39;s delete_project.</span>
+<span class="nd">@router</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s2">"/</span><span class="si">{project_id}</span><span class="s2">"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">delete_project</span><span class="p">(</span><span class="n">project_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">"delete"</span><span class="p">))):</span>
+<span class="w">    </span><span class="sd">"""Delete a project: removes the DB row AND its directory on disk (all</span>
+<span class="sd">    job files), matching the old dashboard's delete_project.</span>
 
-<span class="sd">    Any of the project&#39;s jobs still &quot;submitted&quot;/&quot;running&quot; are explicitly</span>
-<span class="sd">    set to status &quot;kill&quot; first, the same request routers/jobs.py&#39;s</span>
-<span class="sd">    kill_job makes -- seamm_jobserver&#39;s check_for_stopped_jobs() polls for</span>
+<span class="sd">    Any of the project's jobs still "submitted"/"running" are explicitly</span>
+<span class="sd">    set to status "kill" first, the same request routers/jobs.py's</span>
+<span class="sd">    kill_job makes -- seamm_jobserver's check_for_stopped_jobs() polls for</span>
 <span class="sd">    that and stops them. This is *not* a side effect of deleting the</span>
 <span class="sd">    project/job-project association: deleting a Project only removes rows</span>
-<span class="sd">    from the job_project join table (confirmed empirically -- a job&#39;s own</span>
+<span class="sd">    from the job_project join table (confirmed empirically -- a job's own</span>
 <span class="sd">    row, status, and `jobs` table membership are untouched by deleting its</span>
-<span class="sd">    project), so seamm_jobserver&#39;s other trigger, a job&#39;s row vanishing</span>
-<span class="sd">    entirely from the `jobs` table, does NOT fire here and can&#39;t be relied</span>
-<span class="sd">    on. The explicit status=&quot;kill&quot; below is what actually stops these jobs</span>
+<span class="sd">    project), so seamm_jobserver's other trigger, a job's row vanishing</span>
+<span class="sd">    entirely from the `jobs` table, does NOT fire here and can't be relied</span>
+<span class="sd">    on. The explicit status="kill" below is what actually stops these jobs</span>
 <span class="sd">    before their files disappear out from under them.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Job</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_datastore</span><span class="p">,</span> <span class="n">get_datastore_dir</span>
 
-    <span class="n">project</span> <span class="o">=</span> <span class="n">_get_project_or_404</span><span class="p">(</span><span class="n">project_id</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">)</span>
+    <span class="n">project</span> <span class="o">=</span> <span class="n">_get_project_or_404</span><span class="p">(</span><span class="n">project_id</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s2">"delete"</span><span class="p">)</span>
 
     <span class="n">active_jobs</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="p">{</span><span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">j</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="n">j</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="n">j</span><span class="o">.</span><span class="n">status</span><span class="p">}</span>
+        <span class="p">{</span><span class="s2">"id"</span><span class="p">:</span> <span class="n">j</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="s2">"title"</span><span class="p">:</span> <span class="n">j</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="s2">"status"</span><span class="p">:</span> <span class="n">j</span><span class="o">.</span><span class="n">status</span><span class="p">}</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="n">project</span><span class="o">.</span><span class="n">jobs</span>
         <span class="k">if</span> <span class="n">j</span><span class="o">.</span><span class="n">status</span> <span class="ow">in</span> <span class="n">ACTIVE_JOB_STATUSES</span>
     <span class="p">]</span>
 
     <span class="k">for</span> <span class="n">aj</span> <span class="ow">in</span> <span class="n">active_jobs</span><span class="p">:</span>
-        <span class="n">Job</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">aj</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span> <span class="n">status</span><span class="o">=</span><span class="s2">&quot;kill&quot;</span><span class="p">)</span>
+        <span class="n">Job</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">aj</span><span class="p">[</span><span class="s2">"id"</span><span class="p">],</span> <span class="n">status</span><span class="o">=</span><span class="s2">"kill"</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">project</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
         <span class="n">target</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
@@ -671,7 +670,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <span class="n">ds</span><span class="o">.</span><span class="n">Session</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
     <span class="n">ds</span><span class="o">.</span><span class="n">Session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 
-    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;deleted&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;active_jobs&quot;</span><span class="p">:</span> <span class="n">active_jobs</span><span class="p">}</span></div>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"deleted"</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">"active_jobs"</span><span class="p">:</span> <span class="n">active_jobs</span><span class="p">}</span></div>
 
 </pre></div>
 
@@ -702,8 +701,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -715,7 +714,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.22.0.
 </p></div>
       
     </div>

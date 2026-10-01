@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 
@@ -7,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm_webui.routers.queues &#8212; seamm_webui 2026.8.13.1 documentation</title>
+    <title>seamm_webui.routers.queues &#8212; seamm_webui 2026.10.1.1 documentation</title>
   
   
   
@@ -26,8 +25,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -35,10 +34,10 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=c224919a" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -48,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../../_static/documentation_options.js?v=966a0e8c"></script>
+    <script src="../../../_static/documentation_options.js?v=e5cd86cf"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +60,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.8.13.1" />
+  <meta name="docsearch:version" content="2026.10.1.1" />
   
     
     <script src="../../../_static/searchtools.js"></script>
@@ -109,7 +108,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   
     <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
-  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
     <span class="fa-solid fa-bars"></span>
   </button>
   
@@ -227,7 +226,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <div class="navbar-item navbar-persistent--container">
           
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
  <i class="fa-solid fa-magnifying-glass"></i>
  <span class="search-button__default-text">Search</span>
  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -238,15 +237,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <div class="navbar-item">
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
     <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
     <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
     <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
   </ul>
 </div></div>
       
@@ -283,7 +282,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   
     <div class="navbar-persistent--mobile">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
  <i class="fa-solid fa-magnifying-glass"></i>
  <span class="search-button__default-text">Search</span>
  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -388,15 +387,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <div class="navbar-item">
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
     <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
     <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
     <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
   </ul>
 </div></div>
         
@@ -486,41 +485,41 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 <article class="bd-article">
                   
   <h1>Source code for seamm_webui.routers.queues</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Queue/cluster-target endpoints.</span>
+<span></span><span class="sd">"""Queue/cluster-target endpoints.</span>
 
 <span class="sd">Read-only visibility into the ``&lt;root&gt;/&lt;jobserver-name&gt;.ini`` config the</span>
 <span class="sd">JobServer paired with this Dashboard uses to route jobs to multiple</span>
 <span class="sd">clusters/queues (``local``, ``TinkerCliffs``, ``Owl``, ...) -- what a</span>
-<span class="sd">submission client (the Tk desktop dialog&#39;s queue picker, Phase 4) needs to</span>
+<span class="sd">submission client (the Tk desktop dialog's queue picker, Phase 4) needs to</span>
 <span class="sd">render a queue dropdown and the per-queue ``.limits``-constrained override</span>
-<span class="sd">fields. See ``seamm_jobserver``&#39;s</span>
+<span class="sd">fields. See ``seamm_jobserver``'s</span>
 <span class="sd">``docs/developer_guide/campaigns/2026-08-10/`` (multi-queue routing) for the</span>
 <span class="sd">full design; this is Phase 3, the read side.</span>
 
 <span class="sd">Deliberately never returns ``transport``/``host``/``remote_*`` -- those are</span>
-<span class="sd">this host&#39;s own system/machine config (how *this* JobServer instance</span>
+<span class="sd">this host's own system/machine config (how *this* JobServer instance</span>
 <span class="sd">reaches a cluster), not something a submitting client needs or should see.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">APIRouter</span><span class="p">,</span> <span class="n">Depends</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">require_permission</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.queue_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_jobserver_name</span><span class="p">,</span> <span class="n">get_root</span>
 
-<span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/api/queues&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;queues&quot;</span><span class="p">])</span>
+<span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">"/api/queues"</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">"queues"</span><span class="p">])</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_serialize_limits</span><span class="p">(</span><span class="n">limits</span><span class="p">,</span> <span class="n">directives</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;``current`` is this queue&#39;s own site-default value for the</span>
+<span class="w">    </span><span class="sd">"""``current`` is this queue's own site-default value for the</span>
 <span class="sd">    directive (e.g. ``ntasks = 1``), if it sets one -- not a secret, and</span>
-<span class="sd">    useful context for a client rendering an override field (&quot;currently</span>
-<span class="sd">    1, choose up to 6&quot;) rather than showing an unexplained blank.&quot;&quot;&quot;</span>
+<span class="sd">    useful context for a client rendering an override field ("currently</span>
+<span class="sd">    1, choose up to 6") rather than showing an unexplained blank."""</span>
     <span class="k">return</span> <span class="p">{</span>
         <span class="n">name</span><span class="p">:</span> <span class="p">{</span>
-            <span class="s2">&quot;choices&quot;</span><span class="p">:</span> <span class="n">field_limits</span><span class="o">.</span><span class="n">choices</span><span class="p">,</span>
-            <span class="s2">&quot;minimum&quot;</span><span class="p">:</span> <span class="n">field_limits</span><span class="o">.</span><span class="n">minimum</span><span class="p">,</span>
-            <span class="s2">&quot;maximum&quot;</span><span class="p">:</span> <span class="n">field_limits</span><span class="o">.</span><span class="n">maximum</span><span class="p">,</span>
-            <span class="s2">&quot;current&quot;</span><span class="p">:</span> <span class="n">directives</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
+            <span class="s2">"choices"</span><span class="p">:</span> <span class="n">field_limits</span><span class="o">.</span><span class="n">choices</span><span class="p">,</span>
+            <span class="s2">"minimum"</span><span class="p">:</span> <span class="n">field_limits</span><span class="o">.</span><span class="n">minimum</span><span class="p">,</span>
+            <span class="s2">"maximum"</span><span class="p">:</span> <span class="n">field_limits</span><span class="o">.</span><span class="n">maximum</span><span class="p">,</span>
+            <span class="s2">"current"</span><span class="p">:</span> <span class="n">directives</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">),</span>
         <span class="p">}</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">field_limits</span> <span class="ow">in</span> <span class="n">limits</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
     <span class="p">}</span>
@@ -528,16 +527,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <div class="viewcode-block" id="list_queues">
 <a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.queues.list_queues">[docs]</a>
-<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">list_queues</span><span class="p">(</span><span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;read&quot;</span><span class="p">))):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;List every queue the paired JobServer instance can route jobs to.</span>
+<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_queues</span><span class="p">(</span><span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">"read"</span><span class="p">))):</span>
+<span class="w">    </span><span class="sd">"""List every queue the paired JobServer instance can route jobs to.</span>
 
 <span class="sd">    Empty if no ``root`` was configured for this Dashboard (see</span>
 <span class="sd">    ``queue_config.configure()``) or no ``&lt;root&gt;/&lt;jobserver-name&gt;.ini``</span>
-<span class="sd">    exists there -- both mean &quot;the queue feature isn&#39;t in use here&quot;,</span>
+<span class="sd">    exists there -- both mean "the queue feature isn't in use here",</span>
 <span class="sd">    exactly as a JobServer with no such file runs every job as a plain</span>
 <span class="sd">    local subprocess.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">root</span> <span class="o">=</span> <span class="n">get_root</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[]</span>
@@ -550,7 +549,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="k">return</span> <span class="p">[]</span>
 
     <span class="c1"># Best-effort: an ambiguous config (multiple sections, no [DEFAULT]</span>
-    <span class="c1"># default=) is a real problem for the JobServer itself (it won&#39;t even</span>
+    <span class="c1"># default=) is a real problem for the JobServer itself (it won't even</span>
     <span class="c1"># start), but this is a read-only status endpoint -- report the</span>
     <span class="c1"># queues that do exist rather than failing the whole listing over a</span>
     <span class="c1"># site misconfiguration only the JobServer needs to enforce.</span>
@@ -562,16 +561,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     <span class="k">return</span> <span class="p">[</span>
         <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
-            <span class="s2">&quot;type&quot;</span><span class="p">:</span> <span class="n">section</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
-            <span class="s2">&quot;default&quot;</span><span class="p">:</span> <span class="n">name</span> <span class="o">==</span> <span class="n">default_name</span><span class="p">,</span>
+            <span class="s2">"name"</span><span class="p">:</span> <span class="n">name</span><span class="p">,</span>
+            <span class="s2">"type"</span><span class="p">:</span> <span class="n">section</span><span class="o">.</span><span class="n">type</span><span class="p">,</span>
+            <span class="s2">"default"</span><span class="p">:</span> <span class="n">name</span> <span class="o">==</span> <span class="n">default_name</span><span class="p">,</span>
             <span class="c1"># transport=ssh means a job routed here runs in a scratch</span>
             <span class="c1"># directory on the remote host with no shared filesystem --</span>
-            <span class="c1"># the frontend uses this to show a &quot;syncing from cluster&quot;</span>
+            <span class="c1"># the frontend uses this to show a "syncing from cluster"</span>
             <span class="c1"># indicator, not to reach the host itself (host/remote_root</span>
             <span class="c1"># stay hidden, per the module docstring).</span>
-            <span class="s2">&quot;remote&quot;</span><span class="p">:</span> <span class="n">section</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;slurm&quot;</span> <span class="ow">and</span> <span class="n">section</span><span class="o">.</span><span class="n">transport</span> <span class="o">==</span> <span class="s2">&quot;ssh&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;limits&quot;</span><span class="p">:</span> <span class="n">_serialize_limits</span><span class="p">(</span><span class="n">section</span><span class="o">.</span><span class="n">limits</span><span class="p">,</span> <span class="n">section</span><span class="o">.</span><span class="n">directives</span><span class="p">),</span>
+            <span class="s2">"remote"</span><span class="p">:</span> <span class="n">section</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">"slurm"</span> <span class="ow">and</span> <span class="n">section</span><span class="o">.</span><span class="n">transport</span> <span class="o">==</span> <span class="s2">"ssh"</span><span class="p">,</span>
+            <span class="s2">"limits"</span><span class="p">:</span> <span class="n">_serialize_limits</span><span class="p">(</span><span class="n">section</span><span class="o">.</span><span class="n">limits</span><span class="p">,</span> <span class="n">section</span><span class="o">.</span><span class="n">directives</span><span class="p">),</span>
         <span class="p">}</span>
         <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">section</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">sections</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
     <span class="p">]</span></div>
@@ -605,8 +604,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -618,7 +617,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.22.0.
 </p></div>
       
     </div>

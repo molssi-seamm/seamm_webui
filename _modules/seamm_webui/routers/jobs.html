@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 
 
@@ -7,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm_webui.routers.jobs &#8212; seamm_webui 2026.8.13.1 documentation</title>
+    <title>seamm_webui.routers.jobs &#8212; seamm_webui 2026.10.1.1 documentation</title>
   
   
   
@@ -26,8 +25,8 @@
   </noscript>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=90905a2f556bf617f1a9" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=64cc4de3f052d77215f0" rel="stylesheet" />
 
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
@@ -35,10 +34,10 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=c224919a" />
   
   <!-- So that users can add custom icons -->
-  <script defer src="../../../_static/scripts/fontawesome.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=64cc4de3f052d77215f0"></script>
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0" />
 
 <!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -48,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../../_static/documentation_options.js?v=966a0e8c"></script>
+    <script src="../../../_static/documentation_options.js?v=e5cd86cf"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +60,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.8.13.1" />
+  <meta name="docsearch:version" content="2026.10.1.1" />
   
     
     <script src="../../../_static/searchtools.js"></script>
@@ -109,7 +108,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   
     <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
 <div class="bd-header__inner bd-page-width">
-  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+  <button type="button" class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
     <span class="fa-solid fa-bars"></span>
   </button>
   
@@ -227,7 +226,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <div class="navbar-item navbar-persistent--container">
           
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
  <i class="fa-solid fa-magnifying-glass"></i>
  <span class="search-button__default-text">Search</span>
  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -238,15 +237,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <div class="navbar-item">
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
     <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
     <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
     <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
   </ul>
 </div></div>
       
@@ -283,7 +282,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   
     <div class="navbar-persistent--mobile">
 
-<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+<button type="button" class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
  <i class="fa-solid fa-magnifying-glass"></i>
  <span class="search-button__default-text">Search</span>
  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
@@ -388,15 +387,15 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           <div class="navbar-item">
 
 <div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
-  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+  <button type="button" class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
     <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
     <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
     <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
   </button>
   <ul class="dropdown-menu dropdown-menu-end">
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
-    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button type="button" class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
   </ul>
 </div></div>
         
@@ -486,12 +485,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 <article class="bd-article">
                   
   <h1>Source code for seamm_webui.routers.jobs</h1><div class="highlight"><pre>
-<span></span><span class="sd">&quot;&quot;&quot;Job endpoints.</span>
+<span></span><span class="sd">"""Job endpoints.</span>
 
 <span class="sd">Real, paginated listing + single-job lookup + file listing/download +</span>
-<span class="sd">submission, reusing seamm_datastore&#39;s existing Job.get()/get_by_id()/create()</span>
+<span class="sd">submission, reusing seamm_datastore's existing Job.get()/get_by_id()/create()</span>
 <span class="sd">as-is.</span>
-<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">"""</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
@@ -506,12 +505,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">require_permission</span>
 
-<span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">&quot;/api/jobs&quot;</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;jobs&quot;</span><span class="p">])</span>
+<span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s2">"/api/jobs"</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="p">[</span><span class="s2">"jobs"</span><span class="p">])</span>
 
-<span class="c1"># How often (seconds) a given job&#39;s remote files can actually be re-synced</span>
+<span class="c1"># How often (seconds) a given job's remote files can actually be re-synced</span>
 <span class="c1"># for real -- see sync_job_files(). In-memory/per-process: worst case after</span>
 <span class="c1"># a restart is one extra real sync, not a correctness issue, so this</span>
-<span class="c1"># doesn&#39;t need to survive restarts or be shared across workers.</span>
+<span class="c1"># doesn't need to survive restarts or be shared across workers.</span>
 <span class="n">SYNC_MIN_INTERVAL</span> <span class="o">=</span> <span class="mi">15</span>
 <span class="n">_last_synced</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -520,9 +519,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.JobSubmission">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">JobSubmission</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
     <span class="n">flowchart</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">project</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;default&quot;</span>
+    <span class="n">project</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"default"</span>
     <span class="n">title</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="n">description</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">""</span>
     <span class="n">parameters</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span></div>
 
 
@@ -538,48 +537,48 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <span class="c1"># Job statuses seamm_jobserver will actually act on when asked to kill --</span>
 <span class="c1"># matches its own check_for_stopped_jobs() (jobserver.py), which polls for</span>
-<span class="c1"># status == &quot;kill&quot; and, separately, still-&quot;running&quot; jobs whose datastore</span>
+<span class="c1"># status == "kill" and, separately, still-"running" jobs whose datastore</span>
 <span class="c1"># row vanished. A job in any other status has either not started running</span>
 <span class="c1"># under a jobserver yet in a way that matters, or is already done, so there</span>
 <span class="c1"># is nothing for a kill request to stop.</span>
-<span class="n">KILLABLE_STATUSES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;submitted&quot;</span><span class="p">,</span> <span class="s2">&quot;running&quot;</span><span class="p">)</span>
+<span class="n">KILLABLE_STATUSES</span> <span class="o">=</span> <span class="p">(</span><span class="s2">"submitted"</span><span class="p">,</span> <span class="s2">"running"</span><span class="p">)</span>
 
 
-<span class="k">def</span><span class="w"> </span><span class="nf">_get_job_or_404</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">permission</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;read&quot;</span><span class="p">):</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_job_or_404</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">permission</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"read"</span><span class="p">):</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Job</span>
 
     <span class="n">job</span> <span class="o">=</span> <span class="n">Job</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="n">permission</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">job</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Job </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2"> not found&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Job </span><span class="si">{</span><span class="n">job_id</span><span class="si">}</span><span class="s2"> not found"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">job</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_kill_if_possible</span><span class="p">(</span><span class="n">job</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Request a stop for ``job`` if it&#39;s in a status seamm_jobserver will</span>
-<span class="sd">    actually act on. Returns whether it did; callers decide whether &quot;no&quot;</span>
+<span class="w">    </span><span class="sd">"""Request a stop for ``job`` if it's in a status seamm_jobserver will</span>
+<span class="sd">    actually act on. Returns whether it did; callers decide whether "no"</span>
 <span class="sd">    is an error (the single-job endpoint) or just skipped (bulk).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Job</span>
 
     <span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">status</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">KILLABLE_STATUSES</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">False</span>
-    <span class="n">Job</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="s2">&quot;kill&quot;</span><span class="p">)</span>
+    <span class="n">Job</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">id</span><span class="p">,</span> <span class="n">status</span><span class="o">=</span><span class="s2">"kill"</span><span class="p">)</span>
     <span class="k">return</span> <span class="kc">True</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_delete_job_files_and_row</span><span class="p">(</span><span class="n">job</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove a job&#39;s directory from disk (if it&#39;s safely inside the</span>
+<span class="w">    </span><span class="sd">"""Remove a job's directory from disk (if it's safely inside the</span>
 <span class="sd">    datastore) and mark its row for deletion. Does not commit -- callers</span>
 <span class="sd">    (single or bulk) control commit timing.</span>
 
 <span class="sd">    Deleting the row is itself what stops a running job: unlike deleting a</span>
 <span class="sd">    project (which only clears the job_project association -- confirmed</span>
-<span class="sd">    empirically, see routers/projects.py&#39;s delete_project), removing a</span>
-<span class="sd">    Job&#39;s own row makes it vanish from the `jobs` table, which</span>
-<span class="sd">    seamm_jobserver&#39;s check_for_stopped_jobs() polls for and treats as &quot;was</span>
-<span class="sd">    stopped out from under me&quot; for anything it&#39;s actively tracking. No</span>
-<span class="sd">    separate status=&quot;kill&quot; request needed here.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    empirically, see routers/projects.py's delete_project), removing a</span>
+<span class="sd">    Job's own row makes it vanish from the `jobs` table, which</span>
+<span class="sd">    seamm_jobserver's check_for_stopped_jobs() polls for and treats as "was</span>
+<span class="sd">    stopped out from under me" for anything it's actively tracking. No</span>
+<span class="sd">    separate status="kill" request needed here.</span>
+<span class="sd">    """</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_datastore</span><span class="p">,</span> <span class="n">get_datastore_dir</span>
 
     <span class="k">if</span> <span class="n">job</span><span class="o">.</span><span class="n">path</span><span class="p">:</span>
@@ -593,57 +592,57 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_job_file</span><span class="p">(</span><span class="n">job</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Resolve ``filename`` under the job&#39;s directory, guarding against</span>
+<span class="w">    </span><span class="sd">"""Resolve ``filename`` under the job's directory, guarding against</span>
 <span class="sd">    traversal outside it via ``Path.is_relative_to`` (not a substring check</span>
-<span class="sd">    like the old dashboard&#39;s ``&quot;../&quot; in filename``, which can&#39;t be bypassed</span>
+<span class="sd">    like the old dashboard's ``"../" in filename``, which can't be bypassed</span>
 <span class="sd">    by how the traversal is encoded).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">base</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
     <span class="n">target</span> <span class="o">=</span> <span class="p">(</span><span class="n">base</span> <span class="o">/</span> <span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">target</span><span class="o">.</span><span class="n">is_relative_to</span><span class="p">(</span><span class="n">base</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">403</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Invalid filename&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">403</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">"Invalid filename"</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">target</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
-        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;File not found&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">404</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">"File not found"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">target</span>
 
 
 <div class="viewcode-block" id="list_jobs">
 <a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.list_jobs">[docs]</a>
-<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">""</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">list_jobs</span><span class="p">(</span>
     <span class="n">response</span><span class="p">:</span> <span class="n">Response</span><span class="p">,</span>
     <span class="n">offset</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">limit</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">sort_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;id&quot;</span><span class="p">,</span>
-    <span class="n">order</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;asc&quot;</span><span class="p">,</span>
+    <span class="n">sort_by</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"id"</span><span class="p">,</span>
+    <span class="n">order</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">"asc"</span><span class="p">,</span>
     <span class="n">project</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">status</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">title</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">queue</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;read&quot;</span><span class="p">)),</span>
+    <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">"read"</span><span class="p">)),</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;List jobs, optionally filtered to a single project by name, plus</span>
+<span class="w">    </span><span class="sd">"""List jobs, optionally filtered to a single project by name, plus</span>
 <span class="sd">    status/title/queue -- all applied before pagination, same reasoning as</span>
-<span class="sd">    the project filter below: filtering Job.get()&#39;s already-paginated</span>
-<span class="sd">    results after the fact would make &quot;page 2 of running jobs&quot; not</span>
+<span class="sd">    the project filter below: filtering Job.get()'s already-paginated</span>
+<span class="sd">    results after the fact would make "page 2 of running jobs" not</span>
 <span class="sd">    actually be the second page of running jobs.</span>
 
-<span class="sd">    seamm_datastore&#39;s Job.get() only has title/description filters (both</span>
+<span class="sd">    seamm_datastore's Job.get() only has title/description filters (both</span>
 <span class="sd">    substring), not project/status/queue, so this builds the same</span>
 <span class="sd">    permission-filtered query it uses internally (Job.permissions_query)</span>
 <span class="sd">    directly rather than going through it.</span>
 
 <span class="sd">    The total matching count (before offset/limit) goes in an</span>
 <span class="sd">    ``X-Total-Count`` response header, not the JSON body -- so the body</span>
-<span class="sd">    stays a plain array (what the frontend/seamm_dashboard_client&#39;s own</span>
+<span class="sd">    stays a plain array (what the frontend/seamm_dashboard_client's own</span>
 <span class="sd">    callers already expect) while still giving JobsPage enough to jump to</span>
-<span class="sd">    the last page rather than only ever knowing &quot;is there a next page.&quot;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    the last page rather than only ever knowing "is there a next page."</span>
+<span class="sd">    """</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Job</span><span class="p">,</span> <span class="n">Project</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">JobSchema</span>
 
-    <span class="n">query</span> <span class="o">=</span> <span class="n">Job</span><span class="o">.</span><span class="n">permissions_query</span><span class="p">(</span><span class="s2">&quot;read&quot;</span><span class="p">)</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">Job</span><span class="o">.</span><span class="n">permissions_query</span><span class="p">(</span><span class="s2">"read"</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">project</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Job</span><span class="o">.</span><span class="n">projects</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">Project</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">project</span><span class="p">))</span>
@@ -652,18 +651,18 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <span class="k">if</span> <span class="n">title</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Job</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">title</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">queue</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># parameters is a JSON column (seamm_jobserver&#39;s multi-queue</span>
-        <span class="c1"># routing writes parameters[&quot;queue&quot;], not a real column) --</span>
+        <span class="c1"># parameters is a JSON column (seamm_jobserver's multi-queue</span>
+        <span class="c1"># routing writes parameters["queue"], not a real column) --</span>
         <span class="c1"># .as_string() extracts it as text for comparison. Absent for any</span>
-        <span class="c1"># job that predates that feature or wasn&#39;t routed, which just</span>
+        <span class="c1"># job that predates that feature or wasn't routed, which just</span>
         <span class="c1"># never matches a queue filter, same as the frontend already</span>
-        <span class="c1"># treating a missing queue as &quot;--&quot; rather than an error.</span>
-        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Job</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">&quot;queue&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">as_string</span><span class="p">()</span> <span class="o">==</span> <span class="n">queue</span><span class="p">)</span>
+        <span class="c1"># treating a missing queue as "--" rather than an error.</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">Job</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s2">"queue"</span><span class="p">]</span><span class="o">.</span><span class="n">as_string</span><span class="p">()</span> <span class="o">==</span> <span class="n">queue</span><span class="p">)</span>
 
-    <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;X-Total-Count&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">"X-Total-Count"</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">count</span><span class="p">())</span>
 
     <span class="n">column</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">Job</span><span class="p">,</span> <span class="n">sort_by</span><span class="p">)</span>
-    <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">desc</span><span class="p">()</span> <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;desc&quot;</span> <span class="k">else</span> <span class="n">column</span><span class="p">)</span>
+    <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="n">column</span><span class="o">.</span><span class="n">desc</span><span class="p">()</span> <span class="k">if</span> <span class="n">order</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s2">"desc"</span> <span class="k">else</span> <span class="n">column</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">query</span> <span class="o">=</span> <span class="n">query</span><span class="o">.</span><span class="n">offset</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
@@ -676,29 +675,29 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <div class="viewcode-block" id="submit_job">
 <a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.submit_job">[docs]</a>
-<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">201</span><span class="p">)</span>
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">""</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">201</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">submit_job</span><span class="p">(</span>
-    <span class="n">submission</span><span class="p">:</span> <span class="n">JobSubmission</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;create&quot;</span><span class="p">))</span>
+    <span class="n">submission</span><span class="p">:</span> <span class="n">JobSubmission</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">"create"</span><span class="p">))</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Submit a new job.</span>
+<span class="w">    </span><span class="sd">"""Submit a new job.</span>
 
 <span class="sd">    Writes flowchart.flow + job_data.json to the project directory (mirroring</span>
-<span class="sd">    seamm_dashboard&#39;s add_job / setup_job) and registers it via Job.create().</span>
-<span class="sd">    No separate &quot;enqueue&quot; step -- the seamm_jobserver daemon picks up jobs</span>
-<span class="sd">    with status &quot;submitted&quot; on its own, independent of which dashboard wrote</span>
+<span class="sd">    seamm_dashboard's add_job / setup_job) and registers it via Job.create().</span>
+<span class="sd">    No separate "enqueue" step -- the seamm_jobserver daemon picks up jobs</span>
+<span class="sd">    with status "submitted" on its own, independent of which dashboard wrote</span>
 <span class="sd">    them.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Job</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">JobSchema</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_datastore</span><span class="p">,</span> <span class="n">get_datastore_dir</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_job_id</span><span class="p">,</span> <span class="n">write_job_files</span>
 
     <span class="n">datastore_dir</span> <span class="o">=</span> <span class="n">get_datastore_dir</span><span class="p">()</span>
-    <span class="n">job_id_file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">datastore_dir</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span> <span class="o">/</span> <span class="s2">&quot;job.id&quot;</span><span class="p">)</span>
+    <span class="n">job_id_file</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">datastore_dir</span><span class="p">)</span><span class="o">.</span><span class="n">expanduser</span><span class="p">()</span> <span class="o">/</span> <span class="s2">"job.id"</span><span class="p">)</span>
     <span class="n">job_id</span> <span class="o">=</span> <span class="n">get_job_id</span><span class="p">(</span><span class="n">job_id_file</span><span class="p">)</span>
 
     <span class="n">project_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">submission</span><span class="o">.</span><span class="n">project</span><span class="p">]</span>
-    <span class="n">parameters</span> <span class="o">=</span> <span class="n">submission</span><span class="o">.</span><span class="n">parameters</span> <span class="ow">or</span> <span class="p">{</span><span class="s2">&quot;cmdline&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+    <span class="n">parameters</span> <span class="o">=</span> <span class="n">submission</span><span class="o">.</span><span class="n">parameters</span> <span class="ow">or</span> <span class="p">{</span><span class="s2">"cmdline"</span><span class="p">:</span> <span class="p">[]}</span>
 
     <span class="n">directory</span> <span class="o">=</span> <span class="n">write_job_files</span><span class="p">(</span>
         <span class="n">datastore_dir</span><span class="p">,</span>
@@ -714,7 +713,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="n">job</span> <span class="o">=</span> <span class="n">Job</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
             <span class="n">job_id</span><span class="p">,</span>
             <span class="n">path</span><span class="o">=</span><span class="n">directory</span><span class="p">,</span>
-            <span class="n">flowchart_filename</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span> <span class="o">/</span> <span class="s2">&quot;flowchart.flow&quot;</span><span class="p">),</span>
+            <span class="n">flowchart_filename</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span> <span class="o">/</span> <span class="s2">"flowchart.flow"</span><span class="p">),</span>
             <span class="n">project_names</span><span class="o">=</span><span class="n">project_names</span><span class="p">,</span>
             <span class="n">title</span><span class="o">=</span><span class="n">submission</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
             <span class="n">description</span><span class="o">=</span><span class="n">submission</span><span class="o">.</span><span class="n">description</span><span class="p">,</span>
@@ -733,8 +732,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <div class="viewcode-block" id="get_job">
 <a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.get_job">[docs]</a>
-<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{job_id}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">get_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;read&quot;</span><span class="p">))):</span>
+<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/</span><span class="si">{job_id}</span><span class="s2">"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">"read"</span><span class="p">))):</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">JobSchema</span>
 
     <span class="n">job</span> <span class="o">=</span> <span class="n">_get_job_or_404</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
@@ -744,28 +743,28 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <div class="viewcode-block" id="kill_job">
 <a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.kill_job">[docs]</a>
-<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{job_id}</span><span class="s2">/kill&quot;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">kill_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;update&quot;</span><span class="p">))):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ask seamm_jobserver to stop this job, keeping its files -- unlike</span>
-<span class="sd">    deleting the job&#39;s project, which removes them (routers/projects.py&#39;s</span>
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">"/</span><span class="si">{job_id}</span><span class="s2">/kill"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">kill_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">"update"</span><span class="p">))):</span>
+<span class="w">    </span><span class="sd">"""Ask seamm_jobserver to stop this job, keeping its files -- unlike</span>
+<span class="sd">    deleting the job's project, which removes them (routers/projects.py's</span>
 <span class="sd">    delete_project).</span>
 
-<span class="sd">    This only *requests* the stop by setting status to &quot;kill&quot;; it doesn&#39;t</span>
-<span class="sd">    perform it. seamm_jobserver&#39;s check_for_stopped_jobs() polls for</span>
-<span class="sd">    status == &quot;kill&quot; every cycle, issues the actual local-process-kill/</span>
-<span class="sd">    scancel, and then flips status to &quot;killed&quot; itself. So the job&#39;s status</span>
-<span class="sd">    in the response here will be &quot;kill&quot;, not yet &quot;killed&quot; -- the frontend</span>
-<span class="sd">    should treat both as &quot;a kill is in flight or done&quot;, not poll this</span>
-<span class="sd">    endpoint waiting for &quot;killed&quot; synchronously.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    This only *requests* the stop by setting status to "kill"; it doesn't</span>
+<span class="sd">    perform it. seamm_jobserver's check_for_stopped_jobs() polls for</span>
+<span class="sd">    status == "kill" every cycle, issues the actual local-process-kill/</span>
+<span class="sd">    scancel, and then flips status to "killed" itself. So the job's status</span>
+<span class="sd">    in the response here will be "kill", not yet "killed" -- the frontend</span>
+<span class="sd">    should treat both as "a kill is in flight or done", not poll this</span>
+<span class="sd">    endpoint waiting for "killed" synchronously.</span>
+<span class="sd">    """</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.schema</span><span class="w"> </span><span class="kn">import</span> <span class="n">JobSchema</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_datastore</span>
 
-    <span class="n">job</span> <span class="o">=</span> <span class="n">_get_job_or_404</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">)</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="n">_get_job_or_404</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s2">"update"</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">_kill_if_possible</span><span class="p">(</span><span class="n">job</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span>
             <span class="n">status_code</span><span class="o">=</span><span class="mi">400</span><span class="p">,</span>
-            <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s2">&quot;Cannot kill a job with status </span><span class="si">{</span><span class="n">job</span><span class="o">.</span><span class="n">status</span><span class="si">!r}</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="n">detail</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Cannot kill a job with status </span><span class="si">{</span><span class="n">job</span><span class="o">.</span><span class="n">status</span><span class="si">!r}</span><span class="s2">"</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="n">get_datastore</span><span class="p">()</span><span class="o">.</span><span class="n">Session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
@@ -776,17 +775,17 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <div class="viewcode-block" id="kill_jobs">
 <a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.kill_jobs">[docs]</a>
-<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/kill&quot;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">kill_jobs</span><span class="p">(</span><span class="n">payload</span><span class="p">:</span> <span class="n">JobIds</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;update&quot;</span><span class="p">))):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bulk version of kill_job, for the job list&#39;s &quot;Kill selected&quot;.</span>
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">"/kill"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">kill_jobs</span><span class="p">(</span><span class="n">payload</span><span class="p">:</span> <span class="n">JobIds</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">"update"</span><span class="p">))):</span>
+<span class="w">    </span><span class="sd">"""Bulk version of kill_job, for the job list's "Kill selected".</span>
 
 <span class="sd">    Silently skips anything not killable (already finished, nonexistent,</span>
 <span class="sd">    no permission) rather than failing the whole batch over one job that</span>
-<span class="sd">    was already done -- that&#39;s the point of a bulk action. ``skipped``</span>
-<span class="sd">    distinguishes &quot;found but not in a killable status&quot; from ``not_found``</span>
-<span class="sd">    (&quot;no such job / no permission&quot;), so the frontend can say something more</span>
-<span class="sd">    useful than &quot;some jobs were skipped.&quot;</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    was already done -- that's the point of a bulk action. ``skipped``</span>
+<span class="sd">    distinguishes "found but not in a killable status" from ``not_found``</span>
+<span class="sd">    ("no such job / no permission"), so the frontend can say something more</span>
+<span class="sd">    useful than "some jobs were skipped."</span>
+<span class="sd">    """</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Job</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_datastore</span>
 
@@ -795,7 +794,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <span class="n">not_found</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">for</span> <span class="n">job_id</span> <span class="ow">in</span> <span class="n">payload</span><span class="o">.</span><span class="n">ids</span><span class="p">:</span>
-        <span class="n">job</span> <span class="o">=</span> <span class="n">Job</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">)</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">Job</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s2">"update"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">job</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">not_found</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
         <span class="k">elif</span> <span class="n">_kill_if_possible</span><span class="p">(</span><span class="n">job</span><span class="p">):</span>
@@ -805,34 +804,34 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     <span class="n">get_datastore</span><span class="p">()</span><span class="o">.</span><span class="n">Session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 
-    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;killed&quot;</span><span class="p">:</span> <span class="n">killed</span><span class="p">,</span> <span class="s2">&quot;skipped&quot;</span><span class="p">:</span> <span class="n">skipped</span><span class="p">,</span> <span class="s2">&quot;not_found&quot;</span><span class="p">:</span> <span class="n">not_found</span><span class="p">}</span></div>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"killed"</span><span class="p">:</span> <span class="n">killed</span><span class="p">,</span> <span class="s2">"skipped"</span><span class="p">:</span> <span class="n">skipped</span><span class="p">,</span> <span class="s2">"not_found"</span><span class="p">:</span> <span class="n">not_found</span><span class="p">}</span></div>
 
 
 
 <div class="viewcode-block" id="delete_job">
 <a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.delete_job">[docs]</a>
-<span class="nd">@router</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{job_id}</span><span class="s2">&quot;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">delete_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;delete&quot;</span><span class="p">))):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Delete a job: removes the DB row AND its directory on disk,</span>
-<span class="sd">    matching the old dashboard&#39;s delete_job. No status restriction (same</span>
+<span class="nd">@router</span><span class="o">.</span><span class="n">delete</span><span class="p">(</span><span class="s2">"/</span><span class="si">{job_id}</span><span class="s2">"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">delete_job</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">"delete"</span><span class="p">))):</span>
+<span class="w">    </span><span class="sd">"""Delete a job: removes the DB row AND its directory on disk,</span>
+<span class="sd">    matching the old dashboard's delete_job. No status restriction (same</span>
 <span class="sd">    as the old dashboard) -- deleting a still-running job is allowed, and</span>
 <span class="sd">    is itself what stops it (see _delete_job_files_and_row).</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_datastore</span>
 
-    <span class="n">job</span> <span class="o">=</span> <span class="n">_get_job_or_404</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">)</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="n">_get_job_or_404</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s2">"delete"</span><span class="p">)</span>
     <span class="n">_delete_job_files_and_row</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
     <span class="n">get_datastore</span><span class="p">()</span><span class="o">.</span><span class="n">Session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 
-    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;deleted&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"deleted"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
 
 
 
 <div class="viewcode-block" id="delete_jobs">
 <a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.delete_jobs">[docs]</a>
-<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/delete&quot;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">delete_jobs</span><span class="p">(</span><span class="n">payload</span><span class="p">:</span> <span class="n">JobIds</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;delete&quot;</span><span class="p">))):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Bulk version of delete_job, for the job list&#39;s &quot;Delete selected&quot;.&quot;&quot;&quot;</span>
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">"/delete"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">delete_jobs</span><span class="p">(</span><span class="n">payload</span><span class="p">:</span> <span class="n">JobIds</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">"delete"</span><span class="p">))):</span>
+<span class="w">    </span><span class="sd">"""Bulk version of delete_job, for the job list's "Delete selected"."""</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_datastore.database.models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Job</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.db</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_datastore</span>
 
@@ -840,7 +839,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <span class="n">not_found</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
     <span class="k">for</span> <span class="n">job_id</span> <span class="ow">in</span> <span class="n">payload</span><span class="o">.</span><span class="n">ids</span><span class="p">:</span>
-        <span class="n">job</span> <span class="o">=</span> <span class="n">Job</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s2">&quot;delete&quot;</span><span class="p">)</span>
+        <span class="n">job</span> <span class="o">=</span> <span class="n">Job</span><span class="o">.</span><span class="n">get_by_id</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s2">"delete"</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">job</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">not_found</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
@@ -849,73 +848,73 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     <span class="n">get_datastore</span><span class="p">()</span><span class="o">.</span><span class="n">Session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
 
-    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;deleted&quot;</span><span class="p">:</span> <span class="n">deleted</span><span class="p">,</span> <span class="s2">&quot;not_found&quot;</span><span class="p">:</span> <span class="n">not_found</span><span class="p">}</span></div>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"deleted"</span><span class="p">:</span> <span class="n">deleted</span><span class="p">,</span> <span class="s2">"not_found"</span><span class="p">:</span> <span class="n">not_found</span><span class="p">}</span></div>
 
 
 
 <div class="viewcode-block" id="sync_job_files">
 <a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.sync_job_files">[docs]</a>
-<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{job_id}</span><span class="s2">/sync&quot;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">sync_job_files</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;read&quot;</span><span class="p">))):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pull a still-running ``transport = ssh`` job&#39;s remote files back on</span>
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">"/</span><span class="si">{job_id}</span><span class="s2">/sync"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">sync_job_files</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">"read"</span><span class="p">))):</span>
+<span class="w">    </span><span class="sd">"""Pull a still-running ``transport = ssh`` job's remote files back on</span>
 <span class="sd">    demand, reusing the same ``seamm_slurm.stage`` machinery</span>
 <span class="sd">    ``seamm_jobserver`` itself uses at job-terminal time -- so the file</span>
-<span class="sd">    tree/viewer doesn&#39;t stay empty (or stale) for a remote job&#39;s entire</span>
+<span class="sd">    tree/viewer doesn't stay empty (or stale) for a remote job's entire</span>
 <span class="sd">    runtime, only pulling for real once it finishes.</span>
 
 <span class="sd">    Independent of the JobServer process: this Dashboard already reads</span>
 <span class="sd">    the same ``&lt;root&gt;/&lt;jobserver-name&gt;.ini`` it does (``queue_config.py``,</span>
-<span class="sd">    also used by ``GET /api/queues``), so it can recompute the job&#39;s</span>
+<span class="sd">    also used by ``GET /api/queues``), so it can recompute the job's</span>
 <span class="sd">    remote path itself (``SlurmSection.remote_wdir_for()``) and build its</span>
 <span class="sd">    own stager, rather than signaling the JobServer and waiting for its</span>
 <span class="sd">    next poll cycle.</span>
 
 <span class="sd">    A no-op (``synced: false``, never an error), not a 4xx/5xx, for</span>
-<span class="sd">    anything that isn&#39;t a real remote-ssh job right now: no queue</span>
+<span class="sd">    anything that isn't a real remote-ssh job right now: no queue</span>
 <span class="sd">    recorded, an unknown/removed queue, or a ``type=local``/</span>
 <span class="sd">    ``transport=local`` queue (nothing to pull -- the JobServer already</span>
 <span class="sd">    shares this filesystem). Also a no-op, throttled, if called again for</span>
 <span class="sd">    the same job within ``SYNC_MIN_INTERVAL`` -- protects against</span>
 <span class="sd">    multiple tabs/users or a tight status-poll loop hammering ssh+rsync.</span>
-<span class="sd">    Gated on ``require_permission(&quot;read&quot;)``, not ``&quot;update&quot;``: the effect</span>
-<span class="sd">    is refreshing what&#39;s visible, not changing job state, even though it</span>
+<span class="sd">    Gated on ``require_permission("read")``, not ``"update"``: the effect</span>
+<span class="sd">    is refreshing what's visible, not changing job state, even though it</span>
 <span class="sd">    writes files to disk.</span>
 
 <span class="sd">    Guarded by a ``fasteners.InterProcessLock`` on the same</span>
-<span class="sd">    ``STAGE_LOCK_FILENAME`` ``seamm_jobserver``&#39;s own end-of-run pull</span>
+<span class="sd">    ``STAGE_LOCK_FILENAME`` ``seamm_jobserver``'s own end-of-run pull</span>
 <span class="sd">    locks, so the two can never run ``rsync`` against the same</span>
 <span class="sd">    destination concurrently. Lock contention and a real transfer failure</span>
 <span class="sd">    are both reported the same way a JobServer poll-cycle failure is</span>
 <span class="sd">    treated -- worth trying again shortly, not an error to surface to the</span>
 <span class="sd">    user as broken.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_slurm.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">list_sections</span>
 
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.queue_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_jobserver_name</span><span class="p">,</span> <span class="n">get_root</span>
 
     <span class="n">job</span> <span class="o">=</span> <span class="n">_get_job_or_404</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
 
-    <span class="n">queue</span> <span class="o">=</span> <span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">parameters</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;queue&quot;</span><span class="p">)</span>
+    <span class="n">queue</span> <span class="o">=</span> <span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">parameters</span> <span class="ow">or</span> <span class="p">{})</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"queue"</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">queue</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;synced&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;not routed to a queue&quot;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"synced"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="s2">"not routed to a queue"</span><span class="p">}</span>
 
     <span class="n">root</span> <span class="o">=</span> <span class="n">get_root</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">root</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;synced&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;no queue config&quot;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"synced"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="s2">"no queue config"</span><span class="p">}</span>
 
     <span class="n">sections</span> <span class="o">=</span> <span class="n">list_sections</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">get_jobserver_name</span><span class="p">())</span>
     <span class="n">section</span> <span class="o">=</span> <span class="n">sections</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">queue</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">section</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">section</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s2">&quot;slurm&quot;</span> <span class="ow">or</span> <span class="n">section</span><span class="o">.</span><span class="n">transport</span> <span class="o">!=</span> <span class="s2">&quot;ssh&quot;</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;synced&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;not a remote queue&quot;</span><span class="p">}</span>
+    <span class="k">if</span> <span class="n">section</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">section</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s2">"slurm"</span> <span class="ow">or</span> <span class="n">section</span><span class="o">.</span><span class="n">transport</span> <span class="o">!=</span> <span class="s2">"ssh"</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"synced"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="s2">"not a remote queue"</span><span class="p">}</span>
 
     <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>
     <span class="n">last</span> <span class="o">=</span> <span class="n">_last_synced</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">last</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">now</span> <span class="o">-</span> <span class="n">last</span> <span class="o">&lt;</span> <span class="n">SYNC_MIN_INTERVAL</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;synced&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;throttled&quot;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"synced"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="s2">"throttled"</span><span class="p">}</span>
 
     <span class="n">lock</span> <span class="o">=</span> <span class="n">fasteners</span><span class="o">.</span><span class="n">InterProcessLock</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">path</span><span class="p">)</span> <span class="o">/</span> <span class="n">STAGE_LOCK_FILENAME</span><span class="p">))</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">lock</span><span class="o">.</span><span class="n">acquire</span><span class="p">(</span><span class="n">blocking</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">5</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;synced&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;locked&quot;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"synced"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="s2">"locked"</span><span class="p">}</span>
 
     <span class="c1"># Counts as an attempt whether it succeeds or fails below -- a failed</span>
     <span class="c1"># transfer still did real ssh/rsync work, so it should be throttled</span>
@@ -925,19 +924,19 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="n">remote_wdir</span> <span class="o">=</span> <span class="n">section</span><span class="o">.</span><span class="n">remote_wdir_for</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
         <span class="n">section</span><span class="o">.</span><span class="n">build_stager</span><span class="p">()</span><span class="o">.</span><span class="n">stage_out</span><span class="p">(</span><span class="n">remote_wdir</span><span class="p">,</span> <span class="n">job</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">StageError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;synced&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;transfer failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"synced"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="sa">f</span><span class="s2">"transfer failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">"</span><span class="p">}</span>
     <span class="k">finally</span><span class="p">:</span>
         <span class="n">lock</span><span class="o">.</span><span class="n">release</span><span class="p">()</span>
 
-    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;synced&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"synced"</span><span class="p">:</span> <span class="kc">True</span><span class="p">}</span></div>
 
 
 
 <div class="viewcode-block" id="list_job_files">
 <a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.list_job_files">[docs]</a>
-<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{job_id}</span><span class="s2">/files&quot;</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">list_job_files</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;read&quot;</span><span class="p">))):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;List files under the job&#39;s directory, as relative paths + sizes.&quot;&quot;&quot;</span>
+<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/</span><span class="si">{job_id}</span><span class="s2">/files"</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">list_job_files</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">"read"</span><span class="p">))):</span>
+<span class="w">    </span><span class="sd">"""List files under the job's directory, as relative paths + sizes."""</span>
     <span class="n">job</span> <span class="o">=</span> <span class="n">_get_job_or_404</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
 
     <span class="n">base</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
@@ -945,12 +944,12 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="k">return</span> <span class="p">[]</span>
 
     <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">base</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">"*"</span><span class="p">)):</span>
         <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
             <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="p">{</span>
-                    <span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">base</span><span class="p">)),</span>
-                    <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span><span class="p">,</span>
+                    <span class="s2">"path"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">relative_to</span><span class="p">(</span><span class="n">base</span><span class="p">)),</span>
+                    <span class="s2">"size"</span><span class="p">:</span> <span class="n">path</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span><span class="p">,</span>
                 <span class="p">}</span>
             <span class="p">)</span>
     <span class="k">return</span> <span class="n">files</span></div>
@@ -958,57 +957,57 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_resolve_upload_target</span><span class="p">(</span><span class="n">job</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Resolve where an uploaded file should be written under the job&#39;s</span>
-<span class="sd">    directory. Strips a leading &quot;job:&quot; prefix -- seamm_dashboard_client&#39;s</span>
-<span class="sd">    safe_filename() always adds one (e.g. &quot;job:data/foo.xyz&quot;; see</span>
+<span class="w">    </span><span class="sd">"""Resolve where an uploaded file should be written under the job's</span>
+<span class="sd">    directory. Strips a leading "job:" prefix -- seamm_dashboard_client's</span>
+<span class="sd">    safe_filename() always adds one (e.g. "job:data/foo.xyz"; see</span>
 <span class="sd">    Dashboard.submit()/put_file() there) -- and guards against traversal</span>
 <span class="sd">    outside the job directory the same way _resolve_job_file guards</span>
 <span class="sd">    downloads, just for a write target rather than a required-to-exist</span>
 <span class="sd">    read.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;job:&quot;</span><span class="p">):</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">"job:"</span><span class="p">):</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
 
     <span class="n">base</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">job</span><span class="o">.</span><span class="n">path</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
     <span class="n">target</span> <span class="o">=</span> <span class="p">(</span><span class="n">base</span> <span class="o">/</span> <span class="n">filename</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="n">target</span><span class="o">.</span><span class="n">is_relative_to</span><span class="p">(</span><span class="n">base</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">403</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">&quot;Invalid filename&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">HTTPException</span><span class="p">(</span><span class="n">status_code</span><span class="o">=</span><span class="mi">403</span><span class="p">,</span> <span class="n">detail</span><span class="o">=</span><span class="s2">"Invalid filename"</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">target</span>
 
 
 <div class="viewcode-block" id="upload_job_file">
 <a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.upload_job_file">[docs]</a>
-<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{job_id}</span><span class="s2">/files&quot;</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">201</span><span class="p">)</span>
+<span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">"/</span><span class="si">{job_id}</span><span class="s2">/files"</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">201</span><span class="p">)</span>
 <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="nf">upload_job_file</span><span class="p">(</span>
     <span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">file</span><span class="p">:</span> <span class="n">UploadFile</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="o">...</span><span class="p">),</span>
-    <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;update&quot;</span><span class="p">)),</span>
+    <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">"update"</span><span class="p">)),</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Upload a file into the job&#39;s directory -- the counterpart to</span>
-<span class="sd">    seamm_dashboard_client&#39;s Dashboard.submit(), which calls this once per</span>
+<span class="w">    </span><span class="sd">"""Upload a file into the job's directory -- the counterpart to</span>
+<span class="sd">    seamm_dashboard_client's Dashboard.submit(), which calls this once per</span>
 <span class="sd">    external data file a flowchart references (e.g. an initial structure</span>
 <span class="sd">    file for a --file argument), right after creating the job itself.</span>
-<span class="sd">    Mirrors the old dashboard&#39;s add_file_to_job: strip a leading &quot;job:&quot;</span>
-<span class="sd">    from the filename, write under the job&#39;s directory, creating any</span>
-<span class="sd">    subdirectory (e.g. &quot;data/&quot;) as needed.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">job</span> <span class="o">=</span> <span class="n">_get_job_or_404</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s2">&quot;update&quot;</span><span class="p">)</span>
+<span class="sd">    Mirrors the old dashboard's add_file_to_job: strip a leading "job:"</span>
+<span class="sd">    from the filename, write under the job's directory, creating any</span>
+<span class="sd">    subdirectory (e.g. "data/") as needed.</span>
+<span class="sd">    """</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="n">_get_job_or_404</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="s2">"update"</span><span class="p">)</span>
     <span class="n">target</span> <span class="o">=</span> <span class="n">_resolve_upload_target</span><span class="p">(</span><span class="n">job</span><span class="p">,</span> <span class="n">file</span><span class="o">.</span><span class="n">filename</span><span class="p">)</span>
     <span class="n">target</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
     <span class="n">target</span><span class="o">.</span><span class="n">write_bytes</span><span class="p">(</span><span class="k">await</span> <span class="n">file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
 
-    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;path&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">target</span><span class="p">)}</span></div>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"path"</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">target</span><span class="p">)}</span></div>
 
 
 
 <div class="viewcode-block" id="download_job_file">
 <a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.download_job_file">[docs]</a>
-<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{job_id}</span><span class="s2">/files/download&quot;</span><span class="p">)</span>
+<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/</span><span class="si">{job_id}</span><span class="s2">/files/download"</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">download_job_file</span><span class="p">(</span>
-    <span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;read&quot;</span><span class="p">))</span>
+    <span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">"read"</span><span class="p">))</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Download a single file from the job&#39;s directory as an attachment.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">"""Download a single file from the job's directory as an attachment."""</span>
     <span class="n">job</span> <span class="o">=</span> <span class="n">_get_job_or_404</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
     <span class="n">target</span> <span class="o">=</span> <span class="n">_resolve_job_file</span><span class="p">(</span><span class="n">job</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">FileResponse</span><span class="p">(</span><span class="n">target</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="n">target</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div>
@@ -1017,31 +1016,31 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
 <div class="viewcode-block" id="get_job_file_content">
 <a class="viewcode-back" href="../../../api/seamm_webui.routers.html#seamm_webui.routers.jobs.get_job_file_content">[docs]</a>
-<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/</span><span class="si">{job_id}</span><span class="s2">/files/content&quot;</span><span class="p">)</span>
+<span class="nd">@router</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">"/</span><span class="si">{job_id}</span><span class="s2">/files/content"</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_job_file_content</span><span class="p">(</span>
-    <span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">&quot;read&quot;</span><span class="p">))</span>
+    <span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">"read"</span><span class="p">))</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a file&#39;s text content for in-browser viewing (not a download).</span>
+<span class="w">    </span><span class="sd">"""Return a file's text content for in-browser viewing (not a download).</span>
 
-<span class="sd">    Guards against two things a naive &quot;just read_text() it&quot; would choke on:</span>
+<span class="sd">    Guards against two things a naive "just read_text() it" would choke on:</span>
 <span class="sd">    binary files (decoding fails) and files too large to reasonably render in</span>
 <span class="sd">    a browser tab. Both come back as a normal 200 with ``content: null`` and</span>
 <span class="sd">    a ``reason``, not an error -- the frontend falls back to offering the</span>
 <span class="sd">    download link instead of showing an error page.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">    """</span>
     <span class="n">job</span> <span class="o">=</span> <span class="n">_get_job_or_404</span><span class="p">(</span><span class="n">job_id</span><span class="p">)</span>
     <span class="n">target</span> <span class="o">=</span> <span class="n">_resolve_job_file</span><span class="p">(</span><span class="n">job</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
 
     <span class="n">size</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">stat</span><span class="p">()</span><span class="o">.</span><span class="n">st_size</span>
     <span class="k">if</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="n">MAX_PREVIEW_BYTES</span><span class="p">:</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;too_large&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">size</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"content"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="s2">"too_large"</span><span class="p">,</span> <span class="s2">"size"</span><span class="p">:</span> <span class="n">size</span><span class="p">}</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="n">content</span> <span class="o">=</span> <span class="n">target</span><span class="o">.</span><span class="n">read_text</span><span class="p">()</span>
     <span class="k">except</span> <span class="p">(</span><span class="ne">UnicodeDecodeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="s2">&quot;binary&quot;</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">size</span><span class="p">}</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s2">"content"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="s2">"binary"</span><span class="p">,</span> <span class="s2">"size"</span><span class="p">:</span> <span class="n">size</span><span class="p">}</span>
 
-    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">content</span><span class="p">,</span> <span class="s2">&quot;reason&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">size</span><span class="p">}</span></div>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"content"</span><span class="p">:</span> <span class="n">content</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">"size"</span><span class="p">:</span> <span class="n">size</span><span class="p">}</span></div>
 
 </pre></div>
 
@@ -1072,8 +1071,8 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script defer src="../../../_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9"></script>
-<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9"></script>
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=64cc4de3f052d77215f0"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=64cc4de3f052d77215f0"></script>
 
   <footer class="bd-footer">
 <div class="bd-footer__inner bd-page-width">
@@ -1085,7 +1084,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <div class="footer-item">
 <p class="theme-version">
   <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
-  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.20.0.
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.22.0.
 </p></div>
       
     </div>

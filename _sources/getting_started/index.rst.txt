@@ -19,6 +19,13 @@ Start the server, pointed at an existing SEAMM datastore (defaults to
 
   seamm-webui --datastore ~/SEAMM/Jobs
 
+If the datastore has no database yet (``seamm.db``) but there are job directories in
+it, the database is built from them when the server starts, as the old Dashboard did:
+each job's flowchart and ``job_data.json`` are imported. Such a database has no
+accounts from before; to rebuild a database while keeping its accounts and job owners,
+use ``seamm-manager datastore rebuild`` instead. Neither converts flowcharts to format
+3.0 -- that is ``seamm-manager flowcharts migrate``.
+
 This is fully self-contained: a release install (from PyPI) bundles the
 built browser UI, so there's nothing else to start or configure -- visit
 the URL it prints and the dashboard itself is what loads (not just the
