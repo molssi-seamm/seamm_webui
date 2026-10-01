@@ -2,6 +2,16 @@
 History
 =======
 
+2026.10.1 -- A missing database is built from the job directories
+    * When the datastore has no database but has job directories, the database is now
+      built from them when the web interface starts (each job's flowchart and
+      ``job_data.json``), as the old Dashboard did, rather than started empty.
+      Flowcharts in SEAMM's new format 3.0 are read too (seamm-datastore 2026.10.1).
+    * Documented in Getting Started.
+    * Internal: CI now installs the package's declared dependencies with uv rather than
+      a conda test environment; the test and docs extras declare what the tests and docs
+      need beyond the standard tooling.
+
 2026.8.13.1 -- Live file sync for jobs running on a remote SLURM cluster
     * A job routed to a ``transport = ssh`` queue (a remote SLURM cluster
       with no filesystem shared with the JobServer) runs in a scratch
