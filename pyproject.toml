@@ -19,7 +19,7 @@ classifiers = [
 dependencies = [
     "fastapi",
     "uvicorn[standard]",
-    "seamm-datastore",
+    "seamm-datastore>=2026.10.1",
     "seamm-slurm",
     "fasteners",
     "itsdangerous",
@@ -31,6 +31,15 @@ dependencies = [
 dev = [
     "pytest",
     "httpx",
+]
+# Beyond the standard tooling CI installs
+test = [
+    "httpx",
+]
+docs = [
+    "pydata-sphinx-theme",
+    "sphinx-design",
+    "sphinx-copybutton",
 ]
 
 [project.scripts]
