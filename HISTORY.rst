@@ -2,6 +2,11 @@
 History
 =======
 
+2026.10.1.1 -- Internal: the release workflow installs with uv
+    * The release workflow still built a conda environment from the CI environment file
+      that 2026.10.1 removed, so 2026.10.1 was not published. It now installs the
+      package with uv, as the other workflows do. The changes are those of 2026.10.1.
+
 2026.10.1 -- A missing database is built from the job directories
     * When the datastore has no database but has job directories, the database is now
       built from them when the web interface starts (each job's flowchart and
