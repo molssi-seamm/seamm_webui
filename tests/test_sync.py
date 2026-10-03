@@ -202,3 +202,24 @@ def test_sync_transfer_failure_reported_not_raised_and_still_throttles(tmp_path)
     # remote host on every request.
     assert second.json() == {"synced": False, "reason": "throttled"}
     assert run.call_count == 1
+
+
+def test_sync_pbs_ssh_queue_calls_stage_out(tmp_path):
+    """A type = queue (PBS) queue over ssh is remote too."""
+    ini = (
+        "[cluster]\n"
+        "type = queue\n"
+        "scheduler = pbs\n"
+        "transport = ssh\n"
+        "host = seamm-cluster\n"
+        "remote_root = /home/psaxe/scratch\n"
+        "remote_conda_env = seamm\n"
+    )
+    client, job_dir = _make_app_and_job(tmp_path, ini_text=ini, queue="cluster")
+
+    fake_proc = MagicMock(returncode=0, stdout="", stderr="")
+    with patch("seamm_scheduler.stage.subprocess.run", return_value=fake_proc) as run:
+        response = client.post("/api/jobs/1/sync")
+
+    assert response.json() == {"synced": True}
+    assert run.call_count == 1
