@@ -20,7 +20,7 @@ dependencies = [
     "fastapi",
     "uvicorn[standard]",
     "seamm-datastore>=2026.10.1",
-    "seamm-scheduler>=2026.10.2",
+    "seamm-scheduler>=2026.10.3",
     "fasteners",
     "itsdangerous",
     "python-multipart",

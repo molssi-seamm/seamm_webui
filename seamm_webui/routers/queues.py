@@ -80,7 +80,7 @@ def list_queues(_: None = Depends(require_permission("read"))):
             # the frontend uses this to show a "syncing from cluster"
             # indicator, not to reach the host itself (host/remote_root
             # stay hidden, per the module docstring).
-            "remote": section.type in ("slurm", "queue") and section.transport == "ssh",
+            "remote": section.is_batch and section.transport == "ssh",
             "limits": _serialize_limits(section.limits, section.directives),
         }
         for name, section in sorted(sections.items())

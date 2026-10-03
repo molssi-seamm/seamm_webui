@@ -388,11 +388,7 @@ def sync_job_files(job_id: int, _: None = Depends(require_permission("read"))):
 
     sections = list_sections(root, get_jobserver_name())
     section = sections.get(queue)
-    if (
-        section is None
-        or section.type not in ("slurm", "queue")
-        or section.transport != "ssh"
-    ):
+    if section is None or not section.is_batch or section.transport != "ssh":
         return {"synced": False, "reason": "not a remote queue"}
 
     now = time.monotonic()
