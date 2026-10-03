@@ -52,7 +52,7 @@ def list_queues(_: None = Depends(require_permission("read"))):
     if root is None:
         return []
 
-    from seamm_slurm.config import list_sections, load_slurm_config
+    from seamm_scheduler.config import list_sections, load_slurm_config
 
     jobserver_name = get_jobserver_name()
     sections = list_sections(root, jobserver_name)
@@ -80,7 +80,7 @@ def list_queues(_: None = Depends(require_permission("read"))):
             # the frontend uses this to show a "syncing from cluster"
             # indicator, not to reach the host itself (host/remote_root
             # stay hidden, per the module docstring).
-            "remote": section.type == "slurm" and section.transport == "ssh",
+            "remote": section.is_batch and section.transport == "ssh",
             "limits": _serialize_limits(section.limits, section.directives),
         }
         for name, section in sorted(sections.items())

@@ -2,6 +2,12 @@
 History
 =======
 
+2026.10.3 -- PBS queues
+    * Queues are read with seamm_scheduler rather than the older seamm_slurm, so
+      queues with ``type = queue`` (such as PBS) are listed, and remote ones fetch a
+      running job's files on demand.
+    * Requires seamm-scheduler 2026.10.3 or later.
+
 2026.10.1.1 -- Internal: the release workflow installs with uv
     * The release workflow still built a conda environment from the CI environment file
       that 2026.10.1 removed, so 2026.10.1 was not published. It now installs the

@@ -3,7 +3,7 @@
 The queues a submitted job can be routed to (``local``, ``TinkerCliffs``,
 ``Owl``, ...) live in ``<root>/<jobserver-name>.ini`` -- a system/machine
 config file the JobServer paired with this Dashboard already reads (see
-``seamm_slurm.config``), not something seamm_webui itself owns. This module
+``seamm_scheduler.config``), not something seamm_webui itself owns. This module
 just remembers where to find it, the same way ``db.py`` remembers the
 datastore location: set once at startup by ``main.py``'s ``create_app()``,
 read by ``routers/queues.py``.
@@ -31,7 +31,7 @@ def configure(root: Optional[str], jobserver_name: str) -> None:
     """Called once by ``create_app()`` at startup. ``root=None`` means "no
     queue config available" -- ``routers/queues.py`` then reports no
     queues at all, the same "feature doesn't exist" convention
-    ``seamm_slurm.load_slurm_config()`` uses for a missing ini file."""
+    ``seamm_scheduler.config.load_slurm_config()`` uses for a missing ini file."""
     global _root, _jobserver_name
     _root = root
     _jobserver_name = jobserver_name

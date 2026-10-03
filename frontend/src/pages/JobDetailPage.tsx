@@ -96,7 +96,7 @@ function FileViewer({
   })
 
   // Pulls a still-running remote job's files back on demand (see
-  // routers/jobs.py's sync_job_files -- reuses the same seamm_slurm.stage
+  // routers/jobs.py's sync_job_files -- reuses the same seamm_scheduler.stage
   // machinery seamm_jobserver itself uses at job-terminal time, just
   // triggered here instead of waiting for the job to finish). Fired once
   // when we learn the job is remote (below) and again from the manual
