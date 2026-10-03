@@ -14,7 +14,7 @@ import fasteners
 from fastapi import APIRouter, Depends, File, HTTPException, Response, UploadFile
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
-from seamm_slurm.stage import STAGE_LOCK_FILENAME, StageError
+from seamm_scheduler.stage import STAGE_LOCK_FILENAME, StageError
 
 from seamm_webui.auth import require_permission
 
@@ -341,7 +341,7 @@ def delete_jobs(payload: JobIds, _: None = Depends(require_permission("delete"))
 @router.post("/{job_id}/sync")
 def sync_job_files(job_id: int, _: None = Depends(require_permission("read"))):
     """Pull a still-running ``transport = ssh`` job's remote files back on
-    demand, reusing the same ``seamm_slurm.stage`` machinery
+    demand, reusing the same ``seamm_scheduler.stage`` machinery
     ``seamm_jobserver`` itself uses at job-terminal time -- so the file
     tree/viewer doesn't stay empty (or stale) for a remote job's entire
     runtime, only pulling for real once it finishes.
@@ -372,7 +372,7 @@ def sync_job_files(job_id: int, _: None = Depends(require_permission("read"))):
     treated -- worth trying again shortly, not an error to surface to the
     user as broken.
     """
-    from seamm_slurm.config import list_sections
+    from seamm_scheduler.config import list_sections
 
     from seamm_webui.queue_config import get_jobserver_name, get_root
 

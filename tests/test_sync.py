@@ -1,12 +1,12 @@
 """Tests for POST /api/jobs/{id}/sync -- pulling a still-running
-transport=ssh job's remote files back on demand, reusing seamm_slurm.stage
+transport=ssh job's remote files back on demand, reusing seamm_scheduler.stage
 the same way seamm_jobserver does at job-terminal time, but independently
 (this Dashboard reads the same <root>/<jobserver-name>.ini itself).
 
-Uses a real <root>/<jobserver-name>.ini and real seamm_slurm.config parsing
--- no mocking of seamm_slurm itself -- but mocks subprocess.run inside
-seamm_slurm.stage so no real ssh/rsync ever runs, the same way
-seamm_slurm's own test_stage.py does.
+Uses a real <root>/<jobserver-name>.ini and real seamm_scheduler.config parsing
+-- no mocking of seamm_scheduler itself -- but mocks subprocess.run inside
+seamm_scheduler.stage so no real ssh/rsync ever runs, the same way
+seamm_scheduler's own test_stage.py does.
 """
 
 import shutil
@@ -136,7 +136,7 @@ def test_sync_ssh_queue_calls_stage_out(tmp_path):
     client, job_dir = _make_app_and_job(tmp_path, ini_text=_SSH_INI, queue="cluster")
 
     fake_proc = MagicMock(returncode=0, stdout="", stderr="")
-    with patch("seamm_slurm.stage.subprocess.run", return_value=fake_proc) as run:
+    with patch("seamm_scheduler.stage.subprocess.run", return_value=fake_proc) as run:
         response = client.post("/api/jobs/1/sync")
 
     assert response.status_code == 200
@@ -156,7 +156,7 @@ def test_sync_throttled_on_second_call(tmp_path):
     client, job_dir = _make_app_and_job(tmp_path, ini_text=_SSH_INI, queue="cluster")
 
     fake_proc = MagicMock(returncode=0, stdout="", stderr="")
-    with patch("seamm_slurm.stage.subprocess.run", return_value=fake_proc) as run:
+    with patch("seamm_scheduler.stage.subprocess.run", return_value=fake_proc) as run:
         first = client.post("/api/jobs/1/sync")
         second = client.post("/api/jobs/1/sync")
 
@@ -176,7 +176,7 @@ def test_sync_lock_contention_returns_locked_not_error(tmp_path):
             "seamm_webui.routers.jobs.fasteners.InterProcessLock",
             return_value=fake_lock,
         ),
-        patch("seamm_slurm.stage.subprocess.run") as run,
+        patch("seamm_scheduler.stage.subprocess.run") as run,
     ):
         response = client.post("/api/jobs/1/sync")
 
@@ -189,7 +189,7 @@ def test_sync_transfer_failure_reported_not_raised_and_still_throttles(tmp_path)
     client, job_dir = _make_app_and_job(tmp_path, ini_text=_SSH_INI, queue="cluster")
 
     fake_proc = MagicMock(returncode=1, stdout="", stderr="ssh: connection refused")
-    with patch("seamm_slurm.stage.subprocess.run", return_value=fake_proc) as run:
+    with patch("seamm_scheduler.stage.subprocess.run", return_value=fake_proc) as run:
         first = client.post("/api/jobs/1/sync")
         second = client.post("/api/jobs/1/sync")
 

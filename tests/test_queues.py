@@ -4,8 +4,8 @@ submission client -- the Tk desktop dialog, Phase 4 -- can build a queue
 picker).
 
 Writes a real <root>/<jobserver-name>.ini and reads it back through the
-route, the same file format/parsing seamm_slurm.config and seamm_jobserver
-itself use -- no mocking of seamm_slurm.
+route, the same file format/parsing seamm_scheduler.config and seamm_jobserver
+itself use -- no mocking of seamm_scheduler.
 """
 
 from fastapi.testclient import TestClient
@@ -173,3 +173,33 @@ def test_ambiguous_default_does_not_crash_the_endpoint(tmp_path):
     assert set(queues) == {"a", "b"}
     assert queues["a"]["default"] is False
     assert queues["b"]["default"] is False
+
+
+def test_pbs_queue_is_listed_and_remote(tmp_path):
+    """type = queue (here PBS over ssh) is a batch queue like type = slurm."""
+    (tmp_path / "mac.ini").write_text(
+        "[DEFAULT]\n"
+        "default = local\n"
+        "\n"
+        "[local]\n"
+        "type = local\n"
+        "\n"
+        "[molssi10]\n"
+        "type = queue\n"
+        "scheduler = pbs\n"
+        "transport = ssh\n"
+        "host = molssi10\n"
+        "remote_root = /home/psaxe/scratch\n"
+        "remote_run_from_jobserver = /opt/seamm/bin/run_from_jobserver\n"
+        "queue = workq\n"
+    )
+    app = create_app(
+        str(tmp_path / "datastore"), root=str(tmp_path), jobserver_name="mac"
+    )
+    client = TestClient(app)
+
+    response = client.get("/api/queues")
+    queues = {q["name"]: q for q in response.json()}
+
+    assert queues["molssi10"]["type"] == "queue"
+    assert queues["molssi10"]["remote"] is True
