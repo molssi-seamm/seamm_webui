@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm_webui.routers.jobs &#8212; seamm_webui 2026.10.1.1 documentation</title>
+    <title>seamm_webui.routers.jobs &#8212; seamm_webui 2026.10.3 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../../_static/documentation_options.js?v=e5cd86cf"></script>
+    <script src="../../../_static/documentation_options.js?v=f64fa391"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,7 +60,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.1.1" />
+  <meta name="docsearch:version" content="2026.10.3" />
   
     
     <script src="../../../_static/searchtools.js"></script>
@@ -501,7 +501,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">APIRouter</span><span class="p">,</span> <span class="n">Depends</span><span class="p">,</span> <span class="n">File</span><span class="p">,</span> <span class="n">HTTPException</span><span class="p">,</span> <span class="n">Response</span><span class="p">,</span> <span class="n">UploadFile</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.responses</span><span class="w"> </span><span class="kn">import</span> <span class="n">FileResponse</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">Field</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">seamm_slurm.stage</span><span class="w"> </span><span class="kn">import</span> <span class="n">STAGE_LOCK_FILENAME</span><span class="p">,</span> <span class="n">StageError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">seamm_scheduler.stage</span><span class="w"> </span><span class="kn">import</span> <span class="n">STAGE_LOCK_FILENAME</span><span class="p">,</span> <span class="n">StageError</span>
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.auth</span><span class="w"> </span><span class="kn">import</span> <span class="n">require_permission</span>
 
@@ -857,7 +857,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="nd">@router</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">"/</span><span class="si">{job_id}</span><span class="s2">/sync"</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">sync_job_files</span><span class="p">(</span><span class="n">job_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">_</span><span class="p">:</span> <span class="kc">None</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">require_permission</span><span class="p">(</span><span class="s2">"read"</span><span class="p">))):</span>
 <span class="w">    </span><span class="sd">"""Pull a still-running ``transport = ssh`` job's remote files back on</span>
-<span class="sd">    demand, reusing the same ``seamm_slurm.stage`` machinery</span>
+<span class="sd">    demand, reusing the same ``seamm_scheduler.stage`` machinery</span>
 <span class="sd">    ``seamm_jobserver`` itself uses at job-terminal time -- so the file</span>
 <span class="sd">    tree/viewer doesn't stay empty (or stale) for a remote job's entire</span>
 <span class="sd">    runtime, only pulling for real once it finishes.</span>
@@ -888,7 +888,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="sd">    treated -- worth trying again shortly, not an error to surface to the</span>
 <span class="sd">    user as broken.</span>
 <span class="sd">    """</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_slurm.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">list_sections</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_scheduler.config</span><span class="w"> </span><span class="kn">import</span> <span class="n">list_sections</span>
 
     <span class="kn">from</span><span class="w"> </span><span class="nn">seamm_webui.queue_config</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_jobserver_name</span><span class="p">,</span> <span class="n">get_root</span>
 
@@ -904,7 +904,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
     <span class="n">sections</span> <span class="o">=</span> <span class="n">list_sections</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">get_jobserver_name</span><span class="p">())</span>
     <span class="n">section</span> <span class="o">=</span> <span class="n">sections</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">queue</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">section</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">section</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="s2">"slurm"</span> <span class="ow">or</span> <span class="n">section</span><span class="o">.</span><span class="n">transport</span> <span class="o">!=</span> <span class="s2">"ssh"</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">section</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">section</span><span class="o">.</span><span class="n">is_batch</span> <span class="ow">or</span> <span class="n">section</span><span class="o">.</span><span class="n">transport</span> <span class="o">!=</span> <span class="s2">"ssh"</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">{</span><span class="s2">"synced"</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">"reason"</span><span class="p">:</span> <span class="s2">"not a remote queue"</span><span class="p">}</span>
 
     <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">monotonic</span><span class="p">()</span>

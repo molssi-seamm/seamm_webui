@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm_webui package &#8212; seamm_webui 2026.10.1.1 documentation</title>
+    <title>seamm_webui package &#8212; seamm_webui 2026.10.3 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=e5cd86cf"></script>
+    <script src="../_static/documentation_options.js?v=f64fa391"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="seamm_webui" href="modules.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.1.1" />
+  <meta name="docsearch:version" content="2026.10.3" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -869,7 +869,7 @@ terminal session, etc.), only into a genuinely hidden terminal prompt.</p>
 <p>The queues a submitted job can be routed to (<code class="docutils literal notranslate"><span class="pre">local</span></code>, <code class="docutils literal notranslate"><span class="pre">TinkerCliffs</span></code>,
 <code class="docutils literal notranslate"><span class="pre">Owl</span></code>, …) live in <code class="docutils literal notranslate"><span class="pre">&lt;root&gt;/&lt;jobserver-name&gt;.ini</span></code> – a system/machine
 config file the JobServer paired with this Dashboard already reads (see
-<code class="docutils literal notranslate"><span class="pre">seamm_slurm.config</span></code>), not something seamm_webui itself owns. This module
+<code class="docutils literal notranslate"><span class="pre">seamm_scheduler.config</span></code>), not something seamm_webui itself owns. This module
 just remembers where to find it, the same way <code class="docutils literal notranslate"><span class="pre">db.py</span></code> remembers the
 datastore location: set once at startup by <code class="docutils literal notranslate"><span class="pre">main.py</span></code>’s <code class="docutils literal notranslate"><span class="pre">create_app()</span></code>,
 read by <code class="docutils literal notranslate"><span class="pre">routers/queues.py</span></code>.</p>
@@ -889,7 +889,7 @@ one this Dashboard is paired with.</p>
 <dd><p>Called once by <code class="docutils literal notranslate"><span class="pre">create_app()</span></code> at startup. <code class="docutils literal notranslate"><span class="pre">root=None</span></code> means “no
 queue config available” – <code class="docutils literal notranslate"><span class="pre">routers/queues.py</span></code> then reports no
 queues at all, the same “feature doesn’t exist” convention
-<code class="docutils literal notranslate"><span class="pre">seamm_slurm.load_slurm_config()</span></code> uses for a missing ini file.</p>
+<code class="docutils literal notranslate"><span class="pre">seamm_scheduler.config.load_slurm_config()</span></code> uses for a missing ini file.</p>
 </dd></dl>
 
 <dl class="py function">

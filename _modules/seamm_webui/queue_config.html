@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm_webui.queue_config &#8212; seamm_webui 2026.10.1.1 documentation</title>
+    <title>seamm_webui.queue_config &#8212; seamm_webui 2026.10.3 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=e5cd86cf"></script>
+    <script src="../../_static/documentation_options.js?v=f64fa391"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -60,7 +60,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="search" title="Search" href="../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.1.1" />
+  <meta name="docsearch:version" content="2026.10.3" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -490,7 +490,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="sd">The queues a submitted job can be routed to (``local``, ``TinkerCliffs``,</span>
 <span class="sd">``Owl``, ...) live in ``&lt;root&gt;/&lt;jobserver-name&gt;.ini`` -- a system/machine</span>
 <span class="sd">config file the JobServer paired with this Dashboard already reads (see</span>
-<span class="sd">``seamm_slurm.config``), not something seamm_webui itself owns. This module</span>
+<span class="sd">``seamm_scheduler.config``), not something seamm_webui itself owns. This module</span>
 <span class="sd">just remembers where to find it, the same way ``db.py`` remembers the</span>
 <span class="sd">datastore location: set once at startup by ``main.py``'s ``create_app()``,</span>
 <span class="sd">read by ``routers/queues.py``.</span>
@@ -520,7 +520,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="w">    </span><span class="sd">"""Called once by ``create_app()`` at startup. ``root=None`` means "no</span>
 <span class="sd">    queue config available" -- ``routers/queues.py`` then reports no</span>
 <span class="sd">    queues at all, the same "feature doesn't exist" convention</span>
-<span class="sd">    ``seamm_slurm.load_slurm_config()`` uses for a missing ini file."""</span>
+<span class="sd">    ``seamm_scheduler.config.load_slurm_config()`` uses for a missing ini file."""</span>
     <span class="k">global</span> <span class="n">_root</span><span class="p">,</span> <span class="n">_jobserver_name</span>
     <span class="n">_root</span> <span class="o">=</span> <span class="n">root</span>
     <span class="n">_jobserver_name</span> <span class="o">=</span> <span class="n">jobserver_name</span></div>
