@@ -52,6 +52,14 @@ seamm\_webui.queue\_config module
    :show-inheritance:
    :undoc-members:
 
+seamm\_webui.tasks\_view module
+-------------------------------
+
+.. automodule:: seamm_webui.tasks_view
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
 seamm\_webui.tls module
 -----------------------
 

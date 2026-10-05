@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>User Guide &#8212; seamm_webui 2026.10.3 documentation</title>
+    <title>User Guide &#8212; seamm_webui 2026.10.5 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=f64fa391"></script>
+    <script src="../_static/documentation_options.js?v=99beb745"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="Getting Started" href="../getting_started/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.3" />
+  <meta name="docsearch:version" content="2026.10.5" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -520,6 +520,13 @@ filesystem (a queue’s <code class="docutils literal notranslate"><span class="
 is marked “remote” on its detail page – its files are pulled back on
 demand (opening the page, or clicking a file’s Refresh button) while it’s
 still running, rather than only once it finishes.</p>
+<p>A job’s detail page switches between its <strong>Files</strong> and its <strong>Tasks</strong>. Tasks
+lists the calculations each step handed to the task layer – their state,
+attempts, where they ran and, for a failure, why – and each parallel loop’s
+iterations, with their state, whether each has been merged back into the job,
+and a link to its output. It refreshes every 15 seconds while the job runs; a
+job on a cluster without a shared filesystem shows its tasks as of the files
+last fetched back.</p>
 <section id="authentication">
 <h2>Authentication<a class="headerlink" href="#authentication" title="Link to this heading">#</a></h2>
 <p>Two modes, chosen automatically from how the server is started (see the

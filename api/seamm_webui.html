@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>seamm_webui package &#8212; seamm_webui 2026.10.3 documentation</title>
+    <title>seamm_webui package &#8212; seamm_webui 2026.10.5 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../_static/documentation_options.js?v=f64fa391"></script>
+    <script src="../_static/documentation_options.js?v=99beb745"></script>
     <script src="../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -63,7 +63,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="seamm_webui" href="modules.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.3" />
+  <meta name="docsearch:version" content="2026.10.5" />
   
     
     <script src="../_static/searchtools.js"></script>
@@ -582,6 +582,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.kill_job"><code class="docutils literal notranslate"><span class="pre">kill_job()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.kill_jobs"><code class="docutils literal notranslate"><span class="pre">kill_jobs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.list_job_files"><code class="docutils literal notranslate"><span class="pre">list_job_files()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.list_job_tasks"><code class="docutils literal notranslate"><span class="pre">list_job_tasks()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.list_jobs"><code class="docutils literal notranslate"><span class="pre">list_jobs()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.submit_job"><code class="docutils literal notranslate"><span class="pre">submit_job()</span></code></a></li>
 <li class="toctree-l3"><a class="reference internal" href="seamm_webui.routers.html#seamm_webui.routers.jobs.sync_job_files"><code class="docutils literal notranslate"><span class="pre">sync_job_files()</span></code></a></li>
@@ -903,6 +904,48 @@ queues at all, the same “feature doesn’t exist” convention
 <dd></dd></dl>
 
 </section>
+<section id="module-seamm_webui.tasks_view">
+<span id="seamm-webui-tasks-view-module"></span><h2>seamm_webui.tasks_view module<a class="headerlink" href="#module-seamm_webui.tasks_view" title="Link to this heading">#</a></h2>
+<p>A job’s tasks and parallel-loop iterations, read from its files.</p>
+<p>Read-only: the task manifests the task layer keeps in each step directory
+(<code class="docutils literal notranslate"><span class="pre">&lt;step&gt;/tasks/manifest.json</span></code>), the iterations of parallel loops
+(<code class="docutils literal notranslate"><span class="pre">&lt;loop&gt;/&lt;iteration&gt;/_evaluator/</span></code>, each with its <code class="docutils literal notranslate"><span class="pre">job_data.json</span></code> and
+<code class="docutils literal notranslate"><span class="pre">checkpoint.json</span></code>), and the job’s own checkpoint, whose frame for a running
+parallel loop says which iterations are merged and which failed. No database.</p>
+<dl class="py data">
+<dt class="sig sig-object py" id="seamm_webui.tasks_view.SKIP">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.tasks_view.</span></span><span class="sig-name descname"><span class="pre">SKIP</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'__pycache__',</span> <span class="pre">'_bundles',</span> <span class="pre">'_evaluator',</span> <span class="pre">'previous'}</span></span><a class="headerlink" href="#seamm_webui.tasks_view.SKIP" title="Link to this definition">#</a></dt>
+<dd><p>bundle bookkeeping, and an iteration’s own
+files (its step directories are in the job’s tree, not there)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Directories never searched</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="seamm_webui.tasks_view.TASK_STATES">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.tasks_view.</span></span><span class="sig-name descname"><span class="pre">TASK_STATES</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">('queued',</span> <span class="pre">'running',</span> <span class="pre">'finished',</span> <span class="pre">'failed',</span> <span class="pre">'cancelled',</span> <span class="pre">'lost')</span></span><a class="headerlink" href="#seamm_webui.tasks_view.TASK_STATES" title="Link to this definition">#</a></dt>
+<dd><p>Task states, in the order the panel lists counts</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="seamm_webui.tasks_view.job_tasks">
+<span class="sig-prename descclassname"><span class="pre">seamm_webui.tasks_view.</span></span><span class="sig-name descname"><span class="pre">job_tasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">job_directory</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_depth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">12</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/seamm_webui/tasks_view.html#job_tasks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#seamm_webui.tasks_view.job_tasks" title="Link to this definition">#</a></dt>
+<dd><p>The tasks of every step, and the iterations of every parallel loop.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">{&quot;steps&quot;:</span> <span class="pre">[{&quot;step&quot;,</span> <span class="pre">&quot;counts&quot;,</span> <span class="pre">&quot;tasks&quot;}],</span> <span class="pre">&quot;loops&quot;:</span> <span class="pre">[{&quot;loop&quot;,</span>
+<span class="pre">&quot;running&quot;,</span> <span class="pre">&quot;iterations&quot;}],</span> <span class="pre">&quot;as_of&quot;:</span> <span class="pre">seconds</span> <span class="pre">since</span> <span class="pre">the</span> <span class="pre">epoch}</span></code></p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>dict</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="module-seamm_webui.tls">
 <span id="seamm-webui-tls-module"></span><h2>seamm_webui.tls module<a class="headerlink" href="#module-seamm_webui.tls" title="Link to this heading">#</a></h2>
 <p>Self-signed TLS certificate generation for non-loopback deployments.</p>
@@ -1054,6 +1097,12 @@ the key.</p>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.queue_config.configure"><code class="docutils literal notranslate"><span class="pre">configure()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.queue_config.get_jobserver_name"><code class="docutils literal notranslate"><span class="pre">get_jobserver_name()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.queue_config.get_root"><code class="docutils literal notranslate"><span class="pre">get_root()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm_webui.tasks_view">seamm_webui.tasks_view module</a><ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.tasks_view.SKIP"><code class="docutils literal notranslate"><span class="pre">SKIP</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.tasks_view.TASK_STATES"><code class="docutils literal notranslate"><span class="pre">TASK_STATES</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#seamm_webui.tasks_view.job_tasks"><code class="docutils literal notranslate"><span class="pre">job_tasks()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-seamm_webui.tls">seamm_webui.tls module</a><ul class="pst-show_toc_level nav section-nav flex-column">
