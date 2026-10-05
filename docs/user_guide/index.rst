@@ -20,6 +20,14 @@ is marked "remote" on its detail page -- its files are pulled back on
 demand (opening the page, or clicking a file's Refresh button) while it's
 still running, rather than only once it finishes.
 
+A job's detail page switches between its **Files** and its **Tasks**. Tasks
+lists the calculations each step handed to the task layer -- their state,
+attempts, where they ran and, for a failure, why -- and each parallel loop's
+iterations, with their state, whether each has been merged back into the job,
+and a link to its output. It refreshes every 15 seconds while the job runs; a
+job on a cluster without a shared filesystem shows its tasks as of the files
+last fetched back.
+
 Authentication
 ==============
 

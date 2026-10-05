@@ -54,6 +54,8 @@ jobs:
         make html
     - name: Deploy documentation
       uses: peaceiris/actions-gh-pages@v4
+      # Never block the PyPI publish (as devops#3)
+      continue-on-error: true
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: docs/_build/html

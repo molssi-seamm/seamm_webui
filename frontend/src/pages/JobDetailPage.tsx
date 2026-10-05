@@ -12,6 +12,7 @@ import {
   syncJobFiles,
 } from '../api'
 import { buildTree, TreeView } from '../FileTree'
+import { TasksPanel } from '../TasksPanel'
 import { ResizableSplit } from '../ResizableSplit'
 
 // Statuses seamm_jobserver will still act on a kill request for -- matches
@@ -268,6 +269,7 @@ export function JobDetailPage() {
   const location = useLocation()
   const canGoBack = location.key !== 'default'
   const [selected, setSelected] = useState<string | null>(null)
+  const [tab, setTab] = useState<'files' | 'tasks'>('files')
   const [confirmKill, setConfirmKill] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [confirmJobId, setConfirmJobId] = useState('')
@@ -442,14 +444,38 @@ export function JobDetailPage() {
           </p>
         )}
       </div>
+      <div style={{ display: 'flex', gap: 4, margin: '4px 0' }}>
+        {(['files', 'tasks'] as const).map((name) => (
+          <button
+            key={name}
+            type="button"
+            onClick={() => setTab(name)}
+            style={{ fontWeight: tab === name ? 700 : 400 }}
+            aria-pressed={tab === name}
+          >
+            {name === 'files' ? 'Files' : 'Tasks'}
+          </button>
+        ))}
+      </div>
       <div style={{ flex: 1, minHeight: 0 }}>
-        {id && (
+        {id && tab === 'files' && (
           <FileViewer
             jobId={id}
             description={j.description}
             selected={selected}
             onSelect={setSelected}
             isRemote={isRemote}
+          />
+        )}
+        {id && tab === 'tasks' && (
+          <TasksPanel
+            jobId={id}
+            running={j.status === 'running' || j.status === 'submitted'}
+            isRemote={isRemote}
+            onOpenFile={(path) => {
+              setSelected(path)
+              setTab('files')
+            }}
           />
         )}
       </div>

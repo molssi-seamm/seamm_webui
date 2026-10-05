@@ -1,7 +1,15 @@
 =======
 History
 =======
-
+2026.10.5 -- A Tasks view of a job
+    * A job's page has a Files | Tasks switch. Tasks lists the calculations of each
+      step with their state, attempts and where they ran, and each parallel loop's
+      iterations with their state, whether they are merged, and links to their
+      output; it refreshes every 15 seconds while the job runs (a job on a cluster
+      shows its files as last fetched back).
+    * The API: ``/api/jobs/{id}/tasks``, and ``/api/jobs/{id}/files?depth=n`` for jobs
+      with very many files.
+    * Requires seamm-scheduler 2026.10.5.
 2026.10.3 -- PBS queues
     * Queues are read with seamm_scheduler rather than the older seamm_slurm, so
       queues with ``type = queue`` (such as PBS) are listed, and remote ones fetch a

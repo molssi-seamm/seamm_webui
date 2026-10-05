@@ -274,6 +274,56 @@ export async function fetchJobFiles(id: number | string): Promise<JobFile[]> {
   return res.json()
 }
 
+export interface JobTask {
+  key: string
+  state: string
+  attempts: number
+  backend: string | null
+  id: string | null
+  bundle: string | null
+  archive: string | null
+  reason: string | null
+}
+
+export interface JobStepTasks {
+  step: string
+  counts: Record<string, number>
+  tasks: JobTask[]
+}
+
+export interface JobIteration {
+  name: string
+  number?: number
+  state: string
+  started: string | null
+  ended: string | null
+  job_out: string
+  iteration_out: string
+  merged: boolean | null
+  failed: boolean | null
+}
+
+export interface JobLoop {
+  loop: string
+  running: boolean
+  iterations: JobIteration[]
+}
+
+export interface JobTasks {
+  steps: JobStepTasks[]
+  loops: JobLoop[]
+  as_of: number
+}
+
+// A job's tasks per step and its parallel loops' iterations, read by the
+// backend from the task manifests and the iterations' files -- as of now for
+// a local job, as of the last sync for a remote one.
+export async function fetchJobTasks(id: number | string): Promise<JobTasks> {
+  const res = await apiFetch(`/api/jobs/${id}/tasks`)
+  if (!res.ok) throw new Error(`fetching tasks for job ${id} failed: ${res.status}`)
+  return res.json()
+}
+
 export function jobFileDownloadUrl(id: number | string, filename: string): string {
   const params = new URLSearchParams({ filename })
   return `${API_BASE}/api/jobs/${id}/files/download?${params}`

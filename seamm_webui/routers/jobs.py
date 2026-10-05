@@ -5,13 +5,22 @@ submission, reusing seamm_datastore's existing Job.get()/get_by_id()/create()
 as-is.
 """
 
+import os
 import shutil
 import time
 from pathlib import Path
 from typing import List, Optional
 
 import fasteners
-from fastapi import APIRouter, Depends, File, HTTPException, Response, UploadFile
+from fastapi import (
+    APIRouter,
+    Depends,
+    File,
+    HTTPException,
+    Query,
+    Response,
+    UploadFile,
+)
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 from seamm_scheduler.stage import STAGE_LOCK_FILENAME, StageError
@@ -415,17 +424,43 @@ def sync_job_files(job_id: int, _: None = Depends(require_permission("read"))):
     return {"synced": True}
 
 
+@router.get("/{job_id}/tasks")
+def list_job_tasks(job_id: int, _: None = Depends(require_permission("read"))):
+    """The job's tasks per step and its parallel loops' iterations, read from
+    the task manifests and the iterations' files (as of now for a local job,
+    as of the last sync for a remote one)."""
+    from seamm_webui.tasks_view import job_tasks
+
+    job = _get_job_or_404(job_id)
+    return job_tasks(job.path)
+
+
 @router.get("/{job_id}/files")
-def list_job_files(job_id: int, _: None = Depends(require_permission("read"))):
-    """List files under the job's directory, as relative paths + sizes."""
+def list_job_files(
+    job_id: int,
+    depth: Optional[int] = Query(None, ge=1),
+    _: None = Depends(require_permission("read")),
+):
+    """List files under the job's directory, as relative paths + sizes.
+
+    ``depth`` limits how many levels down to look (1: only the files in the job
+    directory itself), for jobs with very many files, such as a long parallel
+    loop; without it, every file.
+    """
     job = _get_job_or_404(job_id)
 
     base = Path(job.path)
     if not base.is_dir():
         return []
 
+    paths = []
+    for dirpath, dirnames, filenames in os.walk(base):
+        level = len(Path(dirpath).relative_to(base).parts) + 1
+        paths.extend(Path(dirpath) / f for f in filenames)
+        if depth is not None and level >= depth:
+            dirnames[:] = []  # files deeper than depth are not wanted
     files = []
-    for path in sorted(base.rglob("*")):
+    for path in sorted(paths):
         if path.is_file():
             files.append(
                 {
