@@ -415,9 +415,28 @@ def sync_job_files(job_id: int, _: None = Depends(require_permission("read"))):
     return {"synced": True}
 
 
+@router.get("/{job_id}/tasks")
+def list_job_tasks(job_id: int, _: None = Depends(require_permission("read"))):
+    """The job's tasks per step and its parallel loops' iterations, read from
+    the task manifests and the iterations' files (as of now for a local job,
+    as of the last sync for a remote one)."""
+    from seamm_webui.tasks_view import job_tasks
+
+    job = _get_job_or_404(job_id)
+    return job_tasks(job.path)
+
+
 @router.get("/{job_id}/files")
-def list_job_files(job_id: int, _: None = Depends(require_permission("read"))):
-    """List files under the job's directory, as relative paths + sizes."""
+def list_job_files(
+    job_id: int,
+    depth: Optional[int] = None,
+    _: None = Depends(require_permission("read")),
+):
+    """List files under the job's directory, as relative paths + sizes.
+
+    ``depth`` limits how many directories down to look (1: the job directory
+    itself), for jobs with very many files, such as a long parallel loop.
+    """
     job = _get_job_or_404(job_id)
 
     base = Path(job.path)
@@ -426,6 +445,8 @@ def list_job_files(job_id: int, _: None = Depends(require_permission("read"))):
 
     files = []
     for path in sorted(base.rglob("*")):
+        if depth is not None and len(path.relative_to(base).parts) > depth:
+            continue
         if path.is_file():
             files.append(
                 {
