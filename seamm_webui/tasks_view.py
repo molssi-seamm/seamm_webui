@@ -56,9 +56,14 @@ def _task_rows(manifest):
     return rows
 
 
-def _parallel_frames(base):
-    """The job's running parallel loops: ``{loop directory: frame state}``."""
-    checkpoint = _read_json(base / "checkpoint.json") or {}
+def _frames(checkpoint_path):
+    """The running parallel loops in a checkpoint: ``{loop directory: state}``.
+
+    A step's directory is its numbered id joined with "/" (``4``, or
+    ``3/iter_1/2`` for a step inside an iteration of a loop), which is how the
+    checkpoint names the loop.
+    """
+    checkpoint = _read_json(checkpoint_path) or {}
     frames = {}
     for frame in checkpoint.get("position") or []:
         loop = frame.get("loop")
@@ -66,6 +71,21 @@ def _parallel_frames(base):
         if isinstance(loop, dict) and loop.get("parallel") and node:
             frames["/".join(str(n) for n in node)] = loop
     return frames
+
+
+def _frame_for(base, loop):
+    """The checkpoint frame of the parallel loop in directory ``loop``.
+
+    A loop nested in an iteration of another parallel loop is run by that
+    iteration's own evaluator, so its frame is in the iteration's checkpoint
+    (``<iteration>/_evaluator/checkpoint.json``), not the job's.
+    """
+    parts = Path(loop).parts
+    for n in range(len(parts) - 1, 0, -1):
+        evaluator = base.joinpath(*parts[:n]) / "_evaluator" / "checkpoint.json"
+        if evaluator.exists():
+            return _frames(evaluator).get(loop)
+    return _frames(base / "checkpoint.json").get(loop)
 
 
 def _iteration_row(directory, name, frame):
@@ -113,7 +133,6 @@ def job_tasks(job_directory, max_depth=12):
     result = {"steps": [], "loops": [], "as_of": time.time()}
     if not base.is_dir():
         return result
-    frames = _parallel_frames(base)
     for dirpath, dirnames, filenames in os.walk(base):
         here = Path(dirpath)
         relative = here.relative_to(base)
@@ -124,7 +143,7 @@ def job_tasks(job_directory, max_depth=12):
         ]
         if iterations:
             loop = str(relative)
-            frame = frames.get(loop)
+            frame = _frame_for(base, loop)
             rows = [_iteration_row(here, d, frame) for d in sorted(iterations)]
             rows.sort(
                 key=lambda r: (r.get("number") is None, r.get("number"), r["name"])

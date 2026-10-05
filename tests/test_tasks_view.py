@@ -129,3 +129,43 @@ def test_route(tmp_path):
     shallow = {f["path"] for f in client.get("/api/jobs/1/files?depth=1").json()}
     assert shallow == {"flowchart.flow", "checkpoint.json"}
     assert client.get("/api/jobs/2/tasks").status_code == 404
+
+
+def test_a_parallel_loop_nested_in_an_iteration(tmp_path):
+    """The inner loop's frame is in its iteration's own checkpoint."""
+    job = tmp_path / "Job_000001"
+    make_job(job)
+    inner = job / "4" / "iter_3" / "2"
+    for name in ("iter_1", "iter_2"):
+        (inner / name / "_evaluator").mkdir(parents=True)
+    (job / "4" / "iter_3" / "_evaluator" / "checkpoint.json").write_text(
+        json.dumps(
+            {
+                "position": [
+                    {"node": ["4"], "loop": {"only": True}},
+                    {
+                        "node": ["4", "iter_3", "2"],
+                        "loop": {
+                            "parallel": True,
+                            "next": 2,
+                            "failed": [],
+                            "directories": {"1": "iter_1", "2": "iter_2"},
+                        },
+                    },
+                ]
+            }
+        )
+    )
+    loops = {loop["loop"]: loop for loop in job_tasks(job)["loops"]}
+    nested = loops["4/iter_3/2"]
+    assert nested["running"]
+    rows = {r["name"]: r for r in nested["iterations"]}
+    assert rows["iter_1"]["merged"] and rows["iter_2"]["merged"] is False
+
+
+def test_files_depth(tmp_path):
+    from fastapi.testclient import TestClient
+
+    app = create_app(str(tmp_path / "datastore"))
+    client = TestClient(app)
+    assert client.get("/api/jobs/1/files?depth=0").status_code == 422
