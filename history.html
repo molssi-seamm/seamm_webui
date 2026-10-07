@@ -7,7 +7,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>History &#8212; seamm_webui 2026.10.7 documentation</title>
+    <title>History &#8212; seamm_webui 2026.10.7.1 documentation</title>
   
   
   
@@ -48,7 +48,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="_static/documentation_options.js?v=0a3eb936"></script>
+    <script src="_static/documentation_options.js?v=1a433d58"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/clipboard.min.js?v=a7894cd8"></script>
@@ -62,7 +62,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     <link rel="prev" title="Credits" href="authors.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.7" />
+  <meta name="docsearch:version" content="2026.10.7.1" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -505,6 +505,16 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <section id="history">
 <h1>History<a class="headerlink" href="#history" title="Link to this heading">#</a></h1>
 <dl class="simple">
+<dt>2026.10.7.1 – Job list refresh and a collapsed file tree</dt><dd><ul class="simple">
+<li><p>Clicking Jobs in the sidebar while the job list is showing refreshes the list.</p></li>
+<li><p>A job’s file tree starts with every folder closed, so a large job opens quickly
+and is explored level by level. A <strong>Close all folders</strong> button, which stays at
+the top of the tree as it scrolls, closes every open folder.</p></li>
+<li><p>The open folders are kept while switching between Files and Tasks; a Tasks link
+to an iteration’s output opens the folders leading to it; and going to another
+job starts with its tree closed and no file selected.</p></li>
+</ul>
+</dd>
 <dt>2026.10.7 – Internal: documentation of the queues API</dt><dd><ul class="simple">
 <li><p>The getting-started and user guides say what <code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/queues</span></code> returns
 (each queue’s limits with the current values), that the desktop app’s
