@@ -14,7 +14,11 @@ a job, plus Admin -- see below -- for an admin account in "local" mode)
 gives access to every page and shows whether the backend is reachable. If
 the paired JobServer has more than one queue configured (see the Getting
 Started guide), the job list and detail pages also show which queue each
-job ran on. A job routed to a remote SLURM cluster with no shared
+job ran on, and the list can be filtered by it. A job submitted from the
+Submit page goes to the JobServer's default queue with that queue's own
+resources; to pick another queue, or to ask for more cores, memory or time
+within what the queue's limits allow, submit from the SEAMM desktop app,
+whose submit dialog offers them. A job routed to a remote SLURM cluster with no shared
 filesystem (a queue's ``transport = ssh``, see the Getting Started guide)
 is marked "remote" on its detail page -- its files are pulled back on
 demand (opening the page, or clicking a file's Refresh button) while it's
