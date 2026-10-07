@@ -8,7 +8,7 @@ dynamic = ["version"]
 description = "SPA-based web dashboard for SEAMM"
 readme = "README.md"
 license = { text = "BSD-3-Clause" }
-requires-python = ">=3.10"
+requires-python = ">=3.12"
 authors = [{ name = "Paul Saxe" }]
 classifiers = [
     "Development Status :: 2 - Pre-Alpha",
