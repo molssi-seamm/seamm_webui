@@ -1,6 +1,14 @@
 =======
 History
 =======
+2026.10.7 -- Internal: documentation of the queues API
+    * The getting-started and user guides say what ``GET /api/queues`` returns
+      (each queue's limits with the current values), that the desktop app's
+      submit dialog uses it for its queue picker and override fields while the
+      web Submit page uses the default queue, and name ``seamm_scheduler`` as the
+      staging machinery (not ``seamm_slurm``).
+    * Requires Python 3.12.
+
 2026.10.5 -- A Tasks view of a job
     * A job's page has a Files | Tasks switch. Tasks lists the calculations of each
       step with their state, attempts and where they ran, and each parallel loop's
