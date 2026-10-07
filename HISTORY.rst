@@ -1,6 +1,11 @@
 =======
 History
 =======
+2026.10.7.2 -- Internal: the release workflow tests on Python 3.12 only
+    * The release workflow still tested on Python 3.11, which 2026.10.7 no longer
+      supports, so neither 2026.10.7 nor 2026.10.7.1 was published. It now tests on
+      3.12 only. The changes are those of 2026.10.7 and 2026.10.7.1.
+
 2026.10.7.1 -- Job list refresh and a collapsed file tree
     * Clicking Jobs in the sidebar while the job list is showing refreshes the list.
     * A job's file tree starts with every folder closed, so a large job opens quickly
