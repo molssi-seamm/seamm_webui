@@ -45,20 +45,29 @@ the full set of options, and the User Guide for how authentication works.
 If the paired JobServer instance (the one actually running submitted jobs,
 sharing the same ``--root``) is configured with more than one queue --
 different clusters, or a plain local-subprocess queue alongside one or
-more real SLURM ones -- ``GET /api/queues`` lists them, for a submission
-client (e.g. the SEAMM desktop app's submit dialog) to offer a picker
-instead of always using that instance's default; the job list/detail
-pages here also show which queue a job ran on (see the User Guide). This
-needs no configuration beyond what the JobServer itself already has:
-``seamm-webui`` reads the same ``<root>/<jobserver-name>.ini``. The one
+more real SLURM ones -- ``GET /api/queues`` lists them. Each entry carries
+the queue's name, whether it is the default, and its ``.limits``: for every
+directive a job may override, the allowed choices or bounds and the queue's
+own current value, so a client can show "currently 4, up to 64". The SEAMM
+desktop app's submit dialog uses this for its queue picker and the override
+fields (cores, memory, time, QOS, GPUs -- whichever the chosen queue's limits
+allow); the JobServer checks the values again before submitting. The web
+interface's own Submit page submits to the instance's default queue with the
+queue's own resources. The job list and detail pages show which queue a job
+ran on (see the User Guide). This needs no configuration beyond what the
+JobServer itself already has: ``seamm-webui`` reads the same
+``<root>/<jobserver-name>.ini``, and never reports its ``transport``,
+``host`` or ``remote_*`` keys, which are the host's own business. The one
 case needing an explicit ``--jobserver-name`` is a host running more than
-one independent JobServer instance -- it otherwise defaults to this
-host's hostname, matching the JobServer's own default.
+one independent JobServer instance -- it otherwise defaults to this host's
+hostname, matching the JobServer's own default. The file's keys and the
+limits are described in the JobServer's user guide and in the SEAMM
+documentation's how-to "Configure the JobServer's Queues".
 
 For a queue with ``transport = ssh`` (a remote SLURM cluster with no
 filesystem shared with the JobServer), a running job's files live in a
 scratch directory on that remote host and are otherwise only pulled back
-once the job finishes. ``seamm-webui`` reuses that same ``seamm_slurm``
+once the job finishes. ``seamm-webui`` reuses that same ``seamm_scheduler``
 staging machinery to pull them back on demand instead -- automatically
 when a job's detail page is opened, and again from that page's file
 viewer Refresh button -- so files are visible while the job is still
