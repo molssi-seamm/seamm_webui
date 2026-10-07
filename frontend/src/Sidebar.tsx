@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { fetchCurrentUser, logout } from './api'
 import {
@@ -32,6 +32,7 @@ export function Sidebar({ backendUp }: { backendUp: boolean | undefined }) {
 
   const currentUser = useQuery({ queryKey: ['auth-me'], queryFn: fetchCurrentUser })
   const queryClient = useQueryClient()
+  const location = useLocation()
 
   const logoutMutation = useMutation({
     mutationFn: logout,
@@ -54,7 +55,20 @@ export function Sidebar({ backendUp }: { backendUp: boolean | undefined }) {
     <nav className={`sidebar${collapsed ? ' sidebar-collapsed' : ''}`} aria-label="Main">
       <ul className="sidebar-nav">
         <li>
-          <NavLink to="/" end className={navLinkClass} title="Jobs">
+          <NavLink
+            to="/"
+            end
+            className={navLinkClass}
+            title="Jobs"
+            // Clicking Jobs while already on the job list is a natural
+            // "refresh": the navigation alone does nothing there (same URL,
+            // JobsPage stays mounted), so refetch the list explicitly.
+            onClick={() => {
+              if (location.pathname === '/') {
+                queryClient.invalidateQueries({ queryKey: ['jobs'] })
+              }
+            }}
+          >
             <JobsIcon className="sidebar-icon" />
             <span className="sidebar-label">Jobs</span>
           </NavLink>

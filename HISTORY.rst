@@ -1,6 +1,15 @@
 =======
 History
 =======
+2026.10.7.1 -- Job list refresh and a collapsed file tree
+    * Clicking Jobs in the sidebar while the job list is showing refreshes the list.
+    * A job's file tree starts with every folder closed, so a large job opens quickly
+      and is explored level by level. A **Close all folders** button, which stays at
+      the top of the tree as it scrolls, closes every open folder.
+    * The open folders are kept while switching between Files and Tasks; a Tasks link
+      to an iteration's output opens the folders leading to it; and going to another
+      job starts with its tree closed and no file selected.
+
 2026.10.7 -- Internal: documentation of the queues API
     * The getting-started and user guides say what ``GET /api/queues`` returns
       (each queue's limits with the current values), that the desktop app's

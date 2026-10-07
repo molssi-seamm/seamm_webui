@@ -11,7 +11,8 @@ import {
   killJob,
   syncJobFiles,
 } from '../api'
-import { buildTree, TreeView } from '../FileTree'
+import { TreeView } from '../FileTree'
+import { ancestorDirs, buildTree } from '../fileTreeUtils'
 import { TasksPanel } from '../TasksPanel'
 import { ResizableSplit } from '../ResizableSplit'
 
@@ -77,12 +78,20 @@ function FileViewer({
   description,
   selected,
   onSelect,
+  openDirs,
+  onToggleDir,
+  onCloseAllDirs,
   isRemote,
 }: {
   jobId: string
   description: string
   selected: string | null
   onSelect: (path: string) => void
+  // Which tree folders are open -- lifted to JobDetailPage alongside
+  // `selected`, so it survives switching to the Tasks tab and back.
+  openDirs: Set<string>
+  onToggleDir: (path: string, open: boolean) => void
+  onCloseAllDirs: () => void
   // True once we know this job is routed to a transport=ssh queue (see
   // JobDetailPage) -- gates the auto-sync-on-open below and the "syncing
   // from cluster" note, purely to skip an unnecessary request for the
@@ -162,6 +171,7 @@ function FileViewer({
   if (!files.data) return null
 
   const tree = buildTree(files.data)
+  const hasDirs = tree.some((node) => !node.isFile)
   const selectedFile = isDescription ? undefined : files.data.find((f) => f.path === selected)
 
   return (
@@ -176,7 +186,36 @@ function FileViewer({
             boxSizing: 'border-box',
           }}
         >
-          <TreeView nodes={tree} selected={isDescription ? null : selected} onSelect={onSelect} />
+          {hasDirs && (
+            // Sticky, so it stays in reach after scrolling down a long tree
+            // -- which is exactly when it is wanted.
+            <div
+              style={{
+                position: 'sticky',
+                top: '-0.5em',
+                margin: '-0.5em 0 0',
+                padding: '0.5em 0 0.25em',
+                background: 'var(--bg)',
+                zIndex: 1,
+              }}
+            >
+              <button
+                type="button"
+                onClick={onCloseAllDirs}
+                disabled={openDirs.size === 0}
+                title="Collapse every open folder"
+              >
+                Close all folders
+              </button>
+            </div>
+          )}
+          <TreeView
+            nodes={tree}
+            selected={isDescription ? null : selected}
+            onSelect={onSelect}
+            openDirs={openDirs}
+            onToggleDir={onToggleDir}
+          />
         </div>
       }
       right={
@@ -269,6 +308,26 @@ export function JobDetailPage() {
   const location = useLocation()
   const canGoBack = location.key !== 'default'
   const [selected, setSelected] = useState<string | null>(null)
+  const [openDirs, setOpenDirs] = useState<Set<string>>(() => new Set())
+  // Going straight from one job to another reuses this component, so start
+  // the new job's tree and viewer fresh instead of carrying the last job's
+  // open folders and selected file over. Done during render (React's
+  // "adjust state when a prop changes" pattern) rather than in an effect,
+  // so the stale path is never fetched against the new job.
+  const [shownId, setShownId] = useState(id)
+  if (id !== shownId) {
+    setShownId(id)
+    setSelected(null)
+    setOpenDirs(new Set())
+  }
+  function toggleDir(path: string, open: boolean) {
+    setOpenDirs((prev) => {
+      const next = new Set(prev)
+      if (open) next.add(path)
+      else next.delete(path)
+      return next
+    })
+  }
   const [tab, setTab] = useState<'files' | 'tasks'>('files')
   const [confirmKill, setConfirmKill] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
@@ -464,6 +523,9 @@ export function JobDetailPage() {
             description={j.description}
             selected={selected}
             onSelect={setSelected}
+            openDirs={openDirs}
+            onToggleDir={toggleDir}
+            onCloseAllDirs={() => setOpenDirs(new Set())}
             isRemote={isRemote}
           />
         )}
@@ -474,6 +536,9 @@ export function JobDetailPage() {
             isRemote={isRemote}
             onOpenFile={(path) => {
               setSelected(path)
+              // Folders start closed, so open the ones leading to the
+              // file -- otherwise the selection is hidden in the tree.
+              setOpenDirs((prev) => new Set([...prev, ...ancestorDirs(path)]))
               setTab('files')
             }}
           />
