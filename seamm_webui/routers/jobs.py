@@ -26,6 +26,7 @@ from pydantic import BaseModel, Field
 from seamm_scheduler.stage import STAGE_LOCK_FILENAME, StageError
 
 from seamm_webui.auth import require_permission
+from seamm_webui.paths import contained
 
 router = APIRouter(prefix="/api/jobs", tags=["jobs"])
 
@@ -50,6 +51,9 @@ class JobIds(BaseModel):
 
 
 MAX_PREVIEW_BYTES = 2_000_000
+# The most lines of a file that can be asked for at once (the head or tail of a
+# table such as a LAMMPS .trj, which may have millions)
+MAX_PREVIEW_LINES = 20_000
 
 # Job statuses seamm_jobserver will actually act on when asked to kill --
 # matches its own check_for_stopped_jobs() (jobserver.py), which polls for
@@ -58,6 +62,13 @@ MAX_PREVIEW_BYTES = 2_000_000
 # under a jobserver yet in a way that matters, or is already done, so there
 # is nothing for a kill request to stop.
 KILLABLE_STATUSES = ("submitted", "running")
+
+# Job statuses a job can be resumed from: it stopped without finishing --
+# killed, failed (an error, a crash, running out of memory), or never started.
+# seamm_jobserver runs it again in the same directory, asking the flowchart to
+# continue from its checkpoint (seamm_exec decides whether it can; if not, the
+# flowchart runs from the top and says why). A finished job is never resumed.
+RESUMABLE_STATUSES = ("killed", "error", "startup error")
 
 
 def _get_job_or_404(job_id: int, permission: str = "read"):
@@ -98,9 +109,9 @@ def _delete_job_files_and_row(job) -> None:
     from seamm_webui.db import get_datastore, get_datastore_dir
 
     if job.path:
-        target = Path(job.path).resolve()
-        datastore_root = Path(get_datastore_dir()).expanduser().resolve()
-        if target.is_relative_to(datastore_root) and target.is_dir():
+        datastore_root = Path(get_datastore_dir()).expanduser()
+        target = contained(datastore_root, job.path)
+        if target is not None and target.is_dir():
             shutil.rmtree(target)
 
     ds = get_datastore()
@@ -109,14 +120,12 @@ def _delete_job_files_and_row(job) -> None:
 
 def _resolve_job_file(job, filename: str) -> Path:
     """Resolve ``filename`` under the job's directory, guarding against
-    traversal outside it via ``Path.is_relative_to`` (not a substring check
-    like the old dashboard's ``"../" in filename``, which can't be bypassed
-    by how the traversal is encoded).
+    traversal outside it on the resolved paths (see ``seamm_webui.paths``), not
+    a substring check like the old dashboard's ``"../" in filename``, which can
+    be bypassed by how the traversal is encoded.
     """
-    base = Path(job.path).resolve()
-    target = (base / filename).resolve()
-
-    if not target.is_relative_to(base):
+    target = contained(job.path, filename)
+    if target is None:
         raise HTTPException(status_code=403, detail="Invalid filename")
     if not target.is_file():
         raise HTTPException(status_code=404, detail="File not found")
@@ -272,6 +281,42 @@ def kill_job(job_id: int, _: None = Depends(require_permission("update"))):
             detail=f"Cannot kill a job with status {job.status!r}",
         )
 
+    get_datastore().Session.commit()
+
+    return JobSchema(many=False).dump(_get_job_or_404(job_id))
+
+
+@router.post("/{job_id}/resume")
+def resume_job(job_id: int, _: None = Depends(require_permission("update"))):
+    """Ask seamm_jobserver to run a killed or failed job again, continuing from
+    its checkpoint.
+
+    Like a kill, this only *requests* it: the job goes back to "submitted" with
+    ``parameters["resume"]`` set, and seamm_jobserver starts it as it would a new
+    job, in its own directory and queue, asking the flowchart to resume. The step
+    that was interrupted runs again from its start. seamm_exec checks that the
+    checkpoint matches the flowchart and command line, and runs from the top,
+    saying why, if it cannot resume.
+    """
+    from seamm_datastore.database.schema import JobSchema
+    from seamm_webui.db import get_datastore
+
+    job = _get_job_or_404(job_id, permission="update")
+    if job.status not in RESUMABLE_STATUSES:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"Cannot resume a job with status {job.status!r}: only a job that "
+                "was killed, failed or never started can be resumed"
+            ),
+        )
+    parameters = dict(job.parameters or {})
+    parameters["resume"] = True
+    # A new dict, so that the JSON column is seen to have changed
+    job.parameters = parameters
+    job.status = "submitted"
+    job.started = None
+    job.finished = None
     get_datastore().Session.commit()
 
     return JobSchema(many=False).dump(_get_job_or_404(job_id))
@@ -483,10 +528,8 @@ def _resolve_upload_target(job, filename: str) -> Path:
     if filename.startswith("job:"):
         filename = filename[4:]
 
-    base = Path(job.path).resolve()
-    target = (base / filename).resolve()
-
-    if not target.is_relative_to(base):
+    target = contained(job.path, filename)
+    if target is None:
         raise HTTPException(status_code=403, detail="Invalid filename")
     return target
 
@@ -523,9 +566,57 @@ def download_job_file(
     return FileResponse(target, filename=target.name)
 
 
+def _count_lines(path):
+    """The number of lines in a file, read in blocks."""
+    n = 0
+    last = b"\n"
+    with open(path, "rb") as fd:
+        while block := fd.read(1 << 20):
+            n += block.count(b"\n")
+            last = block[-1:]
+    return n + (0 if last == b"\n" else 1)
+
+
+def _head_lines(path, n):
+    """The first ``n`` lines of a file, as bytes."""
+    lines = []
+    with open(path, "rb") as fd:
+        for line in fd:
+            lines.append(line)
+            if len(lines) >= n:
+                break
+    return b"".join(lines)
+
+
+def _tail_lines(path, n, skip=0):
+    """The last ``n`` lines of a file, as bytes, read backwards in blocks; none of
+    the first ``skip`` lines (a header) are included."""
+    size = path.stat().st_size
+    block = 1 << 16
+    data = b""
+    position = size
+    with open(path, "rb") as fd:
+        while position > 0 and data.count(b"\n") <= n:
+            step = min(block, position)
+            position -= step
+            fd.seek(position)
+            data = fd.read(step) + data
+    lines = data.splitlines(keepends=True)
+    if position == 0:
+        lines = lines[skip:]
+    elif len(lines) > n:
+        lines = lines[len(lines) - n :]
+    return b"".join(lines[-n:] if n > 0 else [])
+
+
 @router.get("/{job_id}/files/content")
 def get_job_file_content(
-    job_id: int, filename: str, _: None = Depends(require_permission("read"))
+    job_id: int,
+    filename: str,
+    lines: Optional[int] = None,
+    end: bool = False,
+    header_lines: int = 0,
+    _: None = Depends(require_permission("read")),
 ):
     """Return a file's text content for in-browser viewing (not a download).
 
@@ -534,11 +625,39 @@ def get_job_file_content(
     a browser tab. Both come back as a normal 200 with ``content: null`` and
     a ``reason``, not an error -- the frontend falls back to offering the
     download link instead of showing an error page.
+
+    With ``lines``, the first ``lines`` lines of the file of any size, or with
+    ``end`` its first ``header_lines`` lines (the header of a table) and its last
+    ``lines`` lines -- the head or tail of a long table such as a LAMMPS .trj.
+    ``total_lines`` then gives the length of the file and ``truncated`` whether
+    part of it was left out.
     """
     job = _get_job_or_404(job_id)
     target = _resolve_job_file(job, filename)
 
     size = target.stat().st_size
+    if lines is not None:
+        n = max(1, min(int(lines), MAX_PREVIEW_LINES))
+        header_lines = max(0, min(int(header_lines), 100))
+        total = _count_lines(target)
+        if end:
+            data = _head_lines(target, header_lines) if header_lines else b""
+            data += _tail_lines(target, n, skip=header_lines)
+            shown = min(n, max(0, total - header_lines)) + min(header_lines, total)
+        else:
+            data = _head_lines(target, n)
+            shown = min(n, total)
+        try:
+            content = data.decode()
+        except UnicodeDecodeError:
+            return {"content": None, "reason": "binary", "size": size}
+        return {
+            "content": content,
+            "reason": None,
+            "size": size,
+            "total_lines": total,
+            "truncated": shown < total,
+        }
     if size > MAX_PREVIEW_BYTES:
         return {"content": None, "reason": "too_large", "size": size}
 

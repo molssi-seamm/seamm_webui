@@ -202,6 +202,18 @@ export async function killJob(id: number | string): Promise<JobDetail> {
   return res.json()
 }
 
+// Requests that seamm_jobserver run a killed or failed job again, continuing
+// from its checkpoint. Only a request, like killJob: the job goes back to
+// "submitted", and seamm_jobserver starts it, asking the flowchart to resume.
+export async function resumeJob(id: number | string): Promise<JobDetail> {
+  const res = await apiFetch(`/api/jobs/${id}/resume`, { method: 'POST' })
+  if (!res.ok) {
+    const detail = await res.text()
+    throw new Error(`resuming job ${id} failed: ${res.status} ${detail}`)
+  }
+  return res.json()
+}
+
 export async function deleteJob(id: number | string): Promise<{ deleted: boolean }> {
   const res = await apiFetch(`/api/jobs/${id}`, { method: 'DELETE' })
   if (!res.ok) {
@@ -333,13 +345,33 @@ export interface JobFileContent {
   content: string | null
   reason: 'binary' | 'too_large' | null
   size: number
+  // With a number of lines asked for: the length of the file, and whether
+  // part of it was left out
+  total_lines?: number
+  truncated?: boolean
+}
+
+// What part of a long table to fetch: the first ``lines`` lines, or with ``end``
+// the first ``headerLines`` (its header) and the last ``lines``.
+export interface FilePart {
+  lines: number
+  end?: boolean
+  headerLines?: number
 }
 
 export async function fetchJobFileContent(
   id: number | string,
   filename: string,
+  part?: FilePart,
 ): Promise<JobFileContent> {
   const params = new URLSearchParams({ filename })
+  if (part) {
+    params.set('lines', String(part.lines))
+    if (part.end) {
+      params.set('end', 'true')
+      params.set('header_lines', String(part.headerLines ?? 0))
+    }
+  }
   const res = await apiFetch(`/api/jobs/${id}/files/content?${params}`)
   if (!res.ok) throw new Error(`fetching content of ${filename} failed: ${res.status}`)
   return res.json()

@@ -9,11 +9,15 @@ import {
   fetchQueues,
   jobFileDownloadUrl,
   killJob,
+  resumeJob,
   syncJobFiles,
+  type JobFileContent,
 } from '../api'
 import { TreeView } from '../FileTree'
 import { ancestorDirs, buildTree } from '../fileTreeUtils'
 import { TasksPanel } from '../TasksPanel'
+import { TrjTable } from '../TrjTable'
+import { parseTrj } from '../trjParse'
 import { ResizableSplit } from '../ResizableSplit'
 
 // Statuses seamm_jobserver will still act on a kill request for -- matches
@@ -21,6 +25,15 @@ import { ResizableSplit } from '../ResizableSplit'
 // other status is either not running under a jobserver in a way that
 // matters yet, or already done.
 const KILLABLE_STATUSES = new Set(['submitted', 'running'])
+
+// Statuses a job can be resumed from -- matches the backend's
+// RESUMABLE_STATUSES (routers/jobs.py): it stopped without finishing.
+const RESUMABLE_STATUSES = new Set(['killed', 'error', 'startup error'])
+
+// Tables (CSV, LAMMPS .trj) can have millions of rows: show the first few
+// thousand, or the last few hundred to follow a run as it goes
+const HEAD_ROWS = 3000
+const TAIL_ROWS = 300
 
 // Lazy-loaded: NGL pulls in three.js and adds well over 1MB to the bundle,
 // and Plotly is similarly heavy. Loading either eagerly would undercut the
@@ -131,13 +144,47 @@ function FileViewer({
   const selectedExt = selected && !isDescription ? getExtension(selected) : null
   const isStructure = !!selectedExt && STRUCTURE_EXTENSIONS.has(selectedExt)
   const isCsv = selectedExt === 'csv'
+  const isTrj = selectedExt === 'trj'
+  const isTable = isCsv || isTrj
   const isGraph = selectedExt === 'graph'
 
+  // For a table: its head, or its tail -- for the file it was asked for, so
+  // that another file opens at its head
+  const queryClient = useQueryClient()
+  const [tailOf, setTailOf] = useState<string | null>(null)
+  const tail = isTable && tailOf === selected
+  const setTail = (on: boolean) => setTailOf(on ? selected : null)
+
+  // The header lines to keep with the tail: CSV's one, or as many as the head
+  // of the .trj has, which has been read before the tail is asked for
+  function headerLinesOf(): number {
+    if (isCsv) return 1
+    const head = queryClient.getQueryData<JobFileContent>([
+      'job-file-content',
+      jobId,
+      selected,
+      'head',
+    ])
+    return (head?.content && parseTrj(head.content)?.headerLines) || 2
+  }
+
   const content = useQuery({
-    queryKey: ['job-file-content', jobId, selected],
-    queryFn: () => fetchJobFileContent(jobId, selected!),
+    queryKey: ['job-file-content', jobId, selected, isTable ? (tail ? 'tail' : 'head') : 'all'],
+    queryFn: () =>
+      fetchJobFileContent(
+        jobId,
+        selected!,
+        isTable
+          ? tail
+            ? { lines: TAIL_ROWS, end: true, headerLines: headerLinesOf() }
+            : { lines: HEAD_ROWS }
+          : undefined,
+      ),
     enabled: !!selected && !isDescription && !isStructure,
   })
+
+  const parsedTrj =
+    isTrj && content.data && content.data.content !== null ? parseTrj(content.data.content) : null
 
   // Structures load straight from the download URL inside StructureViewer,
   // not through react-query, so there's nothing there to refetch --
@@ -260,10 +307,32 @@ function FileViewer({
                         the download link above.
                       </p>
                     )}
-                    {content.data && content.data.content !== null && isCsv && (
-                      <Suspense fallback={<p>Loading table…</p>}>
-                        <CsvTable content={content.data.content} />
-                      </Suspense>
+                    {content.data && content.data.content !== null && (isCsv || parsedTrj) && (
+                      <div
+                        style={{ height: '100%', display: 'flex', flexDirection: 'column', minHeight: 0 }}
+                      >
+                        {(content.data.truncated || tail) && (
+                          <p style={{ flexShrink: 0, margin: '0 0 0.5em' }}>
+                            {tail
+                              ? `The last ${TAIL_ROWS} rows`
+                              : `The first ${HEAD_ROWS.toLocaleString()} lines`}{' '}
+                            of {(content.data.total_lines ?? 0).toLocaleString()}.{' '}
+                            <button onClick={() => setTail(!tail)}>
+                              {tail ? 'Show the first rows' : `Show the last ${TAIL_ROWS} rows`}
+                            </button>
+                            {tail && ' (Refresh follows a running job.)'}
+                          </p>
+                        )}
+                        <div style={{ flex: 1, minHeight: 0 }}>
+                          {isCsv ? (
+                            <Suspense fallback={<p>Loading table…</p>}>
+                              <CsvTable content={content.data.content} />
+                            </Suspense>
+                          ) : (
+                            parsedTrj && <TrjTable parsed={parsedTrj} />
+                          )}
+                        </div>
+                      </div>
                     )}
                     {content.data && content.data.content !== null && isGraph && (
                       <Suspense fallback={<p>Loading graph…</p>}>
@@ -273,6 +342,7 @@ function FileViewer({
                     {content.data &&
                       content.data.content !== null &&
                       !isCsv &&
+                      !parsedTrj &&
                       !isGraph && (
                         <pre
                           style={{
@@ -330,6 +400,7 @@ export function JobDetailPage() {
   }
   const [tab, setTab] = useState<'files' | 'tasks'>('files')
   const [confirmKill, setConfirmKill] = useState(false)
+  const [confirmResume, setConfirmResume] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [confirmJobId, setConfirmJobId] = useState('')
   const queryClient = useQueryClient()
@@ -353,6 +424,15 @@ export function JobDetailPage() {
       queryClient.setQueryData(['job', id], updated)
       queryClient.invalidateQueries({ queryKey: ['jobs'] })
       setConfirmKill(false)
+    },
+  })
+
+  const resumeMutation = useMutation({
+    mutationFn: () => resumeJob(id!),
+    onSuccess: (updated) => {
+      queryClient.setQueryData(['job', id], updated)
+      queryClient.invalidateQueries({ queryKey: ['jobs'] })
+      setConfirmResume(false)
     },
   })
 
@@ -463,11 +543,25 @@ export function JobDetailPage() {
               <button onClick={() => setConfirmKill(false)}>Cancel</button>
             </span>
           )}
+          {RESUMABLE_STATUSES.has(j.status) && !confirmResume && (
+            <button onClick={() => setConfirmResume(true)}>Resume job&hellip;</button>
+          )}
+          {confirmResume && (
+            <span>
+              Run this job again, continuing from the last step it completed? The step
+              it stopped in runs again from its start.{' '}
+              <button onClick={() => resumeMutation.mutate()} disabled={resumeMutation.isPending}>
+                {resumeMutation.isPending ? 'Requesting…' : 'Yes, resume it'}
+              </button>{' '}
+              <button onClick={() => setConfirmResume(false)}>Cancel</button>
+            </span>
+          )}
           {!confirmDelete && (
             <button onClick={() => setConfirmDelete(true)}>Delete job&hellip;</button>
           )}
         </div>
         {killMutation.isError && <p>Error: {(killMutation.error as Error).message}</p>}
+        {resumeMutation.isError && <p>Error: {(resumeMutation.error as Error).message}</p>}
         {confirmDelete && (
           <p style={{ fontSize: '0.95em' }}>
             Permanently delete this job and its files

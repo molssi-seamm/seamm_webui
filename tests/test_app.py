@@ -497,6 +497,106 @@ def test_kill_job(tmp_path):
     assert response.status_code == 404
 
 
+def test_job_file_head_and_tail(tmp_path, monkeypatch):
+    """The head or tail of a long table, such as a LAMMPS .trj, of any size: the
+    tail with the header lines in front."""
+    app = create_app(str(tmp_path / "datastore"))
+    client = TestClient(app)
+
+    import seamm_datastore
+    from seamm_datastore.database.models import Job
+    from seamm_webui.db import get_datastore
+    import seamm_webui.routers.jobs as jobs_router
+
+    job_dir = tmp_path / "datastore" / "projects" / "default" / "Job_000001"
+    job_dir.mkdir(parents=True)
+    sample = Path(seamm_datastore.__file__).parent / "data" / "sample_flowchart_v2.flow"
+    shutil.copy(sample, job_dir / "flowchart.flow")
+    header = '!MolSSI trajectory 2.0 {"type":"heat flux"}\nJx Jy Jz\n'
+    rows = "".join(f"{i} {i}.5 {2 * i}.25 {3 * i}\n" for i in range(50000))
+    (job_dir / "heat_flux.trj").write_text(header + rows)
+    # Small enough to read whole, but too large for a plain preview
+    monkeypatch.setattr(jobs_router, "MAX_PREVIEW_BYTES", 1000)
+
+    job = Job.create(
+        1,
+        flowchart_filename=str(job_dir / "flowchart.flow"),
+        project_names=["default"],
+        path=str(job_dir),
+        title="test job",
+    )
+    ds = get_datastore()
+    ds.Session.add(job)
+    ds.Session.commit()
+
+    url = "/api/jobs/1/files/content"
+    response = client.get(url, params={"filename": "heat_flux.trj"})
+    assert response.json()["reason"] == "too_large"
+
+    body = client.get(url, params={"filename": "heat_flux.trj", "lines": 5}).json()
+    assert body["content"].splitlines() == (header + rows).splitlines()[:5]
+    assert body["total_lines"] == 50002 and body["truncated"] is True
+
+    params = {"filename": "heat_flux.trj", "lines": 3, "end": True, "header_lines": 2}
+    lines = client.get(url, params=params).json()["content"].splitlines()
+    assert lines[:2] == header.splitlines()
+    assert lines[2:] == [f"{i} {i}.5 {2 * i}.25 {3 * i}" for i in (49997, 49998, 49999)]
+
+    # A short file: everything once, the header not repeated
+    (job_dir / "short.trj").write_text(header + "0 1 2 3\n1 2 3 4\n")
+    params = {"filename": "short.trj", "lines": 300, "end": True, "header_lines": 2}
+    body = client.get(url, params=params).json()
+    assert body["content"] == header + "0 1 2 3\n1 2 3 4\n"
+    assert body["truncated"] is False
+
+
+def test_resume_job(tmp_path):
+    app = create_app(str(tmp_path / "datastore"))
+    client = TestClient(app)
+
+    import seamm_datastore
+    from seamm_datastore.database.models import Job
+    from seamm_webui.db import get_datastore
+
+    job_dir = tmp_path / "datastore" / "projects" / "default" / "Job_000001"
+    job_dir.mkdir(parents=True)
+    sample = Path(seamm_datastore.__file__).parent / "data" / "sample_flowchart_v2.flow"
+    shutil.copy(sample, job_dir / "flowchart.flow")
+    job = Job.create(
+        1,
+        flowchart_filename=str(job_dir / "flowchart.flow"),
+        project_names=["default"],
+        path=str(job_dir),
+        title="a job",
+    )
+    ds = get_datastore()
+    ds.Session.add(job)
+    ds.Session.commit()
+
+    # A job that is waiting, running or finished cannot be resumed
+    for status in ("submitted", "running", "finished", "kill"):
+        Job.update(1, status=status)
+        ds.Session.commit()
+        response = client.post("/api/jobs/1/resume")
+        assert response.status_code == 400, status
+
+    # A killed (or failed) one goes back to "submitted", asking to resume
+    for status in ("killed", "error", "startup error"):
+        Job.update(1, status=status)
+        ds.Session.commit()
+        response = client.post("/api/jobs/1/resume")
+        assert response.status_code == 200, status
+        body = response.json()
+        assert body["status"] == "submitted"
+        job = Job.query.filter(Job.id == 1).one()
+        assert job.parameters["resume"] is True
+        assert job.finished is None
+    assert (job_dir / "flowchart.flow").exists()
+
+    response = client.post("/api/jobs/999/resume")
+    assert response.status_code == 404
+
+
 def test_delete_job(tmp_path):
     app = create_app(str(tmp_path / "datastore"))
     client = TestClient(app)

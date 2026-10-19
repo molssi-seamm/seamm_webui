@@ -1,4 +1,5 @@
 import Papa from 'papaparse'
+import { DataTable } from './DataTable'
 
 interface CsvTableProps {
   content: string
@@ -23,26 +24,5 @@ export function CsvTable({ content }: CsvTableProps) {
 
   if (!header) return <p>Empty CSV file.</p>
 
-  return (
-    <div style={{ height: '100%', maxWidth: '100%', overflow: 'auto', boxSizing: 'border-box' }}>
-      <table>
-        <thead>
-          <tr>
-            {header.map((cell, i) => (
-              <th key={i}>{cell}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {rows.map((row, i) => (
-            <tr key={i}>
-              {row.map((cell, j) => (
-                <td key={j}>{cell}</td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  )
+  return <DataTable header={header} rows={rows} />
 }
