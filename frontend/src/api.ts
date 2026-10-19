@@ -202,6 +202,18 @@ export async function killJob(id: number | string): Promise<JobDetail> {
   return res.json()
 }
 
+// Requests that seamm_jobserver run a killed or failed job again, continuing
+// from its checkpoint. Only a request, like killJob: the job goes back to
+// "submitted", and seamm_jobserver starts it, asking the flowchart to resume.
+export async function resumeJob(id: number | string): Promise<JobDetail> {
+  const res = await apiFetch(`/api/jobs/${id}/resume`, { method: 'POST' })
+  if (!res.ok) {
+    const detail = await res.text()
+    throw new Error(`resuming job ${id} failed: ${res.status} ${detail}`)
+  }
+  return res.json()
+}
+
 export async function deleteJob(id: number | string): Promise<{ deleted: boolean }> {
   const res = await apiFetch(`/api/jobs/${id}`, { method: 'DELETE' })
   if (!res.ok) {

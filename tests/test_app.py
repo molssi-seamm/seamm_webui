@@ -497,6 +497,53 @@ def test_kill_job(tmp_path):
     assert response.status_code == 404
 
 
+def test_resume_job(tmp_path):
+    app = create_app(str(tmp_path / "datastore"))
+    client = TestClient(app)
+
+    import seamm_datastore
+    from seamm_datastore.database.models import Job
+    from seamm_webui.db import get_datastore
+
+    job_dir = tmp_path / "datastore" / "projects" / "default" / "Job_000001"
+    job_dir.mkdir(parents=True)
+    sample = Path(seamm_datastore.__file__).parent / "data" / "sample_flowchart_v2.flow"
+    shutil.copy(sample, job_dir / "flowchart.flow")
+    job = Job.create(
+        1,
+        flowchart_filename=str(job_dir / "flowchart.flow"),
+        project_names=["default"],
+        path=str(job_dir),
+        title="a job",
+    )
+    ds = get_datastore()
+    ds.Session.add(job)
+    ds.Session.commit()
+
+    # A job that is waiting, running or finished cannot be resumed
+    for status in ("submitted", "running", "finished", "kill"):
+        Job.update(1, status=status)
+        ds.Session.commit()
+        response = client.post("/api/jobs/1/resume")
+        assert response.status_code == 400, status
+
+    # A killed (or failed) one goes back to "submitted", asking to resume
+    for status in ("killed", "error", "startup error"):
+        Job.update(1, status=status)
+        ds.Session.commit()
+        response = client.post("/api/jobs/1/resume")
+        assert response.status_code == 200, status
+        body = response.json()
+        assert body["status"] == "submitted"
+        job = Job.query.filter(Job.id == 1).one()
+        assert job.parameters["resume"] is True
+        assert job.finished is None
+    assert (job_dir / "flowchart.flow").exists()
+
+    response = client.post("/api/jobs/999/resume")
+    assert response.status_code == 404
+
+
 def test_delete_job(tmp_path):
     app = create_app(str(tmp_path / "datastore"))
     client = TestClient(app)

@@ -1,6 +1,14 @@
 =======
 History
 =======
+2026.10.19 -- Resume a job that was killed or failed
+    * A job that was killed, failed or never started can be resumed: 'Resume job' on the
+      job's page, or POST /api/jobs/{id}/resume. The JobServer runs it again in its own
+      directory and queue, continuing from the last step it completed; the step it
+      stopped in runs again from its start. If the checkpoint no longer matches the
+      flowchart, the job runs from the top and job.out says why. Needs seamm-jobserver
+      2026.10.19.
+
 2026.10.7.2 -- Internal: the release workflow tests on Python 3.12 only
     * The release workflow still tested on Python 3.11, which 2026.10.7 no longer
       supports, so neither 2026.10.7 nor 2026.10.7.1 was published. It now tests on

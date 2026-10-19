@@ -59,6 +59,13 @@ MAX_PREVIEW_BYTES = 2_000_000
 # is nothing for a kill request to stop.
 KILLABLE_STATUSES = ("submitted", "running")
 
+# Job statuses a job can be resumed from: it stopped without finishing --
+# killed, failed (an error, a crash, running out of memory), or never started.
+# seamm_jobserver runs it again in the same directory, asking the flowchart to
+# continue from its checkpoint (seamm_exec decides whether it can; if not, the
+# flowchart runs from the top and says why). A finished job is never resumed.
+RESUMABLE_STATUSES = ("killed", "error", "startup error")
+
 
 def _get_job_or_404(job_id: int, permission: str = "read"):
     from seamm_datastore.database.models import Job
@@ -272,6 +279,42 @@ def kill_job(job_id: int, _: None = Depends(require_permission("update"))):
             detail=f"Cannot kill a job with status {job.status!r}",
         )
 
+    get_datastore().Session.commit()
+
+    return JobSchema(many=False).dump(_get_job_or_404(job_id))
+
+
+@router.post("/{job_id}/resume")
+def resume_job(job_id: int, _: None = Depends(require_permission("update"))):
+    """Ask seamm_jobserver to run a killed or failed job again, continuing from
+    its checkpoint.
+
+    Like a kill, this only *requests* it: the job goes back to "submitted" with
+    ``parameters["resume"]`` set, and seamm_jobserver starts it as it would a new
+    job, in its own directory and queue, asking the flowchart to resume. The step
+    that was interrupted runs again from its start. seamm_exec checks that the
+    checkpoint matches the flowchart and command line, and runs from the top,
+    saying why, if it cannot resume.
+    """
+    from seamm_datastore.database.schema import JobSchema
+    from seamm_webui.db import get_datastore
+
+    job = _get_job_or_404(job_id, permission="update")
+    if job.status not in RESUMABLE_STATUSES:
+        raise HTTPException(
+            status_code=400,
+            detail=(
+                f"Cannot resume a job with status {job.status!r}: only a job that "
+                "was killed, failed or never started can be resumed"
+            ),
+        )
+    parameters = dict(job.parameters or {})
+    parameters["resume"] = True
+    # A new dict, so that the JSON column is seen to have changed
+    job.parameters = parameters
+    job.status = "submitted"
+    job.started = None
+    job.finished = None
     get_datastore().Session.commit()
 
     return JobSchema(many=False).dump(_get_job_or_404(job_id))

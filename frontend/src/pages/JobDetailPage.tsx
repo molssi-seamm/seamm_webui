@@ -9,6 +9,7 @@ import {
   fetchQueues,
   jobFileDownloadUrl,
   killJob,
+  resumeJob,
   syncJobFiles,
 } from '../api'
 import { TreeView } from '../FileTree'
@@ -21,6 +22,10 @@ import { ResizableSplit } from '../ResizableSplit'
 // other status is either not running under a jobserver in a way that
 // matters yet, or already done.
 const KILLABLE_STATUSES = new Set(['submitted', 'running'])
+
+// Statuses a job can be resumed from -- matches the backend's
+// RESUMABLE_STATUSES (routers/jobs.py): it stopped without finishing.
+const RESUMABLE_STATUSES = new Set(['killed', 'error', 'startup error'])
 
 // Lazy-loaded: NGL pulls in three.js and adds well over 1MB to the bundle,
 // and Plotly is similarly heavy. Loading either eagerly would undercut the
@@ -330,6 +335,7 @@ export function JobDetailPage() {
   }
   const [tab, setTab] = useState<'files' | 'tasks'>('files')
   const [confirmKill, setConfirmKill] = useState(false)
+  const [confirmResume, setConfirmResume] = useState(false)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [confirmJobId, setConfirmJobId] = useState('')
   const queryClient = useQueryClient()
@@ -353,6 +359,15 @@ export function JobDetailPage() {
       queryClient.setQueryData(['job', id], updated)
       queryClient.invalidateQueries({ queryKey: ['jobs'] })
       setConfirmKill(false)
+    },
+  })
+
+  const resumeMutation = useMutation({
+    mutationFn: () => resumeJob(id!),
+    onSuccess: (updated) => {
+      queryClient.setQueryData(['job', id], updated)
+      queryClient.invalidateQueries({ queryKey: ['jobs'] })
+      setConfirmResume(false)
     },
   })
 
@@ -463,11 +478,25 @@ export function JobDetailPage() {
               <button onClick={() => setConfirmKill(false)}>Cancel</button>
             </span>
           )}
+          {RESUMABLE_STATUSES.has(j.status) && !confirmResume && (
+            <button onClick={() => setConfirmResume(true)}>Resume job&hellip;</button>
+          )}
+          {confirmResume && (
+            <span>
+              Run this job again, continuing from the last step it completed? The step
+              it stopped in runs again from its start.{' '}
+              <button onClick={() => resumeMutation.mutate()} disabled={resumeMutation.isPending}>
+                {resumeMutation.isPending ? 'Requesting…' : 'Yes, resume it'}
+              </button>{' '}
+              <button onClick={() => setConfirmResume(false)}>Cancel</button>
+            </span>
+          )}
           {!confirmDelete && (
             <button onClick={() => setConfirmDelete(true)}>Delete job&hellip;</button>
           )}
         </div>
         {killMutation.isError && <p>Error: {(killMutation.error as Error).message}</p>}
+        {resumeMutation.isError && <p>Error: {(resumeMutation.error as Error).message}</p>}
         {confirmDelete && (
           <p style={{ fontSize: '0.95em' }}>
             Permanently delete this job and its files
