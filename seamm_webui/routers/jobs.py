@@ -50,6 +50,9 @@ class JobIds(BaseModel):
 
 
 MAX_PREVIEW_BYTES = 2_000_000
+# The most lines of a file that can be asked for at once (the head or tail of a
+# table such as a LAMMPS .trj, which may have millions)
+MAX_PREVIEW_LINES = 20_000
 
 # Job statuses seamm_jobserver will actually act on when asked to kill --
 # matches its own check_for_stopped_jobs() (jobserver.py), which polls for
@@ -566,9 +569,57 @@ def download_job_file(
     return FileResponse(target, filename=target.name)
 
 
+def _count_lines(path):
+    """The number of lines in a file, read in blocks."""
+    n = 0
+    last = b"\n"
+    with open(path, "rb") as fd:
+        while block := fd.read(1 << 20):
+            n += block.count(b"\n")
+            last = block[-1:]
+    return n + (0 if last == b"\n" else 1)
+
+
+def _head_lines(path, n):
+    """The first ``n`` lines of a file, as bytes."""
+    lines = []
+    with open(path, "rb") as fd:
+        for line in fd:
+            lines.append(line)
+            if len(lines) >= n:
+                break
+    return b"".join(lines)
+
+
+def _tail_lines(path, n, skip=0):
+    """The last ``n`` lines of a file, as bytes, read backwards in blocks; none of
+    the first ``skip`` lines (a header) are included."""
+    size = path.stat().st_size
+    block = 1 << 16
+    data = b""
+    position = size
+    with open(path, "rb") as fd:
+        while position > 0 and data.count(b"\n") <= n:
+            step = min(block, position)
+            position -= step
+            fd.seek(position)
+            data = fd.read(step) + data
+    lines = data.splitlines(keepends=True)
+    if position == 0:
+        lines = lines[skip:]
+    elif len(lines) > n:
+        lines = lines[len(lines) - n :]
+    return b"".join(lines[-n:] if n > 0 else [])
+
+
 @router.get("/{job_id}/files/content")
 def get_job_file_content(
-    job_id: int, filename: str, _: None = Depends(require_permission("read"))
+    job_id: int,
+    filename: str,
+    lines: Optional[int] = None,
+    end: bool = False,
+    header_lines: int = 0,
+    _: None = Depends(require_permission("read")),
 ):
     """Return a file's text content for in-browser viewing (not a download).
 
@@ -577,11 +628,39 @@ def get_job_file_content(
     a browser tab. Both come back as a normal 200 with ``content: null`` and
     a ``reason``, not an error -- the frontend falls back to offering the
     download link instead of showing an error page.
+
+    With ``lines``, the first ``lines`` lines of the file of any size, or with
+    ``end`` its first ``header_lines`` lines (the header of a table) and its last
+    ``lines`` lines -- the head or tail of a long table such as a LAMMPS .trj.
+    ``total_lines`` then gives the length of the file and ``truncated`` whether
+    part of it was left out.
     """
     job = _get_job_or_404(job_id)
     target = _resolve_job_file(job, filename)
 
     size = target.stat().st_size
+    if lines is not None:
+        n = max(1, min(int(lines), MAX_PREVIEW_LINES))
+        header_lines = max(0, min(int(header_lines), 100))
+        total = _count_lines(target)
+        if end:
+            data = _head_lines(target, header_lines) if header_lines else b""
+            data += _tail_lines(target, n, skip=header_lines)
+            shown = min(n, max(0, total - header_lines)) + min(header_lines, total)
+        else:
+            data = _head_lines(target, n)
+            shown = min(n, total)
+        try:
+            content = data.decode()
+        except UnicodeDecodeError:
+            return {"content": None, "reason": "binary", "size": size}
+        return {
+            "content": content,
+            "reason": None,
+            "size": size,
+            "total_lines": total,
+            "truncated": shown < total,
+        }
     if size > MAX_PREVIEW_BYTES:
         return {"content": None, "reason": "too_large", "size": size}
 

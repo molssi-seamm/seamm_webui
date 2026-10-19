@@ -1,13 +1,20 @@
 =======
 History
 =======
-2026.10.19 -- Resume a job that was killed or failed
+2026.10.19 -- Resume a killed or failed job; LAMMPS .trj files as tables
     * A job that was killed, failed or never started can be resumed: 'Resume job' on the
       job's page, or POST /api/jobs/{id}/resume. The JobServer runs it again in its own
       directory and queue, continuing from the last step it completed; the step it
       stopped in runs again from its start. If the checkpoint no longer matches the
       flowchart, the job runs from the top and job.out says why. Needs seamm-jobserver
       2026.10.19.
+    * LAMMPS time series (.trj files) are shown as tables, like CSV files, with the
+      numbers aligned: the names of the columns from the header (SEAMM's own, or the '#'
+      lines of LAMMPS's fix ave/time), and SEAMM's metadata (what it is, how often it
+      was sampled) as a caption. Vector trajectories are still shown as text.
+    * Long tables -- .trj and CSV files of any size, which were not shown at all above
+      2 MB -- show their first 3,000 lines, or with 'Show the last 300 rows' their end,
+      which Refresh keeps up to date while a job runs.
 
 2026.10.7.2 -- Internal: the release workflow tests on Python 3.12 only
     * The release workflow still tested on Python 3.11, which 2026.10.7 no longer
