@@ -15,6 +15,10 @@ History
     * Long tables -- .trj and CSV files of any size, which were not shown at all above
       2 MB -- show their first 3,000 lines, or with 'Show the last 300 rows' their end,
       which Refresh keeps up to date while a job runs.
+    * Internal: the checks that keep a file name from a request inside the job's (or
+      the web pages') directory are written in the form GitHub's code scanning
+      (CodeQL) recognizes. They were as safe before, but each use of a checked path was
+      reported as a path injection.
 
 2026.10.7.2 -- Internal: the release workflow tests on Python 3.12 only
     * The release workflow still tested on Python 3.11, which 2026.10.7 no longer

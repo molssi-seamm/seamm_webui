@@ -26,6 +26,7 @@ from pydantic import BaseModel, Field
 from seamm_scheduler.stage import STAGE_LOCK_FILENAME, StageError
 
 from seamm_webui.auth import require_permission
+from seamm_webui.paths import contained
 
 router = APIRouter(prefix="/api/jobs", tags=["jobs"])
 
@@ -108,9 +109,9 @@ def _delete_job_files_and_row(job) -> None:
     from seamm_webui.db import get_datastore, get_datastore_dir
 
     if job.path:
-        target = Path(job.path).resolve()
-        datastore_root = Path(get_datastore_dir()).expanduser().resolve()
-        if target.is_relative_to(datastore_root) and target.is_dir():
+        datastore_root = Path(get_datastore_dir()).expanduser()
+        target = contained(datastore_root, job.path)
+        if target is not None and target.is_dir():
             shutil.rmtree(target)
 
     ds = get_datastore()
@@ -119,14 +120,12 @@ def _delete_job_files_and_row(job) -> None:
 
 def _resolve_job_file(job, filename: str) -> Path:
     """Resolve ``filename`` under the job's directory, guarding against
-    traversal outside it via ``Path.is_relative_to`` (not a substring check
-    like the old dashboard's ``"../" in filename``, which can't be bypassed
-    by how the traversal is encoded).
+    traversal outside it on the resolved paths (see ``seamm_webui.paths``), not
+    a substring check like the old dashboard's ``"../" in filename``, which can
+    be bypassed by how the traversal is encoded.
     """
-    base = Path(job.path).resolve()
-    target = (base / filename).resolve()
-
-    if not target.is_relative_to(base):
+    target = contained(job.path, filename)
+    if target is None:
         raise HTTPException(status_code=403, detail="Invalid filename")
     if not target.is_file():
         raise HTTPException(status_code=404, detail="File not found")
@@ -529,10 +528,8 @@ def _resolve_upload_target(job, filename: str) -> Path:
     if filename.startswith("job:"):
         filename = filename[4:]
 
-    base = Path(job.path).resolve()
-    target = (base / filename).resolve()
-
-    if not target.is_relative_to(base):
+    target = contained(job.path, filename)
+    if target is None:
         raise HTTPException(status_code=403, detail="Invalid filename")
     return target
 

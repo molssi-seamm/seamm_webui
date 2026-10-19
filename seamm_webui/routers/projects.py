@@ -13,6 +13,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 
 from seamm_webui.auth import require_permission
+from seamm_webui.paths import contained
 
 router = APIRouter(prefix="/api/projects", tags=["projects"])
 
@@ -154,9 +155,9 @@ def delete_project(project_id: int, _: None = Depends(require_permission("delete
         Job.update(aj["id"], status="kill")
 
     if project.path:
-        target = Path(project.path).resolve()
-        datastore_root = Path(get_datastore_dir()).expanduser().resolve()
-        if target.is_relative_to(datastore_root) and target.is_dir():
+        datastore_root = Path(get_datastore_dir()).expanduser()
+        target = contained(datastore_root, project.path)
+        if target is not None and target.is_dir():
             shutil.rmtree(target)
 
     ds = get_datastore()

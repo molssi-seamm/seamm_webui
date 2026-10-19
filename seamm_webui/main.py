@@ -11,6 +11,7 @@ from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from seamm_webui.db import init_datastore, get_datastore_dir
+from seamm_webui.paths import contained
 
 # Hosts that mean "this machine only" -- see run()'s --auth guardrail.
 LOOPBACK_HOSTS = {"127.0.0.1", "localhost", "::1"}
@@ -157,12 +158,8 @@ def create_app(
             # crafted "../../../etc/passwd"), and plain path concatenation
             # doesn't stop it climbing out of STATIC_DIR (CodeQL
             # py/path-injection).
-            candidate = (STATIC_DIR / full_path).resolve()
-            if (
-                full_path
-                and candidate.is_relative_to(STATIC_DIR)
-                and candidate.is_file()
-            ):
+            candidate = contained(STATIC_DIR, full_path) if full_path else None
+            if candidate is not None and candidate.is_file():
                 return FileResponse(candidate)
             return FileResponse(STATIC_DIR / "index.html")
 
