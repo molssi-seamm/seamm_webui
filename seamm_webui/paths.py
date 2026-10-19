@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 
 
-def contained(base, name=""):
+def contained(base, name):
     """The real path of ``name`` under the directory ``base``, or None if it is not
     in ``base``.
 
@@ -28,10 +28,11 @@ def contained(base, name=""):
     Returns
     -------
     pathlib.Path or None
-        The resolved path, which may be ``base`` itself.
+        The resolved path, strictly inside ``base`` (``base`` itself is None).
     """
     root = os.path.realpath(base)
     target = os.path.realpath(os.path.join(root, name))
-    if target != root and not target.startswith(root + os.sep):
+    # A single prefix test: CodeQL does not follow it through a compound condition
+    if not target.startswith(root + os.sep):
         return None
     return Path(target)

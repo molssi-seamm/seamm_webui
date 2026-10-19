@@ -15,7 +15,7 @@ def test_contained(tmp_path):
 
     assert contained(base, "sub/a.txt") == (base / "sub" / "a.txt").resolve()
     assert contained(base, "sub/../sub/a.txt") == (base / "sub" / "a.txt").resolve()
-    assert contained(base, "") == base.resolve()
+    assert contained(base, "") is None  # the directory itself is not in it
     # Out of the directory, however it is spelled
     assert contained(base, "../secret.txt") is None
     assert contained(base, "sub/../../secret.txt") is None
