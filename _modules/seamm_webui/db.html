@@ -6,7 +6,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>seamm_webui.db &#8212; seamm_webui 2026.10.19 documentation</title>
+    <title>seamm_webui.db &#8212; seamm_webui 2026.10.23 documentation</title>
   
   
   
@@ -47,7 +47,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-PQXXTJ2');</script>
 <!-- End Google Tag Manager -->
 
-    <script src="../../_static/documentation_options.js?v=b2b4b3b2"></script>
+    <script src="../../_static/documentation_options.js?v=aff7fe02"></script>
     <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -61,7 +61,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="color-scheme" content="light dark"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="2026.10.19" />
+  <meta name="docsearch:version" content="2026.10.23" />
   
     
     <script src="../../_static/searchtools.js"></script>
@@ -503,7 +503,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <span class="kn">import</span><span class="w"> </span><span class="nn">contextvars</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">threading</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">ScopedRegistry</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">seamm_datastore</span>
 
@@ -643,10 +646,64 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <span class="n">initialize</span><span class="o">=</span><span class="n">initialize</span><span class="p">,</span>
         <span class="n">default_project</span><span class="o">=</span><span class="n">default_project</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">_scope_sessions_to_requests</span><span class="p">(</span><span class="n">_datastore</span><span class="p">)</span>
 
     <span class="n">_datastore_dir</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">_datastore</span></div>
+
+
+
+<span class="c1">#: The key of the current request's session (see :class:`SessionPerRequest`)</span>
+<span class="n">_request_scope</span><span class="p">:</span> <span class="n">contextvars</span><span class="o">.</span><span class="n">ContextVar</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">object</span><span class="p">]]</span> <span class="o">=</span> <span class="n">contextvars</span><span class="o">.</span><span class="n">ContextVar</span><span class="p">(</span>
+    <span class="s2">"seamm_webui_request_scope"</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span>
+<span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_session_scope</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">"""The current request, or outside a request the thread."""</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">_request_scope</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">key</span> <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="p">(</span><span class="s2">"thread"</span><span class="p">,</span> <span class="n">threading</span><span class="o">.</span><span class="n">get_ident</span><span class="p">())</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_scope_sessions_to_requests</span><span class="p">(</span><span class="n">datastore</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">"""Give each request its own datastore session instead of each thread.</span>
+
+<span class="sd">    seamm_datastore's ``Session`` is a ``scoped_session`` per thread. FastAPI runs</span>
+<span class="sd">    sync routes and dependencies in a pool of up to 40 threads and copies the</span>
+<span class="sd">    request's ``contextvars`` into each, so keyed on :data:`_request_scope` a</span>
+<span class="sd">    request's route and dependencies share one session, which</span>
+<span class="sd">    :class:`SessionPerRequest` closes when the request ends. Per thread, nothing</span>
+<span class="sd">    closed them, and every thread that had touched the datastore kept a</span>
+<span class="sd">    connection checked out of the pool (5 + 10): after enough concurrent requests</span>
+<span class="sd">    every request failed with "QueuePool limit ... reached" (ChemAI, 2026-10-23).</span>
+<span class="sd">    ``Base.query`` goes through the same ``scoped_session``, so it follows.</span>
+<span class="sd">    """</span>
+    <span class="n">session</span> <span class="o">=</span> <span class="n">datastore</span><span class="o">.</span><span class="n">Session</span>
+    <span class="n">session</span><span class="o">.</span><span class="n">registry</span> <span class="o">=</span> <span class="n">ScopedRegistry</span><span class="p">(</span><span class="n">session</span><span class="o">.</span><span class="n">session_factory</span><span class="p">,</span> <span class="n">_session_scope</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="SessionPerRequest">
+<a class="viewcode-back" href="../../api/seamm_webui.html#seamm_webui.db.SessionPerRequest">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SessionPerRequest</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">"""ASGI middleware: a datastore session per HTTP request, closed at its end,</span>
+<span class="sd">    returning its connection to the pool (see :func:`_scope_sessions_to_requests`).</span>
+<span class="sd">    """</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">app</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">app</span> <span class="o">=</span> <span class="n">app</span>
+
+    <span class="k">async</span> <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scope</span><span class="p">,</span> <span class="n">receive</span><span class="p">,</span> <span class="n">send</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">scope</span><span class="p">[</span><span class="s2">"type"</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">"http"</span><span class="p">:</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">receive</span><span class="p">,</span> <span class="n">send</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">_request_scope</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="nb">object</span><span class="p">())</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">app</span><span class="p">(</span><span class="n">scope</span><span class="p">,</span> <span class="n">receive</span><span class="p">,</span> <span class="n">send</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">_datastore</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">_datastore</span><span class="o">.</span><span class="n">Session</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+            <span class="n">_request_scope</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">token</span><span class="p">)</span></div>
 
 
 
