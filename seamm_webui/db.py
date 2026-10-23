@@ -15,7 +15,10 @@ and only then imports the routers, which is what keeps this safe.
 import contextvars
 import logging
 from pathlib import Path
+import threading
 from typing import Optional
+
+from sqlalchemy.util import ScopedRegistry
 
 import seamm_datastore
 
@@ -150,10 +153,61 @@ def init_datastore(datastore_dir: str, default_project: str = "default"):
         initialize=initialize,
         default_project=default_project,
     )
+    _scope_sessions_to_requests(_datastore)
 
     _datastore_dir = str(root)
 
     return _datastore
+
+
+#: The key of the current request's session (see :class:`SessionPerRequest`)
+_request_scope: contextvars.ContextVar[Optional[object]] = contextvars.ContextVar(
+    "seamm_webui_request_scope", default=None
+)
+
+
+def _session_scope():
+    """The current request, or outside a request the thread."""
+    key = _request_scope.get()
+    return key if key is not None else ("thread", threading.get_ident())
+
+
+def _scope_sessions_to_requests(datastore):
+    """Give each request its own datastore session instead of each thread.
+
+    seamm_datastore's ``Session`` is a ``scoped_session`` per thread. FastAPI runs
+    sync routes and dependencies in a pool of up to 40 threads and copies the
+    request's ``contextvars`` into each, so keyed on :data:`_request_scope` a
+    request's route and dependencies share one session, which
+    :class:`SessionPerRequest` closes when the request ends. Per thread, nothing
+    closed them, and every thread that had touched the datastore kept a
+    connection checked out of the pool (5 + 10): after enough concurrent requests
+    every request failed with "QueuePool limit ... reached" (ChemAI, 2026-10-23).
+    ``Base.query`` goes through the same ``scoped_session``, so it follows.
+    """
+    session = datastore.Session
+    session.registry = ScopedRegistry(session.session_factory, _session_scope)
+
+
+class SessionPerRequest:
+    """ASGI middleware: a datastore session per HTTP request, closed at its end,
+    returning its connection to the pool (see :func:`_scope_sessions_to_requests`).
+    """
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        if scope["type"] != "http":
+            await self.app(scope, receive, send)
+            return
+        token = _request_scope.set(object())
+        try:
+            await self.app(scope, receive, send)
+        finally:
+            if _datastore is not None:
+                _datastore.Session.remove()
+            _request_scope.reset(token)
 
 
 def get_datastore():
