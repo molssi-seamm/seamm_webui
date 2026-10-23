@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
-from seamm_webui.db import init_datastore, get_datastore_dir
+from seamm_webui.db import SessionPerRequest, get_datastore_dir, init_datastore
 from seamm_webui.paths import contained
 
 # Hosts that mean "this machine only" -- see run()'s --auth guardrail.
@@ -93,6 +93,10 @@ def create_app(
         # doesn't need this, but dev mode does.
         expose_headers=["X-Total-Count"],
     )
+
+    # A datastore session per request, closed when the request ends, so that its
+    # connection goes back to the pool (see db.SessionPerRequest)
+    app.add_middleware(SessionPerRequest)
 
     app.include_router(auth.router)
     app.include_router(jobs.router)

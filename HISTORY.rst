@@ -1,6 +1,14 @@
 =======
 History
 =======
+2026.10.23 -- Bugfix: the WebUI stopped answering after many requests
+    * Each worker thread that had used the datastore kept a database connection,
+      since nothing closed its session. After enough concurrent requests -- a job
+      page polled by a browser -- all 15 of the pool's connections were held and
+      every request failed after 30 s with "QueuePool limit of size 5 overflow 10
+      reached" (ChemAI, 2026-10-23), until the WebUI was restarted. Each request now
+      has its own session, closed when the request ends.
+
 2026.10.19 -- Resume a killed or failed job; LAMMPS .trj files as tables
     * A job that was killed, failed or never started can be resumed: 'Resume job' on the
       job's page, or POST /api/jobs/{id}/resume. The JobServer runs it again in its own
